@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bài tập CO5085 của Huỳnh Thành Đạt, 2570161: phân loại ảnh, attention và LSTM/GRU trên Fashion-MNIST.">
+  <title>CO5085 · Huỳnh Thành Đạt</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header class="wrap topbar">
+  <a class="brand" href="#">CO5085</a>
+  <nav aria-label="Điều hướng chính"><a href="#exercises">Bài tập</a><a href="#extension">Mở rộng</a><a href="reports/exercises.pdf">Báo cáo PDF</a></nav>
+</header>
+<main id="main">
+  <section class="wrap intro">
+    <h1>Học sâu trên<br><span>cùng một tập ảnh.</span></h1>
+    <p class="lead">Từ bộ phân loại tuyến tính đến attention và mạng hồi quy. Ba bài tập trên Fashion-MNIST, với cùng dữ liệu và một quy trình đánh giá.</p>
+    <p class="byline"><strong>Huỳnh Thành Đạt</strong> · 2570161<br>Học kỳ 261 (2026–2027) · Bài làm cá nhân</p>
+    <div class="links"><a class="button" href="reports/exercises.pdf">Đọc báo cáo E1–E3 <span aria-hidden="true">↗</span></a><a href="https://github.com/dathuynh1108/CO5085-deep-learning">Mã nguồn trên GitHub <span aria-hidden="true">↗</span></a></div>
+    <p class="status" role="status"><!--STATUS-->Chưa huấn luyện. Chưa có kết quả thực nghiệm.<!--/STATUS--></p>
+  </section>
+  <section class="wrap exercises" id="exercises">
+    <h2>Ba cách tiếp cận</h2>
+    <article class="exercise"><div class="number">E1</div><div><h3>Softmax, MLP và CNN</h3><p>So sánh mô hình tuyến tính, mạng fully connected và tích chập. Đọc accuracy cùng số tham số, đường cong học và các trường hợp phân loại sai.</p><a href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/E1">Xem E1 →</a></div></article>
+    <article class="exercise"><div class="number">E2</div><div><h3>Attention và tokenization</h3><p>MSA tự viết đối chiếu với PyTorch. Ảnh được chia theo hàng, patch 4×4 hoặc feature map từ CNN-stem học từ đầu.</p><a href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/E2">Xem E2 →</a></div></article>
+    <article class="exercise"><div class="number">E3</div><div><h3>Ảnh như một chuỗi</h3><p>LSTM và GRU đọc lần lượt các hàng hoặc patch. Các kết quả được đặt cạnh MLP/CNN của E1, không chuyển sang một bài toán văn bản khác.</p><a href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/E3">Xem E3 →</a></div></article>
+  </section>
+  <section class="extension" id="extension"><div class="wrap extension-inner"><h2>Điều gì giúp LSTM<br>truyền gradient tốt hơn?</h2><div><p>Phần mở rộng kiểm tra khởi tạo trực giao, regularization trực giao mềm, bias cổng nhớ theo độ dài chuỗi và mean pooling.</p><p>Có các đối chứng riêng và ablation của tổ hợp. Hiệu quả chưa được kết luận trước khi có số liệu; phân tích toán và các giới hạn được trình bày trong báo cáo.</p><a href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/docs/EXPERIMENTS.md">Thiết kế thí nghiệm →</a></div></div></section>
+  <section class="wrap delivery"><h2>Tài liệu và cách chạy</h2><p>Code dùng training loop PyTorch trực tiếp, không pretrained weights. Bảng và hình của báo cáo được xuất từ log thật sau khi chạy trên GPU.</p><div class="document-links"><a href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/docs/GPU_RUNBOOK.md">Hướng dẫn chạy GPU</a><a href="results.json">Bảng kết quả JSON</a><a href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/reports/report.tex">Mã LaTeX</a></div><p class="small">Bản thảo ban đầu có hỗ trợ AI đáng kể; cần được người học tự kiểm tra và hoàn thiện theo quy định môn học. A1/A2 chưa có trong gói hiện tại do chưa có nội dung hai đề tương ứng.</p></section>
+</main>
+<footer class="wrap footer"><p>CO5085 · Học sâu và ứng dụng trong thị giác máy tính</p><p>Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh</p></footer>
+</body>
+</html>

@@ -1,0 +1,372 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{fontspec}
+\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
+\IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Liberation Sans}}
+\setmonofont[Scale=0.84]{DejaVu Sans Mono}
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{graphicx,float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr,setspace,titlesec,caption,microtype,needspace}
+\usepackage{enumitem}
+\setstretch{1.15}
+\setlength{\parskip}{0.3em}
+\setlength{\parindent}{0pt}
+\setlength{\headheight}{16pt}
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\captionsetup{font=small,labelfont=bf}
+\numberwithin{equation}{chapter}
+\titleformat{\chapter}[display]{\normalfont\bfseries}{\filleft\Large Chương \thechapter}{0.3em}{\filright\huge}[\vspace{0.4em}\titlerule]
+\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small CO5085 · Bài tập E1–E3}
+\rhead{\small Huỳnh Thành Đạt · 2570161}
+\cfoot{\thepage}
+\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5085 · Bài tập E1–E3}\rhead{\small Huỳnh Thành Đạt · 2570161}\cfoot{\thepage}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\resultfigure}[3]{\IfFileExists{generated/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}{}}
+\newcommand{\tablenote}{\par\smallskip{\small Val/Test: accuracy (\%). Tham số đếm từ kiến trúc; --: chưa đo; $\pm$: SD qua seed. Phạm vi seed thực tế ở Chương 6; cách đo thời gian ở Chương 1.}\par}
+\hypersetup{pdftitle={CO5085 - Bao cao E1-E3},pdfauthor={Huynh Thanh Dat - 2570161}}
+\emergencystretch=2em
+\begin{document}
+\begin{titlepage}
+\centering
+{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
+{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
+{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
+\vspace{1.2cm}
+\includegraphics[width=3cm]{assets/hcmut-logo.png}
+\vspace{0.8cm}
+
+{\large\bfseries HỌC SÂU VÀ ỨNG DỤNG\par}
+{\large\bfseries TRONG THỊ GIÁC MÁY TÍNH\par}
+{\large Mã môn học: CO5085\par}
+\vspace{0.9cm}
+\rule{\textwidth}{0.6pt}\par
+\vspace{0.35cm}
+{\Huge\bfseries BÁO CÁO BÀI TẬP E1–E3\par}
+\vspace{0.45cm}
+{\Large Phân loại ảnh với CNN, attention\par}
+{\Large và mạng hồi quy\par}
+\vspace{0.35cm}
+\rule{\textwidth}{0.6pt}\par
+\vspace{0.7cm}
+{\large Học kỳ 261 · Năm học 2026–2027\par}
+\vspace{0.7cm}
+\begin{tabular}{@{}ll@{}}
+Giảng viên: & Lê Thành Sách\\
+& Nguyễn Quốc Minh\\[0.5em]
+Sinh viên: & Huỳnh Thành Đạt\\
+Mã số sinh viên: & 2570161\\
+Hình thức: & Cá nhân
+\end{tabular}
+\vfill
+{\small Bản thảo triển khai — phần thực nghiệm chưa hoàn tất\par}
+{\normalsize TP. Hồ Chí Minh, tháng 10 năm 2026\par}
+\end{titlepage}
+\pagenumbering{roman}
+{\setstretch{1.0}\small\tableofcontents}
+\clearpage
+\pagenumbering{arabic}
+
+\chapter{Dữ liệu và quy trình chung}
+\section{Phạm vi bài làm}
+Báo cáo trình bày ba bài tập E1–E3 trên cùng tập Fashion-MNIST. E1 so sánh softmax, MLP và CNN. E2 kiểm tra hiện thực multi-head self-attention (MSA) và ảnh hưởng của cách chia token. E3 xem ảnh như một chuỗi để phân loại bằng LSTM/GRU, đồng thời dùng lại MLP và CNN làm đối chứng. Đây là bài toán phân loại ảnh; ``thời gian'' của mạng hồi quy là thứ tự quét không gian, không phải thời gian trong video hay thứ tự từ trong câu.
+
+Phần mở rộng tập trung vào LSTM: khởi tạo ma trận hồi quy trực giao, regularization trực giao mềm, khởi tạo bias cổng theo độ dài chuỗi và mean pooling. Mục đích là kiểm tra từng lựa chọn bằng ablation, không thay các yêu cầu bắt buộc bằng một kiến trúc phức tạp hơn. Tất cả trọng số đều học từ đầu.
+
+\input{generated/status.tex}
+
+Bản thảo hiện có thiết kế, công thức, mã nguồn và quy trình sinh kết quả. Kiểm thử số học không thay thế train trên dữ liệu thật. Các nhận xét về chất lượng mô hình sẽ chỉ được chốt sau khi có log. Hai bài tập lớn A1/A2 chưa nằm trong báo cáo vì chưa có nội dung đề tương ứng; không suy đoán yêu cầu của chúng từ E1–E3.
+
+\section{Tập dữ liệu và cách chia}
+Fashion-MNIST gồm ảnh thời trang mức xám $28\times28$, 10 lớp, với 60.000 ảnh train và 10.000 ảnh test chính thức \cite{fashion}. Chọn tập này vì có thể dùng nguyên kích thước ảnh cho cả ba bài, không cần backbone pretrained hoặc xử lý dữ liệu lớn.
+
+Từ 60.000 ảnh train, tách phân tầng 10\% làm validation với split seed 2026. Như vậy có 54.000 ảnh train, 6.000 validation và 10.000 test. Mỗi lớp lần lượt có 5.400, 600 và 1.000 ảnh theo phân bố chuẩn của bộ dữ liệu. Split seed không đổi giữa E1–E3 và không trùng vai trò với seed khởi tạo mô hình.
+
+Ảnh được chuyển từ uint8 sang $[0,1]$, sau đó chuẩn hóa $x'=(x-\mu)/\sigma$. Hai thống kê $\mu,\sigma$ chỉ tính trên 54.000 ảnh train, rồi giữ nguyên cho validation/test. Không dùng các giá trị chuẩn hóa chép từ một benchmark khác. Không augmentation trong nghiên cứu này để tránh thêm yếu tố gây nhiễu khi so sánh cách biểu diễn ảnh.
+
+\code{common/data.py} lưu chỉ số từng split, checksum dữ liệu và fingerprint của cả split lẫn normalization. Loader ưu tiên HTTPS từ repo chính thức của dataset và giữ kiểm tra checksum của torchvision. Dữ liệu test có thể được tải cùng kho ảnh, nhưng không được đọc vào vòng chọn checkpoint hay tính normalization.
+
+\section{Huấn luyện và chỉ số đánh giá}
+Mỗi mô hình xuất logits $z\in\R^{10}$. Với nhãn đúng $y$, cross-entropy là
+\begin{equation}
+\ell(z,y)=-z_y+\log\sum_{k=1}^{10}\exp(z_k),
+\qquad \frac{\partial\ell}{\partial z_k}=p_k-\mathbf{1}[k=y].
+\end{equation}
+Vì \code{cross_entropy} đã thực hiện log-softmax ổn định số, code không chèn softmax trước loss. Softmax chỉ được dùng khi cần xác suất để trình bày dự đoán.
+
+\begin{table}[htbp]\centering
+\begin{tabularx}{\textwidth}{@{}lX@{}}\toprule
+Thiết lập & Giá trị định trước\\\midrule
+Optimizer & AdamW, weight decay $10^{-4}$ trên các tham số trainable\\
+Ngân sách & 30 epoch, batch 256, không early stopping\\
+Learning rate & E1/E3: $10^{-3}$; E2: $3\times10^{-4}$\\
+Scheduler & Cosine decay về 1\% learning rate ban đầu\\
+Gradient clipping & Global norm tối đa 1, sau backward và trước step\\
+Độ chính xác số & FP32; tắt AMP, TF32 và compile\\
+Seed mô hình & Dự kiến 42, 43, 44; cùng split seed 2026\\
+Chọn checkpoint & Validation accuracy lớn nhất; hòa thì CE nhỏ nhất\\\bottomrule
+\end{tabularx}
+\caption{Protocol chung; đây là cấu hình, không phải kết quả đo.}
+\end{table}
+
+Vòng lặp được viết trực tiếp: zero gradient, forward, tính loss, backward, clipping, optimizer step. Chỉ đánh giá test bằng một lệnh riêng sau khi chốt thí nghiệm. Khi loss hoặc gradient không hữu hạn, chương trình dừng thay vì thay bằng một số hợp lệ giả.
+
+Accuracy là chỉ số chính; macro-F1 bổ sung khi phân tích lỗi theo lớp. Confusion matrix và các dự đoán sai có confidence cao giúp chỉ ra cặp lớp cần xem lại. Số tham số biểu thị một phần capacity, không đồng nghĩa với FLOPs hay khả năng tổng quát hóa. Thời gian train/epoch được đồng bộ CUDA, gồm bước lấy batch và cập nhật; bỏ epoch đầu khi lấy median. Tốc độ inference được đo riêng, bỏ hai batch đầu và không tính truyền dữ liệu sang GPU. Chỉ so tốc độ khi môi trường và cách đo tương đương.
+
+Bảng kết quả tổng hợp theo seed thực có. Độ lệch chuẩn mẫu chỉ xác định khi có ít nhất hai seed và không phải khoảng tin cậy. Các hình đại diện dùng seed nhỏ nhất, không chọn seed có test tốt nhất. Đây là phép so sánh dưới một ngân sách công bố trước, chưa phải cuộc tìm kiếm siêu tham số tối ưu cho mọi họ mô hình.
+
+\chapter{E1: Softmax, MLP và CNN}
+\section{Ba bộ phân loại}
+Softmax nhận vector $x\in\R^{784}$ và tính logits $z=Wx+b$; ranh giới giữa hai lớp là siêu phẳng trong không gian pixel. MLP bổ sung hai tầng phi tuyến trên cùng vector flatten. CNN dùng kernel chia sẻ theo vị trí để học đặc trưng cục bộ. Ba kiến trúc được giữ nhỏ và mô tả đầy đủ trong bảng dưới đây.
+
+\begin{table}[htbp]\centering
+\begin{tabularx}{\textwidth}{@{}lX@{}}\toprule
+Mô hình & Các lớp theo thứ tự\\\midrule
+Softmax & Flatten $784\to10$\\
+MLP & Flatten; $784\to256$; ReLU; dropout 0,2; $256\to128$; ReLU; dropout 0,2; $128\to10$\\
+CNN & Conv $1\to32$, kernel $3$, padding $1$; BN; ReLU; pool $2$; Conv $32\to64$ tương tự; pool $2$; flatten; $3136\to128$; ReLU; dropout 0,2; $128\to10$\\\bottomrule
+\end{tabularx}
+\caption{Kiến trúc E1. Conv không dùng bias vì sau đó có batch normalization.}
+\end{table}
+
+Hai phép pooling đưa ảnh $28\to14\to7$, vì vậy head CNN nhận $64\times7\times7=3136$ giá trị. Với một lớp Linear $d_{in}\to d_{out}$ có bias, số tham số là $d_{in}d_{out}+d_{out}$. Ví dụ softmax có $784\times10+10=7.850$ tham số. Các số còn lại được đếm trực tiếp bằng \code{numel()}, gồm tham số affine của BN nhưng không gồm running statistics.
+
+\section{Kết quả và phân tích lỗi}
+\begin{table}[htbp]\centering\small
+\input{generated/e1_table.tex}
+\caption{Kết quả E1; chỉ số chưa đo để trống.}
+\end{table}
+\tablenote
+
+Cần đọc đồng thời train/validation CE và accuracy để phân biệt dấu hiệu overfit với mô hình chưa học đủ. Không xếp hạng khả năng tổng quát hóa chỉ bằng số tham số. Confusion matrix sẽ chỉ ra cặp lớp cần kiểm tra lại trên ảnh gốc; chưa có log thì chưa xác nhận cặp nào dễ nhầm nhất.
+
+\resultfigure{e1_comparison_ce}{Validation CE của ba mô hình E1 ở cùng seed. Hình chỉ xuất hiện khi có đủ log thật.}{0.88}
+\resultfigure{e1_comparison_accuracy}{Validation accuracy của E1; seed dùng cho hình ghi trên biểu đồ.}{0.88}
+\resultfigure{e1_cnn_confusion}{Confusion matrix test của CNN ở seed đại diện.}{0.8}
+\resultfigure{e1_cnn_mistakes}{Một số dự đoán sai có confidence cao của CNN.}{0.95}
+
+\chapter{E2: MSA và cách lấy token}
+\section{Hiện thực attention}
+Với tensor token $X\in\R^{B\times N\times d}$, mỗi head học các phép chiếu query, key và value. Bỏ chỉ số batch để gọn, attention của một head là \cite{attention}
+\begin{equation}
+Q=XW_Q,\quad K=XW_K,\quad V=XW_V,\qquad
+A=\operatorname{softmax}_{\text{hàng}}\left(\frac{QK^\top}{\sqrt{d_h}}\right),\quad O=AV.
+\end{equation}
+Các bias được lược bỏ trong công thức cho gọn, nhưng có trong code. Ở đây $d=64$, có bốn head nên $d_h=16$. Code gộp ba phép Linear thành QKV, reshape thành các head, nhân ma trận, softmax theo chiều key, áp dụng dropout, ghép head và chiếu output. Bản manual không gọi \code{nn.MultiheadAttention}, \code{TransformerEncoder} hoặc fused attention để thay phần tính này.
+
+Bản đối chiếu dùng \code{nn.MultiheadAttention(batch_first=True)}. Chương trình tạo toàn bộ model manual rồi copy đúng QKV và output projection sang module PyTorch. Các phần tokenizer, positional embedding, FFN, LayerNorm và head cũng giữ nguyên tensor khởi tạo của cùng seed. Chỉ reset seed trước hai constructor khác nhau là chưa đủ bảo đảm điều này.
+
+Kiểm thử dùng tensor nhỏ và dropout bằng 0: so output, gradient input và gradient của tất cả tham số. Kiểm thử này kiểm tra tính tương đương số học, không đánh giá mô hình đã học. Trong training, dropout và kernel có thể khác cách tiêu thụ số ngẫu nhiên hoặc thứ tự tính, nên không yêu cầu hai log phải giống từng bit.
+
+\section{Ba cách tokenization}
+\begin{table}[htbp]\centering
+\begin{tabularx}{\textwidth}{@{}lrrX@{}}\toprule
+Cách chia & $N$ & Đầu vào/token & Phép tạo embedding\\\midrule
+Hàng & 28 & 28 & Linear $28\to64$\\
+Patch $4\times4$ & 49 & 16 & Unfold không chồng lấp, Linear $16\to64$\\
+CNN-stem & 49 & 64 & Hai Conv stride 2: $1\to32\to64$, BN/ReLU; flatten spatial\\\bottomrule
+\end{tabularx}
+\caption{Tokenization của E2 trên ảnh $1\times28\times28$.}
+\end{table}
+
+Token hàng gom các pixel cùng một hàng. Token patch quét lưới từ trái sang phải, trên xuống dưới. CNN-stem rút feature map $64\times7\times7$; mỗi vị trí là một token đã qua xử lý cục bộ. Stem được train từ đầu, không phải CNN pretrained. Stem có thêm phép tính và tham số, vì vậy nếu nó tốt hơn thì không thể quy toàn bộ lợi ích cho số token.
+
+Mỗi cấu hình thêm learned positional embedding, qua hai encoder block dạng pre-LN và kết thúc bằng LayerNorm, mean pooling và Linear $64\to10$. Không có CLS token. Mỗi block tính
+\begin{align}
+U &= X+\operatorname{Dropout}(\operatorname{MSA}(\operatorname{LN}(X))),\\
+Y &= U+\operatorname{FFN}(\operatorname{LN}(U)),
+\end{align}
+trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Attention không dùng causal mask vì toàn bộ ảnh đã có tại thời điểm phân loại.
+
+\section{So sánh cần thực hiện}
+\begin{table}[htbp]\centering\small
+\input{generated/e2_table.tex}
+\caption{Sáu cấu hình E2. Manual và PyTorch của cùng tokenizer có cùng số tham số.}
+\end{table}
+\tablenote
+
+Trước hết so manual với thư viện ở từng tokenizer để kiểm tra tác động của cách hiện thực. Sau đó so ba tokenizer khi giữ attention backend cố định. Chi phí phần score của attention tỉ lệ $N^2d$; riêng số cặp token của patch so với hàng là $49^2/28^2\approx3,06$. Tỉ lệ này không phải tỉ lệ thời gian toàn mô hình vì còn chi phí projection, FFN, stem và kernel.
+
+Báo cáo cần đối chiếu accuracy với thời gian và capacity, không chỉ chọn dòng accuracy lớn nhất. Manual chậm hơn chưa có nghĩa là sai; thư viện có thể dùng kernel tối ưu hơn. Ngược lại, sai lệch lớn về điểm số cần kiểm tra split, token order, khởi tạo và quy trình train trước khi diễn giải thành ưu thế của một API.
+
+\resultfigure{e2_comparison_ce}{Validation CE của sáu cấu hình E2 ở seed chung nhỏ nhất.}{0.9}
+\resultfigure{e2_comparison_accuracy}{Validation accuracy khi thay attention backend và tokenizer.}{0.9}
+
+\chapter{E3: LSTM/GRU trên chuỗi ảnh}
+\section{Biểu diễn ảnh và kiến trúc}
+Ảnh được biến thành chuỗi theo hai cách đã dùng trong E2, nhưng không qua embedding học được: hàng cho $T=28,D=28$; patch $4\times4$ cho $T=49,D=16$. Cả LSTM và GRU đều có một tầng, một chiều, hidden size $H=128$, trạng thái đầu bằng zero. Baseline lấy hidden state cuối, dropout 0,1 rồi Linear $128\to10$.
+
+Quét hàng giữ các quan hệ ngang trong một token và để mạng hồi quy xử lý quan hệ giữa các hàng. Quét patch tạo nhiều bước hơn, mỗi bước mô tả một vùng nhỏ hơn. Hai cách thay đổi đồng thời độ dài chuỗi và kích thước input; không nên gọi đây là thí nghiệm chỉ thay $T$.
+
+\section{Các phương trình được sử dụng}
+Với LSTM, đặt $a_t=W_xx_t+W_hh_{t-1}+b$ rồi tách thành bốn phần \cite{pytorch-lstm}:
+\begin{align}
+i_t&=\sigma(a_t^i),& f_t&=\sigma(a_t^f),& g_t&=\tanh(a_t^g),& o_t&=\sigma(a_t^o),\\
+c_t&=f_t\odot c_{t-1}+i_t\odot g_t,&&
+h_t=o_t\odot\tanh(c_t).
+\end{align}
+$c_t$ có đường cập nhật cộng, còn $h_t$ là trạng thái dùng cho output và hồi tiếp. Cổng quên lớn có thể giữ thông tin, nhưng kiến trúc này không tự bảo đảm mọi gradient đều được bảo toàn.
+
+GRU dùng reset gate $r_t$, update gate $z_t$ và trạng thái ứng viên $n_t$. Diagnostic khớp đúng cách PyTorch đặt reset gate sau phép chiếu hidden \cite{pytorch-gru}:
+\begin{align}
+r_t &=\sigma(W_{ir}x_t+b_{ir}+W_{hr}h_{t-1}+b_{hr}),\\
+z_t &=\sigma(W_{iz}x_t+b_{iz}+W_{hz}h_{t-1}+b_{hz}),\\
+n_t &=\tanh\!\left(W_{in}x_t+b_{in}+r_t\odot(W_{hn}h_{t-1}+b_{hn})\right),\\
+h_t &=(1-z_t)\odot n_t+z_t\odot h_{t-1}.
+\end{align}
+Cách đặt $r_t$ này không được tự ý thay bằng $W_{hn}(r_t\odot h_{t-1})$ khi đối chiếu với module thư viện. GRU không có một cell state riêng như LSTM.
+
+PyTorch lưu hai vector bias cho mỗi tầng. Vì vậy, số tham số phần recurrent là $4H(D+H+2)$ với LSTM và $3H(D+H+2)$ với GRU; cộng thêm $10H+10$ cho head. Giữ cùng $H$ giúp so sánh rõ nhưng không làm hai mô hình có cùng capacity.
+
+\section{Kết quả và quan hệ không gian}
+\begin{table}[htbp]\centering\small
+\input{generated/e3_table.tex}
+\caption{E3 và hai baseline từ E1, trên cùng split.}
+\end{table}
+\tablenote
+
+CNN khai thác lân cận hai chiều và chia sẻ kernel; LSTM/GRU tích lũy thông tin theo đường quét. Khi chuyển từ cuối một hàng patch sang đầu hàng kế tiếp, hai phần tử kề nhau trong chuỗi chưa chắc là hàng xóm gần nhất trên ảnh. Đây là đặc điểm của biểu diễn, không phải lỗi của cell.
+
+Ngoài accuracy và số tham số, cần xem ảnh hưởng của cách quét và gradient theo vị trí. \code{E3.diagnose} dùng validation để so thứ tự gốc, đảo ngược và một hoán vị cố định. Mô hình không được train lại khi đảo thứ tự. Suy giảm accuracy trong phép thử này phản ánh sự nhạy với thay đổi phân bố đầu vào; riêng nó chưa chứng minh mạng hiểu phụ thuộc dài hạn.
+
+\resultfigure{e3_comparison_ce}{Validation CE của các mạng hồi quy và baseline E1 ở cùng seed.}{0.9}
+\resultfigure{e3_comparison_accuracy}{So sánh accuracy của E3 với MLP/CNN.}{0.9}
+
+\chapter{Mở rộng E3: Điều kiện truyền gradient}
+\section{Vấn đề và giả thuyết}
+Chuỗi hàng/patch chỉ dài 28 hoặc 49 bước. Độ dài này chưa phải một benchmark long-context, và chưa có số đo để kết luận baseline đang bị vanishing gradient nghiêm trọng. Tuy vậy, nó đủ để xây một thí nghiệm có kiểm soát về khởi tạo, phép đọc trạng thái và đường truyền gradient. Các thay đổi dưới đây đều được hiện thực, không chỉ đề xuất bằng lý thuyết.
+
+Với trạng thái hồi quy tổng quát $s_t=F_\theta(s_{t-1},x_t)$ và $J_t=\partial s_t/\partial s_{t-1}$, đóng góp từ loss cuối chuỗi thỏa
+\begin{equation}
+\frac{\partial\ell_T}{\partial s_t}
+=J_{t+1}^{\top}J_{t+2}^{\top}\cdots J_T^{\top}
+\frac{\partial\ell_T}{\partial s_T},\qquad
+\norm{\frac{\partial\ell_T}{\partial s_t}}
+\leq\prod_{k=t+1}^{T}\norm{J_k}_2\,
+\norm{\frac{\partial\ell_T}{\partial s_T}}.
+\end{equation}
+Tích nhiều phép co có thể làm gradient nhỏ; tích nhiều phép khuếch đại có thể làm nó lớn. Cận theo norm là một cách phân tích, không mô tả chính xác mọi hướng gradient. Với LSTM, $s_t$ cần gồm cả $h_t,c_t$, không chỉ một biến hidden \cite{pascanu}.
+
+\section{Khởi tạo và regularization trực giao}
+Với từng gate, ma trận hồi quy vuông $W_g\in\R^{H\times H}$ được khởi tạo trực giao ở các cấu hình tương ứng. Nếu $W_g^\top W_g=I$ thì $\norm{W_gv}_2=\norm{v}_2$: riêng phép biến đổi tuyến tính đó không làm thay đổi norm. Điều này không loại bỏ tác động của sigmoid, tanh, các gate và tích Jacobian toàn cell.
+
+Tập các ma trận trực giao là trường hợp vuông của Stiefel manifold. Thay vì dùng optimizer có ràng buộc trên đa tạp, code dùng một penalty mềm trong không gian tham số thông thường:
+\begin{equation}
+\mathcal{R}_{orth}=\frac{1}{GH}\sum_{g=1}^{G}\norm{W_g^\top W_g-I}_F^2,
+\qquad \mathcal{L}=\mathcal{L}_{CE}+\lambda\mathcal{R}_{orth},
+\end{equation}
+trong đó $G=4$ cho LSTM, $H=128$ và $\lambda=10^{-3}$ ở các preset có regularization. Tách theo gate là cần thiết; không coi ma trận ghép $4H\times H$ là một khối rồi gọi mỗi gate đã trực giao.
+
+Đặt $A=W^\top W-I=A^\top$. Vi phân cho một gate là
+\begin{align}
+d\,\norm{A}_F^2
+&=2\operatorname{tr}(A\,dA)
+ =2\operatorname{tr}\!\left[A(dW^\top W+W^\top dW)\right]\\
+&=4\operatorname{tr}\!\left[(WA)^\top dW\right],
+\end{align}
+do đó
+\begin{equation}
+\nabla_{W_g}\mathcal{R}_{orth}=\frac{4}{GH}W_g(W_g^\top W_g-I).
+\end{equation}
+Công thức được kiểm tra với autograd. Penalty tạo chi phí tính toán thêm và có thể làm giảm mức linh hoạt của nghiệm. AdamW vẫn có weight decay cố định trên mọi tham số, nên nó đồng thời kéo trọng số về zero; không được mô tả quá trình train như duy trì trực giao chính xác.
+
+Đây là penalty mềm trong không gian Euclid, không dùng diffusion maps, đồ thị dữ liệu hoặc optimizer manifold.
+
+\section{Bias cổng nhớ theo độ dài chuỗi}
+Ở cấu hình chrono, đặt $b_f=\log(T-1)$, $b_i=-\log(T-1)$; bias các gate khác bằng zero. Chỉ thay \code{bias_ih}; giữ \code{bias_hh=0} để tổng bias đúng giá trị dự định. Đây là biến thể \emph{một timescale cố định} lấy cảm hứng từ chrono initialization, không phải chép nguyên cách lấy timescale ngẫu nhiên trong công trình gốc \cite{chrono}.
+
+Khi bỏ qua đóng góp từ input/hidden tại lúc khởi tạo,
+\begin{equation}
+f_t\approx\sigma(\log(T-1))=1-\frac1T,
+\qquad i_t\approx\frac1T.
+\end{equation}
+Giữ các gate cố định để chỉ xét đường trực tiếp $c_{t-1}\to c_t$, ta có
+\begin{equation}
+\left.\frac{\partial c_T}{\partial c_t}\right|_{\text{đường trực tiếp}}
+=\prod_{k=t+1}^{T}\operatorname{diag}(f_k).
+\end{equation}
+Nếu mỗi $f_k\approx1-1/T$ thì độ suy giảm trên khoảng $T$ bước gần $(1-1/T)^T\approx e^{-1}$, thay vì $2^{-T}$ khi $f_k\approx0,5$. Đây chỉ là xấp xỉ để giải thích khởi tạo. Đạo hàm tổng còn có các đường qua hidden và đạo hàm của gate; không thể đồng nhất nó với tích trên.
+
+Cổng quên gần 1 đi kèm cổng nhập nhỏ có thể khiến mô hình cập nhật thông tin mới chậm. Bias lớn cũng có thể đẩy sigmoid về vùng bão hòa. Vì vậy bias được học tiếp trong train, không bị khóa, và chrono cần một đối chứng riêng thay vì giả định luôn có lợi.
+
+\section{Mean pooling và clipping}
+Baseline dự đoán từ $h_T$. Biến thể mean pooling dùng $\bar h=T^{-1}\sum_t h_t$ trước head. Bỏ qua dropout trong biểu thức minh họa, nếu $z=W_o\bar h+b$ và $y$ là vector one-hot thì đường gradient trực tiếp tới mỗi trạng thái là
+\begin{equation}
+\left.\frac{\partial\ell}{\partial h_t}\right|_{\text{head}}
+=\frac1T W_o^\top(p-y).
+\end{equation}
+Đạo hàm tổng còn gồm các đường hồi quy về sau. Lợi ích tiềm năng là một trạng thái sớm không chỉ phụ thuộc vào việc tín hiệu đi qua toàn bộ chuỗi để tới head. Đổi lại, trung bình có thể làm mờ vị trí và trộn vùng nền vào biểu diễn. Learned position không được thêm cho E3; mạng hồi quy tự phụ thuộc thứ tự quét.
+
+Clipping global norm được dùng cho tất cả baseline lẫn cải tiến:
+\begin{equation}
+g\leftarrow g\min\!\left(1,\frac{\tau}{\norm{g}_2}\right),\qquad \tau=1.
+\end{equation}
+Nó giới hạn gradient quá lớn trước bước cập nhật, không khuếch đại gradient đã biến mất. Không gọi clipping là lời giải cho vanishing gradient \cite{pascanu}.
+
+\section{Ablation và cách kiểm tra}
+Các cấu hình dưới đây chỉ dùng LSTM theo hàng, giữ $H=128$, split và budget. ``Orth init'' chỉ thay khởi tạo. ``Orth reg'' thêm penalty vào bản orth init. ``Combined'' dùng trực giao ban đầu, penalty, chrono và mean pooling. Hai bản ``no reg'' và ``no mean'' bỏ riêng một thành phần từ combined; các thành phần khác giữ nguyên.
+
+\begin{table}[htbp]\centering\small
+\input{generated/improvement_table.tex}
+\caption{Baseline và bảy cấu hình mở rộng. Tất cả có cùng số tham số trainable.}
+\end{table}
+\tablenote
+
+Chênh lệch orth init--baseline xét khởi tạo; orth reg--orth init xét penalty. Chrono và mean được so riêng với baseline. So combined với hai ablation cho biết tác động trong tổ hợp, nhưng chưa phải thiết kế factorial đầy đủ và chưa tách mọi tương tác. Không dùng việc chỉ một seed tăng để khẳng định cải tiến bền vững.
+
+Diagnostic unroll dùng đúng trọng số của checkpoint native và công thức cell tương ứng, giữ gradient tại từng trạng thái trung gian thật. Loss dùng tổng theo batch để gradient từng mẫu không bị chia bởi batch size; sau đó lấy trung bình norm qua mẫu. Gradient của tensor output từ một fused RNN không thay thế được phép đo BPTT-state này.
+
+Trên cùng 256 ảnh validation theo quy tắc định trước, ghi $\norm{\partial\ell/\partial h_t}$, $\norm{\partial\ell/\partial c_t}$, gradient theo input token, giá trị gate trung bình và singular values của từng $W_g$. Gradient nhỏ ở pixel nền không nhất thiết là lỗi học; cần đọc cùng accuracy, CE và ảnh. Chưa có các phép đo này thì chưa thể kết luận baseline bị vanishing hay tổ hợp đã khắc phục được nó.
+
+\resultfigure{improvement_comparison_accuracy}{Validation accuracy của các thay đổi chính ở cùng seed.}{0.9}
+\resultfigure{e3_lstm_rows_gradients}{Gradient theo vị trí của LSTM baseline trên validation.}{0.88}
+\resultfigure{e3_lstm_rows_combined_gradients}{Gradient của tổ hợp cải tiến, cùng cách chọn validation subset.}{0.88}
+
+\chapter{Tái lập và phần cần hoàn thiện}
+\section{Mã nguồn và artifact}
+Repo tách mô hình thành \code{E1/}, \code{E2/}, \code{E3/}; phần dùng chung nằm trong \code{common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Hyperparameter được khai báo trong một file JSON gồm 20 preset.
+
+Checkpoint cuối epoch lưu model, AdamW, cosine scheduler, lịch sử và trạng thái RNG của Python, NumPy, PyTorch, CUDA, shuffle generator. Resume từ epoch hoàn tất gần nhất, không từ batch đang dở. Fingerprint kiểm tra code, config, seed, dữ liệu và normalization; môi trường torch/CUDA cũng được đối chiếu. Khóa thư mục ngăn hai tiến trình ghi cùng run. Cơ chế này không hứa khả năng tái lập bitwise giữa các phần cứng khác nhau.
+
+\code{scripts/export_report.py} chỉ gộp các run đúng protocol. Nó xuất bảng LaTeX, CSV/JSON và sao chép hình từ log thật; không tự tạo số liệu khi thiếu file. Khi chỉ có một phần thí nghiệm, bảng seed bên dưới thể hiện đúng phần đó. Những đoạn phân tích trong bản thảo không được tự động biến thành kết luận thành tích.
+
+\section{Phạm vi kết quả hiện có}
+\input{generated/status.tex}
+
+{\small\input{generated/coverage.tex}}
+
+Các phép kiểm tra số học hiện có bao gồm tính tương đương forward/gradient của MSA, token order, unroll LSTM/GRU, đạo hàm regularizer, bias chrono, split, khôi phục shuffle và artifact không có số liệu. Kiểm thử chạy trên CPU; lượt huấn luyện đầy đủ và phép đo CUDA còn phải thực hiện trên máy đích.
+
+Sau khi có kết quả, cần hoàn thiện nhận xét từng chương theo cùng câu hỏi đã đặt ra: khác biệt E1 có đi kèm overfit hay không; tokenizer nào cân bằng accuracy và chi phí; LSTM/GRU có cạnh tranh với CNN trên cùng ảnh hay không; thành phần mở rộng nào đóng góp và có ổn định theo seed hay không. Nếu improvement không tốt hơn, vẫn giữ số liệu và giới hạn đó trong báo cáo.
+
+\section{Kết luận ở giai đoạn triển khai}
+Ba bài đã có hiện thực riêng cho các họ mô hình và một quy trình dữ liệu/đánh giá thống nhất. Phần mở rộng được chuyển thành những thay đổi cụ thể trong LSTM, có công thức, đối chứng và công cụ đọc gradient. Điều có thể xác nhận ở giai đoạn này là cấu trúc triển khai và các kiểm tra số học; chưa thể xếp hạng mô hình theo chất lượng hoặc tuyên bố cải tiến làm tăng accuracy.
+
+\section*{Ghi nhận hỗ trợ và liêm chính học thuật}
+\addcontentsline{toc}{section}{Ghi nhận hỗ trợ và liêm chính học thuật}
+Bản mã nguồn và văn bản ban đầu có mức hỗ trợ AI đáng kể, gồm hiện thực, kiểm thử và soạn thảo. Đề môn học chỉ cho phép AI hỗ trợ và không cho nộp sản phẩm do AI tạo phần lớn. Bản này cần được người học tự kiểm tra, phát triển lại và hoàn thiện bằng thực nghiệm của mình, đồng thời làm rõ phạm vi hỗ trợ được giảng viên chấp nhận; không nộp nguyên trạng như sản phẩm hoàn toàn tự thực hiện.
+
+Bố cục LaTeX dựa trên mẫu Diffusion Maps được cung cấp. Repo tham khảo chỉ được xem về tổ chức thư mục; không lấy code, checkpoint, bảng, hình hoặc kết quả thực nghiệm của bài mẫu.
+
+\begin{thebibliography}{9}
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
+\bibitem{assignment} Lê Thành Sách, Nguyễn Quốc Minh. \emph{Bài tập E1–E3: Học sâu và ứng dụng trong thị giác máy tính, CO5085}. Đề học kỳ 261 (2026–2027), file \code{exercise-vne.pdf} được cung cấp.
+\bibitem{fashion} H. Xiao, K. Rasul, R. Vollgraf. \emph{Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms}. arXiv:1708.07747, 2017. \url{https://arxiv.org/abs/1708.07747}. Dữ liệu: \url{https://github.com/zalandoresearch/fashion-mnist}.
+\bibitem{attention} A. Vaswani và cộng sự. \emph{Attention Is All You Need}. NeurIPS, 2017. \url{https://arxiv.org/abs/1706.03762}.
+\bibitem{pascanu} R. Pascanu, T. Mikolov, Y. Bengio. \emph{On the difficulty of training recurrent neural networks}. ICML, 2013; arXiv:1211.5063. \url{https://arxiv.org/abs/1211.5063}.
+\bibitem{chrono} C. Tallec, Y. Ollivier. \emph{Can recurrent neural networks warp time?} ICLR, 2018. \url{https://arxiv.org/abs/1804.11188}.
+\bibitem{pytorch-lstm} PyTorch. \emph{LSTM: API and equations}. \url{https://docs.pytorch.org/docs/2.9/generated/torch.nn.LSTM.html}.
+\bibitem{pytorch-gru} PyTorch. \emph{GRU: API and implementation notes}. \url{https://docs.pytorch.org/docs/2.9/generated/torch.nn.GRU.html}.
+\bibitem{pytorch-versions} PyTorch. \emph{Previous versions: torch 2.10.0 / torchvision 0.25.0}. \url{https://pytorch.org/get-started/previous-versions/}. Cặp phiên bản ghim cho môi trường chạy; không khẳng định đây là bản mới nhất.
+\end{thebibliography}
+\end{document}
