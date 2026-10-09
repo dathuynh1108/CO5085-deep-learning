@@ -1,0 +1,9 @@
+{
+  "train_runs": 0,
+  "test_runs": 0,
+  "runs": [],
+  "figures": {},
+  "figure_rule": "Lowest seed per configuration; lowest shared seed for comparison curves. Never selected on test accuracy.",
+  "missing_measurements": "null in JSON, empty CSV cells, -- in LaTeX",
+  "standard_deviation": "Sample standard deviation across seeds; undefined for one seed, not zero."
+}

@@ -1,0 +1,21 @@
+id,label,exercise,group,parameters,n_train_runs,n_test_runs,train_seeds,test_seeds,validation_accuracy_mean,test_accuracy_mean,test_accuracy_std,test_macro_f1_mean,median_train_seconds_mean,mixed_timing_environments
+e1_softmax,Softmax,E1,required,7850,0,0,,,,,,,,False
+e1_mlp,MLP,E1,required,235146,0,0,,,,,,,,False
+e1_cnn,CNN,E1,required,421738,0,0,,,,,,,,False
+e2_patches_manual,patches / manual,E2,required,71946,0,0,,,,,,,,False
+e2_patches_torch,patches / torch,E2,required,71946,0,0,,,,,,,,False
+e2_rows_manual,rows / manual,E2,required,71370,0,0,,,,,,,,False
+e2_rows_torch,rows / torch,E2,required,71370,0,0,,,,,,,,False
+e2_cnn_manual,cnn / manual,E2,required,89770,0,0,,,,,,,,False
+e2_cnn_torch,cnn / torch,E2,required,89770,0,0,,,,,,,,False
+e3_lstm_rows,LSTM / rows,E3,required,82186,0,0,,,,,,,,False
+e3_gru_rows,GRU / rows,E3,required,61962,0,0,,,,,,,,False
+e3_lstm_patches,LSTM / patches,E3,required,76042,0,0,,,,,,,,False
+e3_gru_patches,GRU / patches,E3,required,57354,0,0,,,,,,,,False
+e3_lstm_rows_orth_init,LSTM + orthogonal init,E3,improvement,82186,0,0,,,,,,,,False
+e3_lstm_rows_orth_reg,LSTM + orthogonal init/reg,E3,improvement,82186,0,0,,,,,,,,False
+e3_lstm_rows_chrono,LSTM + chrono bias,E3,improvement,82186,0,0,,,,,,,,False
+e3_lstm_rows_mean,LSTM + mean pooling,E3,improvement,82186,0,0,,,,,,,,False
+e3_lstm_rows_combined,LSTM combined,E3,improvement,82186,0,0,,,,,,,,False
+e3_lstm_rows_no_reg,Combined without regularizer,E3,improvement,82186,0,0,,,,,,,,False
+e3_lstm_rows_no_mean,Combined without mean pooling,E3,improvement,82186,0,0,,,,,,,,False
