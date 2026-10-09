@@ -1,19 +1,23 @@
 # Kiểm tra bản bàn giao — 09/10/2026
 
-## Đã thực hiện trên CPU
+## Kiểm tra trên GitHub Actions
 
-- `python -m pytest -q tests`: **37 passed**. Các phép thử dùng tensor hoặc JSON/checkpoint fixture trong thư mục tạm; không train dữ liệu thật. Đã chạy lại đủ 37 test trước khi đưa mã nguồn lên GitHub.
-- `python -m compileall -q common E1 E2 E3 scripts`: không có lỗi cú pháp.
-- CLI help của train/evaluate/diagnose/publish và `run_suite --list`: hoạt động; danh sách gồm 20 cấu hình.
-- Export khi chưa có run: 20 dòng, các accuracy là `null`, không có seed train/test. Test một-seed kiểm tra SD là chưa xác định, không tự đặt bằng 0.
-- XeLaTeX chạy hai lượt tạo `reports/exercises.pdf`: 15 trang trong bản ZIP ban đầu. Đã render để xem bìa, mục lục, bảng và công thức; không có cảnh báo overfull box hoặc ký tự thiếu. Có cảnh báo underfull ở một URL tài liệu tham khảo, không mất nội dung.
-- Site render offline bằng Chromium ở 1440×1000 và 390×844: không tràn ngang, không JavaScript error. File PDF/JSON đích có trong thư mục build. Kiểm tra này không phải kiểm tra site đã deploy.
+Run [Initialize coursework artifacts #2](https://github.com/dathuynh1108/CO5085-deep-learning/actions/runs/37900439749) đã hoàn tất thành công:
 
-Môi trường kiểm thử bản ZIP: Python 3.13.5, torch 2.10.0+cpu, torchvision 0.25.0+cpu, NumPy 2.3.5, Matplotlib 3.10.8, Pillow 12.3.0, pytest 9.0.2. PDF dùng fallback Liberation Serif/Sans vì môi trường này không có bản OpenType của font TeX Gyre mặc định.
+- Checksum của 36 file code, test, config, LaTeX và trang giới thiệu khớp với gói ZIP đã kiểm thử.
+- `python -m compileall -q common E1 E2 E3 scripts`: không lỗi cú pháp.
+- `python -m pytest -q`: **37 passed in 2.99s**.
+- Exporter xuất 20 cấu hình, **0 lượt train/test**. Các chỉ số chưa đo để `null` hoặc `--`.
+- XeLaTeX biên dịch hai lượt, tạo PDF **15 trang A4**. Đã tải bản PDF từ artifact và kiểm tra trang bìa sau khi chuẩn hóa logo sang RGB trên nền trắng. Log cuối không có cảnh báo overfull box hoặc ký tự thiếu; còn một underfull box ở URL tài liệu tham khảo và cảnh báo microtype không ảnh hưởng nội dung.
+- `scripts/build_site.py` dựng được trang, PDF và JSON trong cùng thư mục phát hành.
+- Đề E1–E3 tải lại từ bản cố định trong repo tham khảo, được kiểm tra SHA256 trùng file giảng viên đã cung cấp. Không lấy code hoặc kết quả bài mẫu.
+- PDF, bảng sinh tự động và đề gốc đã được commit lên nhánh `main` trong commit `dfe609850b3b15ddd23fabffafffa9c81016da6f`.
 
-## GitHub
+Môi trường CI: Ubuntu 24.04, Python 3.12.15, torch 2.10.0+cpu, torchvision 0.25.0+cpu. Các test dùng tensor hoặc JSON/checkpoint fixture, không chạy huấn luyện với dataset thật. Workflow khởi tạo đã được bỏ sau khi hoàn tất; repo giữ các workflow CPU unit tests, Build report và Pages.
 
-Repository đích là `dathuynh1108/CO5085-deep-learning`. Kết quả CI và lần triển khai Pages được ghi trong tab Actions; không coi kiểm tra offline là bằng chứng Pages đang hoạt động. Workflow build báo cáo chỉ biên dịch LaTeX, không huấn luyện mô hình.
+## Kiểm tra bản ZIP trước khi đưa lên GitHub
+
+Đã chạy lại đủ 37 test trên CPU và kiểm tra cú pháp. PDF đã được render để xem bìa, mục lục, bảng và công thức. Trang giới thiệu đã được xem bằng Chromium ở 1440×1000 và 390×844: không tràn ngang, không JavaScript error. Kiểm tra offline này không phải bằng chứng site đã deploy; trạng thái Pages nằm trong tab Actions.
 
 ## Chưa thực hiện
 
