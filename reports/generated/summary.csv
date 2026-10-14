@@ -1,21 +1,21 @@
 id,label,exercise,group,parameters,n_train_runs,n_test_runs,train_seeds,test_seeds,validation_accuracy_mean,test_accuracy_mean,test_accuracy_std,test_macro_f1_mean,median_train_seconds_mean,mixed_timing_environments
-e1_softmax,Softmax,E1,required,7850,0,0,,,,,,,,False
-e1_mlp,MLP,E1,required,235146,0,0,,,,,,,,False
-e1_cnn,CNN,E1,required,421738,0,0,,,,,,,,False
-e2_patches_manual,patches / manual,E2,required,71946,0,0,,,,,,,,False
-e2_patches_torch,patches / torch,E2,required,71946,0,0,,,,,,,,False
-e2_rows_manual,rows / manual,E2,required,71370,0,0,,,,,,,,False
-e2_rows_torch,rows / torch,E2,required,71370,0,0,,,,,,,,False
-e2_cnn_manual,cnn / manual,E2,required,89770,0,0,,,,,,,,False
-e2_cnn_torch,cnn / torch,E2,required,89770,0,0,,,,,,,,False
-e3_lstm_rows,LSTM / rows,E3,required,82186,0,0,,,,,,,,False
-e3_gru_rows,GRU / rows,E3,required,61962,0,0,,,,,,,,False
-e3_lstm_patches,LSTM / patches,E3,required,76042,0,0,,,,,,,,False
-e3_gru_patches,GRU / patches,E3,required,57354,0,0,,,,,,,,False
-e3_lstm_rows_orth_init,LSTM + orthogonal init,E3,improvement,82186,0,0,,,,,,,,False
-e3_lstm_rows_orth_reg,LSTM + orthogonal init/reg,E3,improvement,82186,0,0,,,,,,,,False
-e3_lstm_rows_chrono,LSTM + chrono bias,E3,improvement,82186,0,0,,,,,,,,False
-e3_lstm_rows_mean,LSTM + mean pooling,E3,improvement,82186,0,0,,,,,,,,False
-e3_lstm_rows_combined,LSTM combined,E3,improvement,82186,0,0,,,,,,,,False
-e3_lstm_rows_no_reg,Combined without regularizer,E3,improvement,82186,0,0,,,,,,,,False
-e3_lstm_rows_no_mean,Combined without mean pooling,E3,improvement,82186,0,0,,,,,,,,False
+e1_softmax,Softmax,E1,required,7850,3,3,"42,43,44","42,43,44",0.8597777777777778,0.8451,0.0014933184523068107,0.8436284026823173,1.5119657100488741,False
+e1_mlp,MLP,E1,required,235146,3,3,"42,43,44","42,43,44",0.9102222222222223,0.8988,0.0014422205101856061,0.8985010598930356,1.665163383508722,False
+e1_cnn,CNN,E1,required,421738,3,3,"42,43,44","42,43,44",0.9302777777777778,0.9268666666666667,0.0015275252316519481,0.9266888863221591,1.9673629558334749,False
+e2_patches_manual,patches / manual,E2,required,71946,3,3,"42,43,44","42,43,44",0.8702777777777778,0.8592666666666666,0.00595343038368078,0.8590012694974996,4.523869672169288,False
+e2_patches_torch,patches / torch,E2,required,71946,3,3,"42,43,44","42,43,44",0.8709444444444444,0.8602333333333334,0.003663786747797043,0.8600941890200995,4.460018866385023,False
+e2_rows_manual,rows / manual,E2,required,71370,3,3,"42,43,44","42,43,44",0.8861111111111111,0.8792,0.00026457513110642993,0.8787235490883579,4.927913688123226,False
+e2_rows_torch,rows / torch,E2,required,71370,3,3,"42,43,44","42,43,44",0.8860555555555555,0.8786333333333334,0.0001527525231652263,0.8781424629865938,4.597420036792755,False
+e2_cnn_manual,cnn / manual,E2,required,89770,3,3,"42,43,44","42,43,44",0.8926111111111111,0.8865666666666667,0.004042688874169438,0.886517368150584,5.101375345140696,False
+e2_cnn_torch,cnn / torch,E2,required,89770,3,3,"42,43,44","42,43,44",0.894,0.8863333333333333,0.003477547028198676,0.8862499933633571,4.761513985072573,False
+e3_lstm_rows,LSTM / rows,E3,required,82186,3,3,"42,43,44","42,43,44",0.9031666666666667,0.8957666666666667,0.0004509249752822972,0.8956046845949841,1.7695743534713984,False
+e3_gru_rows,GRU / rows,E3,required,61962,3,3,"42,43,44","42,43,44",0.9105,0.9006666666666666,0.0016862186493255451,0.9005594826644544,1.7281007934361696,False
+e3_lstm_patches,LSTM / patches,E3,required,76042,3,3,"42,43,44","42,43,44",0.8882777777777778,0.8765,0.003758989225842476,0.8761899701996979,2.031745352471868,False
+e3_gru_patches,GRU / patches,E3,required,57354,3,3,"42,43,44","42,43,44",0.8897222222222222,0.8799666666666667,0.0023437861108329618,0.8794401656454658,1.9641548761477072,False
+e3_lstm_rows_orth_init,LSTM + orthogonal init,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.902,0.8935,0.0017349351572897866,0.8931493955648143,1.7683189896245797,False
+e3_lstm_rows_orth_reg,LSTM + orthogonal init/reg,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.9006666666666666,0.8947,0.0023643180835073475,0.8944790434221948,3.05124354797105,False
+e3_lstm_rows_chrono,LSTM + chrono bias,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.9022777777777777,0.8928333333333334,0.0018583146486355004,0.8926619562041698,1.7764726653695107,False
+e3_lstm_rows_mean,LSTM + mean pooling,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.8927777777777778,0.8831666666666667,0.000850490054811549,0.8829896104005734,1.7606917340308428,False
+e3_lstm_rows_combined,LSTM combined,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.8916666666666667,0.8791666666666667,0.002919474838619666,0.8790942035735329,2.9709130165477595,False
+e3_lstm_rows_no_reg,Combined without regularizer,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.8907222222222222,0.8790666666666667,0.0031659648345067548,0.8789882726432878,1.7882518265396357,False
+e3_lstm_rows_no_mean,Combined without mean pooling,E3,improvement,82186,3,3,"42,43,44","42,43,44",0.9016666666666667,0.8930333333333333,0.002345918441321693,0.8929831962953871,3.02579426455001,False

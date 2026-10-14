@@ -1,0 +1,224 @@
+{
+  "accuracy": 0.8835,
+  "macro_f1": 0.8830139556291753,
+  "n_samples": 10000,
+  "confusion_matrix": [
+    [
+      853,
+      0,
+      20,
+      34,
+      2,
+      2,
+      85,
+      0,
+      4,
+      0
+    ],
+    [
+      7,
+      962,
+      4,
+      18,
+      2,
+      0,
+      6,
+      0,
+      1,
+      0
+    ],
+    [
+      17,
+      1,
+      807,
+      14,
+      85,
+      0,
+      73,
+      0,
+      3,
+      0
+    ],
+    [
+      26,
+      7,
+      14,
+      909,
+      22,
+      0,
+      20,
+      0,
+      2,
+      0
+    ],
+    [
+      1,
+      0,
+      104,
+      36,
+      780,
+      0,
+      77,
+      0,
+      2,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      975,
+      0,
+      14,
+      1,
+      9
+    ],
+    [
+      149,
+      2,
+      82,
+      34,
+      61,
+      0,
+      662,
+      0,
+      10,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      20,
+      0,
+      947,
+      1,
+      32
+    ],
+    [
+      2,
+      0,
+      4,
+      5,
+      1,
+      2,
+      6,
+      4,
+      975,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      13,
+      1,
+      21,
+      0,
+      965
+    ]
+  ],
+  "per_class": [
+    {
+      "class_id": 0,
+      "precision": 0.8077651515151515,
+      "recall": 0.853,
+      "f1": 0.8297665369649804,
+      "support": 1000
+    },
+    {
+      "class_id": 1,
+      "precision": 0.9897119341563786,
+      "recall": 0.962,
+      "f1": 0.975659229208925,
+      "support": 1000
+    },
+    {
+      "class_id": 2,
+      "precision": 0.7797101449275362,
+      "recall": 0.807,
+      "f1": 0.7931203931203931,
+      "support": 1000
+    },
+    {
+      "class_id": 3,
+      "precision": 0.8657142857142858,
+      "recall": 0.909,
+      "f1": 0.8868292682926829,
+      "support": 1000
+    },
+    {
+      "class_id": 4,
+      "precision": 0.8184679958027282,
+      "recall": 0.78,
+      "f1": 0.7987711213517665,
+      "support": 1000
+    },
+    {
+      "class_id": 5,
+      "precision": 0.9634387351778656,
+      "recall": 0.975,
+      "f1": 0.9691848906560636,
+      "support": 1000
+    },
+    {
+      "class_id": 6,
+      "precision": 0.7118279569892473,
+      "recall": 0.662,
+      "f1": 0.6860103626943005,
+      "support": 1000
+    },
+    {
+      "class_id": 7,
+      "precision": 0.960446247464503,
+      "recall": 0.947,
+      "f1": 0.9536757301107754,
+      "support": 1000
+    },
+    {
+      "class_id": 8,
+      "precision": 0.975975975975976,
+      "recall": 0.975,
+      "f1": 0.9754877438719359,
+      "support": 1000
+    },
+    {
+      "class_id": 9,
+      "precision": 0.958291956305859,
+      "recall": 0.965,
+      "f1": 0.9616342800199302,
+      "support": 1000
+    }
+  ],
+  "cross_entropy": 0.32846240778565405,
+  "split": "test",
+  "signature": "ee6859f7f440e846e0b68622c73520ad31573722564c6e8fd8b017a426c1b427",
+  "model_sha256": "d92e2d9c884d9f6a569ce834554ad2c13d3eea6c2c93744b4b88f33de5d387c1",
+  "dataset_sha256": "8cfb46765774cf29aaacac5f6ce39b6c59479c0007048315a89e1e739ea9ec1e",
+  "seed": 42,
+  "best_epoch": 24,
+  "inference_images_per_second": 97441.54691833002,
+  "benchmark_excluded_initial_batches": 2,
+  "benchmark_includes_transfer": false,
+  "batch_size": 256,
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-181-generic-x86_64-with-glibc2.39",
+    "torch": "2.10.0+cu130",
+    "cuda_runtime": "13.0",
+    "cudnn": 91501,
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "git_commit": null,
+    "git_dirty": null,
+    "torch_num_threads": 4,
+    "tf32_matmul": false,
+    "tf32_cudnn": false
+  }
+}

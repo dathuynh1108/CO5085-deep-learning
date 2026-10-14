@@ -1,0 +1,17 @@
+Các kết quả được đo với ba seed 42, 43 và 44 trên NVIDIA GeForce RTX 5090; PyTorch 2.10.0+cu130 và CUDA runtime 13.0. Chênh lệch giữa hai cấu hình được tính theo cặp cùng seed, rồi lấy trung bình và SD.
+
+Softmax: test accuracy $(84.51 \pm 0.15)\%$, macro-F1 0.8436; CE cuối epoch train/validation trung bình 0.3663/0.4095.
+
+MLP: test accuracy $(89.88 \pm 0.14)\%$, macro-F1 0.8985; CE cuối epoch train/validation trung bình 0.1371/0.2832.
+
+CNN: test accuracy $(92.69 \pm 0.15)\%$, macro-F1 0.9267; CE cuối epoch train/validation trung bình 0.0174/0.2969.
+
+MLP trừ Softmax: +5.37 $\pm$ 0.29 điểm phần trăm.
+
+CNN trừ MLP: +2.81 $\pm$ 0.01 điểm phần trăm.
+
+MLP thêm biểu diễn phi tuyến; CNN giữ cấu trúc hai chiều, chia sẻ kernel và pooling. Xếp hạng đã đo phù hợp với lợi ích của các biểu diễn này trên ảnh nhỏ. Khác biệt về số tham số và regularization cũng góp phần vào kết quả của từng kiến trúc.
+
+CNN có khoảng cách train/validation CE cuối kỳ lớn dù test accuracy cao nhất E1. Đường CE và error gallery gợi ý overfit hoặc dự đoán sai quá tự tin; calibration chưa được khảo sát riêng trong bài này. Test dùng checkpoint được validation chọn, còn các CE cuối kỳ ở trên mô tả epoch 30.
+
+Ở CNN seed 42, lỗi nhiều nhất theo một chiều là Shirt thành T-shirt/top: 90 ảnh.

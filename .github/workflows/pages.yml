@@ -2,7 +2,7 @@ name: Pages
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'reports/**', 'scripts/build_site.py', '.github/workflows/pages.yml']
+    paths: ['site/**', 'reports/**', 'A1/reports/**', 'scripts/build_site.py', '.github/workflows/pages.yml']
   workflow_dispatch:
   workflow_run:
     workflows: ['Build report']

@@ -1,0 +1,15 @@
+Khởi tạo trực giao so với baseline làm thay đổi accuracy -0.23 $\pm$ 0.13 điểm phần trăm. Thêm penalty vào bản khởi tạo trực giao thay đổi +0.12 $\pm$ 0.13 điểm phần trăm, trong khi thời gian/epoch tăng từ 1.77s lên 3.05s.
+
+LSTM + chrono bias so với baseline: -0.29 $\pm$ 0.19 điểm phần trăm.
+
+LSTM + mean pooling so với baseline: -1.26 $\pm$ 0.11 điểm phần trăm.
+
+Tổ hợp trừ baseline: -1.66 $\pm$ 0.30 điểm phần trăm. Bỏ mean pooling khỏi tổ hợp thay đổi accuracy +1.39 $\pm$ 0.52 điểm phần trăm; bỏ regularizer thay đổi -0.01 $\pm$ 0.35 điểm phần trăm và giảm thời gian/epoch 39.8\% theo các median đã đo. Mean pooling có ảnh hưởng rõ hơn trong hai ablation này; phần tính penalty chiếm thêm thời gian dù chênh lệch accuracy khi bỏ penalty khá nhỏ.
+
+Cả bảy biến thể mở rộng có test accuracy trung bình thấp hơn baseline. Trong thiết lập này, các thay đổi chưa mang lại cải thiện accuracy. Mean pooling gộp đồng đều cả những trạng thái đầu chuỗi có ít ngữ cảnh; việc trộn các trạng thái này có thể làm loãng biểu diễn trước head.
+
+LSTM / rows trên 256 ảnh validation: original accuracy 89.71\%; reversed accuracy 20.96\%; permuted accuracy 44.53\%. Hidden gradient norm trung bình tại bước 1/bước 28 là 0.293/0.304.
+
+LSTM combined trên 256 ảnh validation: original accuracy 88.80\%; reversed accuracy 30.73\%; permuted accuracy 42.97\%. Hidden gradient norm trung bình tại bước 1/bước 28 là 0.34/0.0192.
+
+Accuracy giảm khi đảo hoặc tráo thứ tự cho thấy checkpoint nhạy với thứ tự không gian. Mean pooling tạo đường gradient trực tiếp từ head tới mọi trạng thái hidden, trong khi last pooling nối head với trạng thái cuối; khác biệt này giải thích một phần hình dạng đường gradient của hai mô hình.

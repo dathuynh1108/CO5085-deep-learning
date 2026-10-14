@@ -24,11 +24,27 @@ Nguồn: `exercise-vne.pdf`, 6 trang, học kỳ 261. Số trang dưới đây t
 
 Phần mở rộng E3 là thí nghiệm thêm, không thay thế các mục bắt buộc. Có baseline, thay đổi từng thành phần và hai ablation của tổ hợp. Hiệu quả chỉ được kết luận sau khi chạy.
 
-## Phần chưa thể hoàn tất
+## Đề A1/A2 được bổ sung ngày 14/10/2026
 
-Chưa chạy huấn luyện, đánh giá hay đo thời gian trên GPU. Vì vậy các tiêu chí về **số liệu và phân tích kết quả thật** còn chờ, dù code xuất artifact đã có. Chưa có trang Pages live.
+Nguồn A1: `assignments/assignment1-vne.pdf` (5 trang cả bìa), được người học cung cấp. A1 có code riêng ở `A1/`, báo cáo riêng `A1/reports/report.tex` → `A1/reports/assignment1.pdf`.
 
-Hai tên `assignment/assignment1-vne.pdf` và `assignment/assignment2-vne.pdf` được nhìn thấy trong cây repo tham khảo, nhưng chưa đọc được nội dung. Hai file này không có trong bộ attachment nhận được. A1/A2 chưa có code hoặc báo cáo; cần đề thật trước khi chọn mô hình, dataset, giới hạn pretrained và cách đánh giá.
+| Tiêu chí A1 | Protocol triển khai | Evidence sau chạy |
+|---|---|---|
+| Tập công khai, khó hơn E1; không MNIST/Fashion-MNIST/CIFAR-10 | CIFAR-100 đầy đủ, 100 lớp; 45.000 train/5.000 validation/10.000 test; split phân tầng seed 2026 | Metadata nguồn/split và chỉ số ảnh; không dùng subset |
+| Nêu license, split, lý do chọn | Nguồn tác giả Toronto công khai CIFAR-100; dataset card của uoft-cs ghi license unknown; không tự gán MIT/CC0 và không đưa raw data lên Git | A1 README và chương dữ liệu của báo cáo ghi rõ tình trạng license |
+| CNN và Transformer | ResNet18 và Swin-T từ torchvision | Config/source/model fingerprint |
+| Scratch vs pretrained cùng split | Cả hai họ có một scratch và ba pretrained IMAGENET1K_V1 | Tám config × ba seed |
+| Freeze backbone / một phần / toàn bộ fine-tune | Head-only; layer4+head với ResNet / stage cuối+norm+head với Swin; full | Danh sách tham số trainable, tests freeze và running statistics |
+| Accuracy/F1, thời gian, trainable params, lỗi | Checkpoint theo validation, test độc lập sau khóa protocol; BF16 cùng chế độ A1, ảnh resize 96×96 | Summary, curves, confusion, per-class metrics, prediction/errors |
+| A1.1 và A1.2 | A1.1: dataset + protocol; A1.2: đủ so sánh và phân tích thật | Report riêng và trang A1 riêng trong bản build Pages |
+
+Giới hạn đã công bố trước chạy: ảnh gốc CIFAR-100 chỉ 32×32, resize không tạo thêm thông tin; 96×96 khác kích thước 224×224 phổ biến của pretrained; ngân sách 20 epoch không chứng minh scratch đã hội tụ. Báo cáo so sánh dưới setting này, không khái quát thành kiến trúc luôn tốt hơn.
+
+A2: đã lưu đề gốc nhưng chưa chọn chủ đề/paper; **chưa triển khai** theo yêu cầu người học. Không tạo report A2 giả hoặc chọn paper thay người học.
+
+## Trạng thái thực nghiệm
+
+Đã hoàn tất60/60 lượt E1–E3, mỗi lượt30 epoch, và24/24 lượt A1, mỗi lượt20 epoch; tất cả đã đánh giá held-out test sau khi cố định protocol. Manifest, source/data/checkpoint hashes và lịch sử sao lưu được ghi trong `docs/TRAINING_EXECUTION.md`, `reports/generated/` và `A1/reports/generated/`.
 
 ## Mốc trong đề
 

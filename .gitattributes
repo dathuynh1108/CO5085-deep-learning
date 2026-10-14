@@ -4,3 +4,6 @@
 *.tex text eol=lf
 *.pdf binary
 *.png binary
+# Keep measured CSV bytes intact so evidence SHA256 survives Git checkout.
+reports/generated/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+A1/reports/generated/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

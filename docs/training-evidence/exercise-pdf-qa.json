@@ -1,0 +1,23 @@
+{
+  "checked_utc": "2026-10-14T17:37:53.228473+00:00",
+  "pdf_sha256": "857a633fdecaca4298cb0b245cd4dfa1cff4c89043bb3a4fd79f8cde9ec0db5e",
+  "pages": 22,
+  "exercise_train_runs": 60,
+  "exercise_test_runs": 60,
+  "all_pages_contact_sheet_reviewed": true,
+  "full_size_pages_reviewed": [
+    18,
+    21
+  ],
+  "checks": {
+    "table_clipping": "none observed",
+    "text_overlap": "none observed",
+    "orphan_final_line": "fixed by shortening AI acknowledgment; final 2 pages visually checked",
+    "duplicate_page_anchor": "fixed; build log contains no duplicate page warnings",
+    "overfull_boxes": "none in latest build",
+    "style": "Revised at user request: neutral academic prose and one AI report attachment sentence."
+  },
+  "limitations": "A1 report is still protocol-only. Full checkpoint backup/deletion and final repository push remain pending. Recheck this PDF only if content/layout changes.",
+  "sha256": "4fd826f51685491ab3fe0406ed3bd29d6c4b86edd70d27081e647c0e208868e7",
+  "final_qa": "docs/training-evidence/final-pdf-qa.json"
+}

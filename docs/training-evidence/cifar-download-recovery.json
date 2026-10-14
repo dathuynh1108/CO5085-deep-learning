@@ -1,0 +1,15 @@
+{
+  "source": "https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz",
+  "expected_md5": "eb9058c3a382ffc7106e4002c42a8d85",
+  "chunk_bytes": 524288,
+  "started_utc": "2026-10-14T17:18:53.106915+00:00",
+  "state": "verified",
+  "archive_bytes": 169001437,
+  "initial_unverified_prefix_sha256": "be794ca11b0cd5ced2528008da6e72430fb0594bf41eadc11519f0633847e1ff",
+  "initial_bytes": 13336000,
+  "bytes": 169001437,
+  "updated_utc": "2026-10-14T18:14:54.649793+00:00",
+  "actual_md5": "eb9058c3a382ffc7106e4002c42a8d85",
+  "sha256": "85cd44d02ba6437773c5bbd22e183051d648de2e7d6b014e1ef29b855ba677a7",
+  "finished_utc": "2026-10-14T18:14:55.093002+00:00"
+}

@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-14T21:36:28.249138+00:00",
+  "reports": {
+    "reports/exercises.pdf": {
+      "sha256": "4fd826f51685491ab3fe0406ed3bd29d6c4b86edd70d27081e647c0e208868e7",
+      "latex_sha256": "b3b3227e13c482916553e3db544ed97009c95dba5491b35882dc7a000e349faa",
+      "pages": 22,
+      "AI_disclosure_sentences": 1
+    },
+    "A1/reports/assignment1.pdf": {
+      "sha256": "41505d7d0a9f5d67a67b8a3a79316f705482d9bc5794c00677164c2b0c6a61e2",
+      "latex_sha256": "59438d0e2797cdac99896f527ba1e45c2a969688096011f86e673436ebd2bb7c",
+      "pages": 16,
+      "AI_disclosure_sentences": 1
+    }
+  },
+  "style": "Neutral Vietnamese academic prose; no personal pronouns or integrity lectures; separate AI-use attachment.",
+  "rendered_all_pages": true,
+  "detail_pages": {
+    "exercises": [
+      18
+    ],
+    "A1": [
+      8,
+      9,
+      10,
+      13,
+      15
+    ]
+  },
+  "build": "Tectonic; no overfull boxes or compilation errors",
+  "measured_coverage": {
+    "exercises": [
+      60,
+      60
+    ],
+    "A1": [
+      24,
+      24
+    ]
+  },
+  "visually_inspected": true,
+  "visual_result": "No clipping, overlap or unreadable table/figure labels; all pages reviewed in contact sheets and selected pages at full size."
+}

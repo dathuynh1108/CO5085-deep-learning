@@ -5,7 +5,9 @@ Bài làm cá nhân. Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh.
 
 Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/MLP/CNN, attention với nhiều cách chia token, và LSTM/GRU khi biểu diễn ảnh thành chuỗi. Tất cả mô hình được khởi tạo mới; không tải trọng số pretrained.
 
-**Trạng thái:** mã nguồn và bản thảo báo cáo đã có; chưa tải dữ liệu, chưa huấn luyện và chưa có kết quả thực nghiệm. Số tham số trong báo cáo được đếm từ kiến trúc, không phải số liệu train. Phần A1/A2 chưa triển khai vì chưa có nội dung hai đề tương ứng trong bộ tài liệu được cung cấp. Đây chưa phải bản nộp cuối cùng.
+**Kết quả ngày 15/10/2026:** E1–E3 hoàn tất 60/60 lượt train và test; A1 hoàn tất 24/24 lượt train và test trên RTX 5090. CNN E1 đạt 92,69% ±0,15%; Swin-T full A1 đạt 86,63% ±0,22% test accuracy (trung bình ±SD mẫu, ba seed). A2 chờ chọn paper. Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).
+
+A1 có tám cấu hình ResNet18/Swin-T × scratch/head/partial/full, ba seed, 20 epoch; dùng toàn bộ CIFAR-100 với split45.000/5.000/10.000. Code ở [A1](A1/README.md), báo cáo tách riêng [A1 LaTeX](A1/reports/report.tex) và [A1 PDF](A1/reports/assignment1.pdf). PDF E1–E3 không chứa assignment.
 
 [Báo cáo PDF](reports/exercises.pdf) · [LaTeX](reports/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
 
@@ -18,9 +20,9 @@ Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/ML
 | E3 | LSTM và GRU; chuỗi hàng hoặc patch; đối chiếu lại MLP/CNN của E1 |
 | Mở rộng E3 | Khởi tạo trực giao, phạt sai lệch trực giao, bias cổng nhớ theo độ dài chuỗi, mean pooling và ablation |
 
-Có 13 cấu hình bắt buộc và 7 cấu hình mở rộng. Chạy đủ ba seed 42, 43, 44 tương ứng 60 lượt huấn luyện. Cấu hình mặc định là 30 epoch/lượt, không early stopping. Chưa có ước lượng thời gian vì chưa đo trên GPU đích.
+Có 13 cấu hình bắt buộc và 7 cấu hình mở rộng, mỗi cấu hình chạy đủ ba seed 42,43,44 và 30 epoch, không early stopping. Bảng thời gian thực đo, môi trường và phạm vi phép đo nằm trong báo cáo.
 
-Phần mở rộng không phải một phương pháp mới được chứng minh tốt hơn. Đây là một giả thuyết cần kiểm tra: thay đổi khởi tạo và đường đọc trạng thái có giúp LSTM học ổn định hơn trên chuỗi ảnh ngắn hay không. Báo cáo phân biệt rõ regularization trực giao mềm với tối ưu có ràng buộc trên đa tạp.
+Phần mở rộng kiểm tra ảnh hưởng của khởi tạo và đường đọc trạng thái đối với LSTM trên chuỗi ảnh ngắn. Cả bảy biến thể có test accuracy trung bình thấp hơn baseline LSTM rows trong thiết lập đã đo. Báo cáo phân tích các ablation và phân biệt regularization trực giao mềm với tối ưu có ràng buộc trên đa tạp.
 
 ## Môi trường
 
@@ -38,16 +40,16 @@ python -m pip install -r requirements.txt -r requirements/dev.txt
 
 File CUDA ghim `torch==2.10.0`, `torchvision==0.25.0`, wheel CUDA 13.0. Đây là cặp phiên bản từ [hướng dẫn PyTorch](https://pytorch.org/get-started/previous-versions/), không phải yêu cầu dùng bản mới nhất. Driver NVIDIA phải hỗ trợ wheel đã chọn. Với CUDA 12.8, cài cùng cặp phiên bản từ index `https://download.pytorch.org/whl/cu128`; không trộn wheel CPU và CUDA. Chạy CPU thì thay file torch bằng `requirements/torch-cpu.txt`.
 
-Mã sử dụng FP32, tắt TF32, chưa bật AMP hoặc `torch.compile`. Lựa chọn này giúp phép so sánh giữa các cách hiện thực dễ kiểm soát hơn. Unit test đã chạy trên PyTorch 2.10.0+cpu / torchvision 0.25.0+cpu; chưa xác nhận một lượt train hoàn chỉnh trên CUDA.
+E1–E3 sử dụng FP32, tắt TF32, AMP và compile; A1 sử dụng BF16 autocast với tham số/optimizer FP32. Cả 84 lượt train và test đã chạy trên PyTorch 2.10.0+cu130, torchvision 0.25.0+cu130, CUDA 13, RTX 5090, workers 8 và 4 CPU threads. Có 56 kiểm thử số học/protocol đã pass trên GPU trước lượt train; lịch sử vận hành và checksum ở [TRAINING_EXECUTION.md](docs/TRAINING_EXECUTION.md).
 
 ## Chạy thí nghiệm
 
 Chạy từ thư mục gốc repo. Lệnh liệt kê không đọc dữ liệu:
 
 ```bash
-python -m scripts.run_suite --group all --seeds 42 43 44 --list
+python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --list
 python -m scripts.prepare_data --data-root data
-python -m scripts.run_suite --group all --seeds 42 43 44 --device cuda --num-workers 4
+python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --device cuda --num-workers 8
 ```
 
 Dữ liệu được lấy bằng loader torchvision, ưu tiên HTTPS từ repo chính thức của Fashion-MNIST và giữ kiểm tra checksum. Train/validation có 54.000/6.000 ảnh; test giữ nguyên 10.000 ảnh. Mean/std chỉ tính trên phần train. Split seed cố định là 2026, độc lập với seed khởi tạo mô hình.
@@ -66,18 +68,21 @@ python -m E3.train --experiment e3_lstm_rows_combined --seed 42 --device cuda
 Checkpoint được chọn bằng validation accuracy, hòa thì xét validation cross-entropy. **Không dùng test để chọn mô hình hoặc chỉnh siêu tham số.** Sau khi chốt thiết kế và hoàn tất train:
 
 ```bash
-python -m scripts.run_suite --group all --seeds 42 43 44 --phase test --confirm-test --device cuda
+python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
 python -m E3.diagnose --run runs/e3_lstm_rows/seed_42 --device cuda
 python -m E3.diagnose --run runs/e3_lstm_rows_combined/seed_42 --device cuda
 python -m scripts.export_report
+python -m A1.export_report
+python -m scripts.write_findings
 python -m scripts.build_report
+python -m scripts.build_report --report-root A1/reports --jobname assignment1
 ```
 
 `E3.diagnose` chỉ dùng validation, không cập nhật trọng số. Nó đo gradient trên các trạng thái hồi quy thật khi unroll cùng trọng số, không lấy gradient của tensor output fused rồi gọi đó là gradient BPTT.
 
-Bước build PDF cần XeLaTeX: TeX Live hoặc MiKTeX với font TeX Gyre Termes (hoặc Liberation Serif/Sans làm fallback), các gói `fontspec`, `geometry`, `titlesec`, `fancyhdr`, `booktabs`, `tabularx`, `longtable`, `amsmath`, `hyperref`. Trên Ubuntu có thể cài `texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-liberation fonts-dejavu-core`.
+Bước build PDF dùng XeLaTeX hoặc Tectonic với font TeX Gyre Termes (hoặc Liberation Serif/Sans), các gói `fontspec`, `geometry`, `titlesec`, `fancyhdr`, `booktabs`, `tabularx`, `longtable`, `amsmath`, `hyperref`. Trên Ubuntu có thể cài `texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-liberation fonts-dejavu-core`. Các bảng đã commit đủ để build PDF mà không tải dữ liệu hoặc checkpoint.
 
-Bảng và hình tự cập nhật từ log; phần nhận xét vẫn phải đọc và viết lại theo kết quả thật. Không có code sinh nhận xét thành tích hoặc tự điền accuracy. Một seed không có độ lệch chuẩn; từ hai seed mới tính sample standard deviation. Các ô chưa đo là `null` trong JSON và `--` trong PDF.
+Bảng và hình được xuất từ log đã kiểm tra provenance. `scripts.write_findings` tính chênh lệch theo cặp seed và ghi phân tích từ đủ 60+24 lượt train/test, sau đó báo cáo được rà soát cùng đường cong và ma trận lỗi. SD là độ lệch chuẩn mẫu qua ba seed. Các kết quả thấp, bao gồm Swin-T scratch, được giữ trong bảng và thảo luận giới hạn.
 
 ## Cấu trúc và kiểm tra
 
@@ -85,6 +90,7 @@ Bảng và hình tự cập nhật từ log; phần nhận xét vẫn phải đ�
 E1/, E2/, E3/       Mô hình, entry point và chẩn đoán hồi quy
 common/             Split, training loop, checkpoint, evaluation, plots
 configs/            20 cấu hình thí nghiệm
+A1/                 Mã và báo cáo riêng A1
 scripts/            Chạy suite, xuất kết quả, build PDF, chuẩn bị Pages
 reports/            Một báo cáo E1–E3, mã LaTeX và kết quả được xuất
 site/               Trang giới thiệu cho GitHub Pages
@@ -94,14 +100,14 @@ docs/               Mapping yêu cầu, thiết kế thí nghiệm, hướng d�
 
 ```bash
 python -m pytest -q
-python -m compileall -q common E1 E2 E3 scripts
+python -m compileall -q common E1 E2 E3 A1 scripts
 ```
 
 Kiểm thử bao gồm forward/gradient của MSA tự viết so với PyTorch, thứ tự token, unroll LSTM/GRU, gradient của regularizer, split, resume shuffle, khóa thư mục run và xuất báo cáo khi chưa có kết quả. Chúng không thay thế kiểm chứng train end-to-end trên máy đích.
 
 ## GitHub Pages
 
-Trang giới thiệu được dựng từ `site/`, kèm PDF tại `reports/exercises.pdf`. Workflow `Pages` chỉ xuất trang và báo cáo đang có; không train mô hình.
+Trang giới thiệu được dựng từ `site/`, kèm hai PDF riêng và JSON kết quả. [Trang chung](https://dathuynh1108.github.io/CO5085-deep-learning/) liên kết E1–E3 và [trang A1](https://dathuynh1108.github.io/CO5085-deep-learning/a1.html). Workflow Pages xuất các artifact đã commit.
 
 Trong **Settings → Pages**, chọn **Source: GitHub Actions**. Sau đó chạy workflow `Pages` hoặc push thay đổi của trang/báo cáo lên `main`. Có thể xem trước bằng:
 
@@ -114,6 +120,6 @@ Repo đã được tạo; không cần chạy `scripts/publish_github.py`. Scrip
 
 ## Nguồn và cách sử dụng
 
-Yêu cầu thực hiện lấy từ `exercise-vne.pdf` của môn học. Repo tham khảo `dangtai111325/CO5085` chỉ được xem để tham khảo cách tổ chức thư mục; không dùng code, hình hoặc số liệu thực nghiệm của repo đó. Bố cục LaTeX dựa trên mẫu Diffusion Maps được cung cấp; nội dung báo cáo viết riêng cho E1–E3.
+Yêu cầu thực hiện lấy từ các PDF của môn học trong `assignments/`. Repo tham khảo `dangtai111325/CO5085` chỉ được xem về cách tổ chức thư mục; các bảng, hình và kết luận thực nghiệm của bài này được tạo từ lượt chạy riêng.
 
-Bộ mã và bản thảo ban đầu có mức hỗ trợ AI đáng kể. Đề môn học chỉ cho phép AI hỗ trợ và yêu cầu khai báo; do đó không nên nộp nguyên trạng như một sản phẩm tự thực hiện. Người học cần tự kiểm tra, sửa và giải thích được cách làm, chạy thí nghiệm thật, viết nhận xét của mình và làm rõ mức hỗ trợ với giảng viên. Chi tiết ở [Academic integrity](docs/ACADEMIC_INTEGRITY.md).
+Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).

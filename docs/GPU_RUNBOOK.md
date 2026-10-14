@@ -1,10 +1,10 @@
-# Bàn giao chạy trên máy GPU
+# Quy trình chạy trên máy GPU
 
-Mục tiêu là chạy đúng các cấu hình đã định, giữ dữ liệu và kết quả có thể kiểm tra lại. Bộ mã ban đầu chưa train. Không lấy accuracy của bài khác hoặc benchmark công khai để điền vào báo cáo.
+Lượt thực nghiệm đã hoàn tất 60 cấu hình/seed E1–E3 và 24 cấu hình/seed A1. Tài liệu này mô tả quy trình tái lập; trạng thái sao lưu và checksum nằm trong docs/TRAINING_EXECUTION.md.
 
 ## Trước lượt chạy chính
 
-Đọc `README.md`, `docs/EXPERIMENTS.md`, `docs/REQUIREMENTS.md`. Tạo venv riêng, cài đúng cặp torch/torchvision và kiểm tra driver. Không thay mô hình bằng model zoo, pretrained backbone, `Trainer`, `Lightning` hay `trainer.fit`.
+Đọc `README.md`, `docs/EXPERIMENTS.md`, `docs/REQUIREMENTS.md`. Tạo venv riêng, cài đúng cặp torch/torchvision và kiểm tra driver. Với E1–E3, không thay mô hình bằng model zoo hoặc pretrained backbone. Mọi phần dùng training loop trực tiếp, không `Trainer`, `Lightning` hay `trainer.fit`; A1 cho phép torchvision/pretrained theo đề riêng.
 
 Không cần chạy một batch thật để “preflight” theo yêu cầu của người học. Unit test thuần tensor không tải dữ liệu đã có và có thể chạy trước. Lượt đầu có thể chạy riêng E1 CNN đủ 30 epoch để kiểm chứng toàn quy trình, nhưng đó phải là một **run chính thức**, không giả làm benchmark toàn bộ. Khi chuyển sang suite, dùng `--resume` để không ghi đè run đã có.
 
@@ -12,7 +12,7 @@ Lệnh chuẩn chạy tuần tự trên một GPU:
 
 ```bash
 python -m scripts.prepare_data --data-root data
-python -m scripts.run_suite --group all --seeds 42 43 44 --device cuda --num-workers 4
+python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --device cuda --num-workers 8
 ```
 
 Windows native gặp vấn đề multiprocessing thì chọn `--num-workers 0` ngay từ đầu; giữ nhất quán khi đo thời gian. `--device cuda:0` chọn thiết bị cụ thể. Không chạy nhiều suite cùng ghi vào một `runs/`. `CUDA_VISIBLE_DEVICES` nên giữ nguyên khi resume.
@@ -32,7 +32,7 @@ Chạy lại cùng lệnh với `--resume`. Model, AdamW, cosine scheduler, shuf
 Mỗi epoch chỉ dùng train và validation. Chọn best bằng validation accuracy, hòa thì CE nhỏ hơn. Xem validation để phát hiện underfit/overfit và chọn hướng nghiên cứu; mọi thay đổi sau đó phải được ghi lại trước khi mở test.
 
 ```bash
-python -m scripts.run_suite --group all --seeds 42 43 44 --phase test --confirm-test --device cuda
+python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
 python -m E3.diagnose --run runs/e3_lstm_rows/seed_42 --device cuda
 python -m E3.diagnose --run runs/e3_lstm_rows_combined/seed_42 --device cuda
 ```
@@ -45,7 +45,10 @@ Mỗi run phải có `run.json`, `history.csv`, `best.pt`, `last.pt`, `metrics.j
 
 ```bash
 python -m scripts.export_report
+python -m A1.export_report
+python -m scripts.write_findings
 python -m scripts.build_report
+python -m scripts.build_report --report-root A1/reports --jobname assignment1
 python scripts/build_site.py
 ```
 
@@ -53,8 +56,18 @@ Exporter kiểm tra cùng split, code/config, seed, checkpoint hash và test dat
 
 Ảnh minh họa lấy từ seed nhỏ nhất, không chọn seed có test tốt nhất. Đường cong đối chiếu dùng seed chung nhỏ nhất. Hình thể hiện một seed không được gọi là trung bình ba seed. Bảng có phạm vi seed thực tế; không ghi “60 runs” nếu mới chạy một phần.
 
-Sau export, người học cần cập nhật các đoạn nhận xét: khoảng cách train/validation; cặp lớp dễ nhầm; accuracy so với params và thời gian; manual vs library; khác biệt tokenizer; kết quả ablation; giới hạn của chuỗi 28/49 bước. Nếu improvement không tốt hơn, giữ kết quả đó và giải thích thận trọng.
+Phần phân tích đối chiếu các nội dung: khoảng cách train/validation; cặp lớp dễ nhầm; accuracy so với params và thời gian; manual vs library; khác biệt tokenizer; kết quả ablation; giới hạn của chuỗi 28/49 bước. Nếu improvement không tốt hơn, giữ kết quả đó và giải thích thận trọng.
 
 Chỉ commit source, config, bảng/figures tổng hợp, PDF và log cần để tái lập. Không commit data/raw hoặc checkpoint nặng. Có thể lưu checkpoint ngoài Git và ghi checksum/đường dẫn được phép chia sẻ. Trước nộp cần mở lại PDF và các link Pages, kiểm tra bảng không bị tràn, không còn kết luận dự kiến viết như sự thật.
 
-A1/A2 nằm ngoài gói hiện tại; không tự điền nội dung hai bài này khi chưa có đề.
+A1 được bổ sung theo đề thật trong `assignments/assignment1-vne.pdf`. Code và báo cáo riêng ở `A1/`; xem `A1/README.md`. A2 đã có đề nhưng chờ người học chọn paper.
+
+## Pipeline Vast của lượt ngày14/10/2026
+
+`COURSE_PYTHON=/venv/main/bin/python bash scripts/train_coursework_gpu.sh` chạy E1–E3 rồi A1 trên một GPU, mỗi suite hoàn tất train trước phase held-out test. Log ở `logs/training.log`; shell ghi `coursework.exit` và chỉ ghi `coursework.complete` khi cả report/site đã build thành công. Không sửa source/config đã hash khi suite còn chạy.
+
+Lượt Vast dùng `scripts.run_exercises_isolated` cho E1–E3: một child process cho mỗi config/seed ở cả train và test, cùng entrypoint và resume guards. Cách này tránh tích lũy file descriptor của pinned/persistent DataLoader qua nhiều run trong một process. Không đổi workers, precision, model, split hoặc epoch; lịch sử gián đoạn được ghi trong `docs/TRAINING_EXECUTION.md`.
+
+Sau complete, `scripts/watch_vast_training.py` tải báo cáo, evidence và checkpoint về workspace. `scripts/vast_finalize.py` kiểm tra đủ60+24 run, checkpoint/test signatures, tensor/file hashes, SHA256 bản sao và đúng endpoint rồi mới xóa instance đã được người học cho phép. Nếu job lỗi hoặc checksum/endpoint sai, máy được giữ để xử lý. Không tự thuê máy mới hoặc suy ra permission xóa một instance khác.
+
+Người học đã yêu cầu push sau khi train xong. Bước cuối kiểm tra PDF thực nghiệm, cập nhật code/PDF/LaTeX và evidence, rồi commit/push; raw data và checkpoint không vào Git. Heartbeat trong chat tiếp tục việc kiểm tra và phát hành khi run dài kết thúc.

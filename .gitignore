@@ -27,3 +27,17 @@ reports/*.synctex.gz
 reports/*.xdv
 reports/*.bbl
 reports/*.blg
+**/reports/*.aux
+**/reports/*.log
+**/reports/*.out
+**/reports/*.toc
+**/reports/*.fls
+**/reports/*.fdb_latexmk
+**/reports/*.synctex.gz
+**/reports/*.xdv
+**/reports/*.bbl
+**/reports/*.blg
+**/runs/
+**/data/
+artifacts/
+logs/

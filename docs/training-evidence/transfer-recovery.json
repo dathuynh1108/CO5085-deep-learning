@@ -1,0 +1,27 @@
+{
+  "instance": 55938548,
+  "observed_error": "SSH closed by remote host during rsync; exit 255",
+  "first_finalization_failed_utc": "2026-10-14T21:05:46.098439+00:00",
+  "fix": "SSH keepalive; preserve partial transfers; retry only SSH exit 255 at most three attempts; all verification and deletion guards unchanged",
+  "validation": "tests/test_vast_cleanup.py: 6 passed, including checksum/endpoint refusal, failed-job preservation and bounded transfer retries",
+  "source_config_files_unchanged": 32,
+  "training_restarted": false,
+  "resumed_watcher_pid": 92147,
+  "updated_utc": "2026-10-14T21:35:36.498413+00:00",
+  "proxy_probe": {
+    "bytes": 8388608,
+    "seconds": 14.690132083022036,
+    "sha256": "8a2ab9f67169208508d48dfe743debb2cfd97a97a2ef03b82b2fcc0251292a97",
+    "verified": true
+  },
+  "direct_probe": {
+    "bytes_received": 5087232,
+    "timeout_seconds": 100,
+    "completed": false
+  },
+  "remote_oom_kill_count": 0,
+  "backup_route": "Vast-provided proxy for the same instance; identity checked again before deletion",
+  "final_verified_files": 991,
+  "instance_deleted": true,
+  "finalization_exit_code": 0
+}

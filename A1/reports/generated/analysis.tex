@@ -1,0 +1,23 @@
+Kết quả gồm 24 lượt chạy, với ba seed 42, 43 và 44 cho mỗi cấu hình. Chênh lệch accuracy được tính theo cặp cùng seed; các khoảng $\pm$ là độ lệch chuẩn mẫu, không phải khoảng tin cậy.
+
+\subsection{Khởi tạo và khả năng thích nghi biểu diễn}
+ResNet18 head-only so với scratch có chênh lệch -3.40 $\pm$ 0.33 điểm phần trăm. Backbone đóng băng chỉ cho phép head tuyến tính điều chỉnh ranh giới phân loại trên đặc trưng có sẵn. Kết quả cho thấy đặc trưng ImageNet cố định chưa đủ phù hợp với thiết lập CIFAR-100 này. Mở stage cuối tăng +9.61 $\pm$ 0.09 điểm phần trăm so với scratch; mở toàn bộ tăng +14.62 $\pm$ 0.11 điểm phần trăm. Khả năng cập nhật biểu diễn đóng vai trò đáng kể đối với ResNet18.
+
+Swin-T scratch chỉ đạt $2.76 \pm 1.26$\% trên test. Ở epoch 20, seed 43 và 44 có validation accuracy 1\%, train accuracy xấp xỉ 1\% và CE gần $\ln(100)\simeq4{,}605$. Cả train lẫn validation đều thấp, cho thấy mô hình học rất ít trong thiết lập này. Seed 42 cải thiện hơn nhưng vẫn xa các bản pretrained. Ngân sách 20 epoch, learning rate $10^{-3}$ và lịch cosine không warm-up chưa tạo được một đối chứng scratch hội tụ tốt. Thực nghiệm không tách riêng nguyên nhân của từng yếu tố và không khảo sát thêm siêu tham số sau khi mở test.
+
+Swin-T head-only đạt $71.67 \pm 0.09$\%, partial đạt $78.25 \pm 0.22$\%, và full đạt $86.63 \pm 0.22$\%. Full cao hơn scratch +83.87 $\pm$ 1.40 điểm phần trăm; mức chênh lệch này phản ánh cả lợi ích của pretrained lẫn đối chứng scratch chưa học tốt. Kết quả không đủ để kết luận Transformer luôn phụ thuộc pretrained hoặc luôn vượt CNN trong những ngân sách khác.
+
+\subsection{Accuracy và chi phí huấn luyện}
+Khi cùng fine-tuning toàn bộ, Swin-T cao hơn ResNet18 +7.66 $\pm$ 0.18 điểm phần trăm, với macro-F1 trung bình 0.8663 so với 0.7898. Thời gian train tăng 2.81 lần và peak allocated memory tăng 4.70 lần. Đây là sự đánh đổi giữa accuracy và chi phí trong cùng ngân sách epoch; hai kiến trúc vẫn khác số tham số và quá trình pretraining.
+
+Head-only giảm peak allocated memory so với full từ 522.4 xuống 252.1 MiB ở ResNet18, và từ 2456.9 xuống 502.2 MiB ở Swin-T. Đóng băng backbone giảm bộ nhớ gradient và trạng thái optimizer, nhưng vẫn cần bước forward qua toàn bộ backbone.
+
+\Needspace{7\baselineskip}
+\subsection{Đường cong học và lỗi phân loại}
+Ở epoch 20, train/validation accuracy của các bản full có khoảng cách rõ: ResNet18 99.07\%/79.18\%; Swin-T 98.68\%/86.75\%. Train cải thiện nhanh hơn validation, trong khi validation CE còn cao hơn train CE; đây là dấu hiệu overfit. Điểm test trong bảng lấy từ checkpoint tốt nhất theo validation, không nhất thiết là epoch 20.
+
+ResNet18 full ở seed 42: lỗi nhiều nhất theo một chiều là oak\_tree thành maple\_tree, 23 ảnh. Lớp oak\_tree có 100 ảnh trong tập test.
+
+Swin-T full ở seed 42: lỗi nhiều nhất theo một chiều là oak\_tree thành maple\_tree, 22 ảnh. Lớp oak\_tree có 100 ảnh trong tập test.
+
+Hai mô hình cùng nhầm oak\_tree với maple\_tree, gợi ý khó khăn khi phân biệt các lớp cây có hình dáng và kết cấu gần nhau trong ảnh $32\times32$. Đây là cách diễn giải từ ma trận lỗi và các ví dụ quan sát, không phải phép đo riêng về mức tương đồng thị giác. Những lỗi confidence cao cho thấy accuracy cao vẫn đi kèm một số dự đoán sai rất tự tin; calibration chưa được đánh giá riêng.

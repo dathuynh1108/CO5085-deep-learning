@@ -1,0 +1,11 @@
+__pycache__/
+runs/
+*.pdf
+!reports/assignment1.pdf
+*.aux
+*.log
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz

@@ -1,0 +1,13 @@
+Tokenizer rows: PyTorch trừ manual có chênh lệch test -0.06 $\pm$ 0.04 điểm phần trăm; thời gian train/epoch trung bình của median từng seed lần lượt 4.60s và 4.93s.
+
+Tokenizer patches: PyTorch trừ manual có chênh lệch test +0.10 $\pm$ 0.23 điểm phần trăm; thời gian train/epoch trung bình của median từng seed lần lượt 4.46s và 4.52s.
+
+Tokenizer cnn: PyTorch trừ manual có chênh lệch test -0.02 $\pm$ 0.10 điểm phần trăm; thời gian train/epoch trung bình của median từng seed lần lượt 4.76s và 5.10s.
+
+Trong sáu cấu hình, cnn / manual có test accuracy trung bình cao nhất, đạt 88.66\%.
+
+Giữ backend manual, CNN-stem trừ rows / manual: +0.74 $\pm$ 0.42 điểm phần trăm.
+
+Giữ backend manual, CNN-stem trừ patches / manual: +2.73 $\pm$ 0.31 điểm phần trăm.
+
+Cấu hình E2 tốt nhất so với CNN E1 có chênh lệch -4.03 $\pm$ 0.46 điểm phần trăm. CNN-stem cung cấp đặc trưng cục bộ trước attention; các kết quả gợi ý rằng prior không gian hữu ích trong ngân sách này. Tokenizer đồng thời làm thay đổi số token, chiều đầu vào và số tham số.

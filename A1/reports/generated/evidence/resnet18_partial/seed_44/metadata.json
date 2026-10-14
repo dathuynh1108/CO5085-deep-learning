@@ -1,0 +1,188 @@
+{
+  "signature": {
+    "protocol": {
+      "version": 1,
+      "study": "A1 fixed-budget empirical comparison; not a scratch convergence benchmark",
+      "dataset": "CIFAR100",
+      "classes": 100,
+      "split_seed": 2026,
+      "train_size": 45000,
+      "val_size": 5000,
+      "test_size": 10000,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "epochs": 20,
+      "batch_size": 128,
+      "image_size": 96,
+      "train_transform": "RandomCrop(32,padding=4),RandomHorizontalFlip(0.5),Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+      "augmentation_rng": "SHA256(A1:train_seed:epoch:official_image_index); seeded CPU torch/Python/NumPy; workers nonpersistent",
+      "eval_transform": "Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ],
+      "optimizer": "AdamW",
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.0001,
+      "scheduler": "CosineAnnealingLR per completed epoch; T_max=20; eta_min=0",
+      "loss": "CrossEntropyLoss, no label smoothing",
+      "gradient_clip": 1.0,
+      "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",
+      "tf32": false,
+      "compile": false,
+      "selection": "maximum validation accuracy; tie minimum validation CE",
+      "experiments": [
+        {
+          "id": "resnet18_scratch",
+          "family": "resnet18",
+          "regime": "scratch",
+          "weights": null,
+          "lr": 0.001
+        },
+        {
+          "id": "resnet18_head",
+          "family": "resnet18",
+          "regime": "head",
+          "weights": "ResNet18_Weights.IMAGENET1K_V1",
+          "lr": 0.001
+        },
+        {
+          "id": "resnet18_partial",
+          "family": "resnet18",
+          "regime": "partial",
+          "weights": "ResNet18_Weights.IMAGENET1K_V1",
+          "lr": 0.0001
+        },
+        {
+          "id": "resnet18_full",
+          "family": "resnet18",
+          "regime": "full",
+          "weights": "ResNet18_Weights.IMAGENET1K_V1",
+          "lr": 0.0001
+        },
+        {
+          "id": "swin_t_scratch",
+          "family": "swin_t",
+          "regime": "scratch",
+          "weights": null,
+          "lr": 0.001
+        },
+        {
+          "id": "swin_t_head",
+          "family": "swin_t",
+          "regime": "head",
+          "weights": "Swin_T_Weights.IMAGENET1K_V1",
+          "lr": 0.001
+        },
+        {
+          "id": "swin_t_partial",
+          "family": "swin_t",
+          "regime": "partial",
+          "weights": "Swin_T_Weights.IMAGENET1K_V1",
+          "lr": 0.0001
+        },
+        {
+          "id": "swin_t_full",
+          "family": "swin_t",
+          "regime": "full",
+          "weights": "Swin_T_Weights.IMAGENET1K_V1",
+          "lr": 0.0001
+        }
+      ]
+    },
+    "experiment": {
+      "id": "resnet18_partial",
+      "family": "resnet18",
+      "regime": "partial",
+      "weights": "ResNet18_Weights.IMAGENET1K_V1",
+      "lr": 0.0001
+    },
+    "seed": 44,
+    "config_sha256": "a478e2149309e99978b98f25e459759c6adfdf55b48db6c646c24c391c0426be",
+    "source": {
+      "A1/__init__.py": "318ccece5372a983986006c275ed83d851ec077140b6b721f8a3819a1a639b96",
+      "A1/protocol.py": "4cab09c2c09543eb13ffbc8e99a014a5d2ff5e38bf3ee0504a3e673ce75f646a",
+      "A1/models.py": "26421d6dfaaff8781459cac48acc3443ace1e26dbd9649a517b0f9b7fd3979c1",
+      "A1/data.py": "d19e4eadce86334dc33aff3733367e75e2c156e73df5c55af394de35f64fc1cf",
+      "A1/metrics.py": "137dd4f10f8603693156257828fe2bcc1f264a361dbff4be49f29dfd120d9bf6",
+      "A1/engine.py": "53a04e1834af082509524a3add95997abcc1bd1a81e657a3bc7ce2a5b95e2b2d",
+      "A1/run_suite.py": "e56665a3aebd96bb378c2d11c4978acdffe42f8125904e9933a9c352566a2dc8",
+      "A1/visuals.py": "73936428784c23691fc05cd6f68a093edce586aab24cee4954245964f4aa8442",
+      "common/runtime.py": "1c4ab4978d776c1c837829e433760bee29c2a0080ed0913e9dd764c6b4992e26"
+    },
+    "data": {
+      "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
+      "labels_sha256": "8bf4935e7c77a3096270043c6f3b221b6ecb9c63d1a08608e9af66cff17e977a",
+      "split_sha256": "36b6d6338a0eb0dd12cb977efb544774f80787be52804ed4d2cec1647eeb3f7f",
+      "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
+    },
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Linux-5.15.0-181-generic-x86_64-with-glibc2.39",
+      "torch": "2.10.0+cu130",
+      "cuda_runtime": "13.0",
+      "cudnn": 91501,
+      "device": "cuda",
+      "device_name": "NVIDIA GeForce RTX 5090",
+      "torch_num_threads": 4,
+      "tf32_matmul": false,
+      "tf32_cudnn": false,
+      "torchvision": "0.25.0+cu130",
+      "visible_cuda_devices": null,
+      "cuda_device_count": 1
+    },
+    "num_workers": 8,
+    "deterministic": false
+  },
+  "signature_sha256": "bf43f2952bcebe558b21286e239df5eb08f8c986262ded138573b65153cf4103",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-181-generic-x86_64-with-glibc2.39",
+    "torch": "2.10.0+cu130",
+    "cuda_runtime": "13.0",
+    "cudnn": 91501,
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "git_commit": null,
+    "git_dirty": null,
+    "torch_num_threads": 4,
+    "tf32_matmul": false,
+    "tf32_cudnn": false,
+    "torchvision": "0.25.0+cu130",
+    "visible_cuda_devices": null,
+    "cuda_device_count": 1
+  },
+  "initial_state_sha256": "fa30e94d17862c23702dfe1f4f67503c9a21e1b02d9d41316a425fcab6321ebf",
+  "frozen_state_sha256": "7d76ff177d137bf5e6f7671844e7faaa77b01074eaf4b0aadb756f2783bddbc6",
+  "total_params": 11227812,
+  "trainable_params": 8445028,
+  "completed_epochs": 20,
+  "expected_epochs": 20,
+  "status": "trained",
+  "best_validation": {
+    "epoch": 20,
+    "accuracy": 0.7414,
+    "ce": 0.9738860864639283,
+    "macro_f1": 0.7410757886736564,
+    "state_sha256": "b21603c167fd3c13ed97a20fb08de78888028d4d6648016142f6c3b27f84704a"
+  },
+  "train_seconds": 194.23510265536606,
+  "epoch_seconds": 216.00487487763166,
+  "peak_gpu_memory_bytes": 364193792,
+  "timing_scope": "train_seconds: synchronized train pass including data loading; epoch_seconds: train + validation; excludes construction/checkpoint/export",
+  "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",
+  "test_evaluated": true
+}

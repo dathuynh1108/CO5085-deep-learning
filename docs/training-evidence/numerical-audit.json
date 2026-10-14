@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-14T21:32:26.504000+00:00",
+  "confusion_derived_accuracy_macro_f1_verified": {
+    "reports/generated/evidence": 60,
+    "A1/reports/generated/evidence": 24
+  },
+  "frozen_source_config_files_verified": 32,
+  "report_manifests": {
+    "exercises": [
+      60,
+      60
+    ],
+    "A1": [
+      24,
+      24
+    ]
+  }
+}

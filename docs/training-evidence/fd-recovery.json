@@ -1,0 +1,137 @@
+{
+  "recovery_utc": "2026-10-14T16:02:58.089511+00:00",
+  "instance": 55938548,
+  "failure": "OSError errno 24 during first validation epoch of e3_lstm_rows/seed_44",
+  "completed_runs_preserved": 29,
+  "frozen_sources_verified": 32,
+  "synthetic_loader_fd_counts_after_cleanup": [
+    46,
+    50,
+    55,
+    58,
+    62,
+    66
+  ],
+  "synthetic_workers": 2,
+  "synthetic_pin_memory": true,
+  "synthetic_persistent_workers": true,
+  "operational_scripts_sha256": {
+    "scripts/run_exercises_isolated.py": "20364c6b00cdcda43a8711652860d26c2a80f9e318cd62bcea8ccc256542cde6",
+    "scripts/train_exercises_gpu.sh": "6e5726ea056839ec2c6fa0d2b285b72ccf0b1f7e33b4d37d4ab318b045be5560"
+  },
+  "restart_pid": 8225,
+  "restart_utc": "2026-10-14T16:02:58.168744+00:00",
+  "failed_run_signature": "f985b456b32602b12f1a906d9afb036753f76bb2f6186f1563f8b3a76570cb0f",
+  "failed_run_archive": "logs/interrupted-e3-lstm-rows-seed44/run.json",
+  "original_failure_log": "logs/training-fd-failure-20261014.log",
+  "recovery": "Fresh child process per config/seed using unchanged existing entrypoints; completed runs pass native resume guards; failed pre-checkpoint run restarts from same seed.",
+  "source_snapshot": "docs/training-evidence/source-snapshot.json",
+  "checks": {
+    "isolated_runner_unit_tests": 4,
+    "bash_syntax": "passed",
+    "shellcheck": "passed",
+    "shfmt_indent_2": "passed",
+    "local_frozen_hashes": 32,
+    "remote_frozen_hashes": 32
+  },
+  "recovery_runtime_verification": {
+    "checked_utc": "2026-10-14T16:06:37.345804+00:00",
+    "recovered_seed44_epochs": 30,
+    "recovered_seed44_signature_unchanged": true,
+    "original_29_last_history_metadata_sha256_unchanged": true,
+    "active": [
+      {
+        "pid": 8238,
+        "fd_count": 3,
+        "entrypoint": "scripts.run_exercises_isolated"
+      },
+      {
+        "pid": 8760,
+        "fd_count": 112,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8772,
+        "fd_count": 49,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8773,
+        "fd_count": 53,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8774,
+        "fd_count": 57,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8775,
+        "fd_count": 61,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8776,
+        "fd_count": 65,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8777,
+        "fd_count": 70,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8778,
+        "fd_count": 73,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8779,
+        "fd_count": 77,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8806,
+        "fd_count": 83,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8807,
+        "fd_count": 87,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8808,
+        "fd_count": 91,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8809,
+        "fd_count": 95,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8810,
+        "fd_count": 99,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8811,
+        "fd_count": 103,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8812,
+        "fd_count": 107,
+        "entrypoint": "E3.train"
+      },
+      {
+        "pid": 8813,
+        "fd_count": 111,
+        "entrypoint": "E3.train"
+      }
+    ],
+    "completed_exercise_runs": 30,
+    "coursework_exit": null
+  }
+}

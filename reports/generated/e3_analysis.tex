@@ -1,0 +1,14 @@
+LSTM / rows trừ CNN E1: -3.11 $\pm$ 0.18 điểm phần trăm.
+
+GRU / rows trừ CNN E1: -2.62 $\pm$ 0.13 điểm phần trăm.
+
+LSTM / patches trừ CNN E1: -5.04 $\pm$ 0.35 điểm phần trăm.
+
+GRU / patches trừ CNN E1: -4.69 $\pm$ 0.32 điểm phần trăm.
+
+Rows và patches thay cả số bước lẫn số pixel/token; kết quả không tách riêng tác động độ dài chuỗi.
+LSTM rows trừ patches: +1.93 $\pm$ 0.42 điểm phần trăm.
+
+GRU rows trừ patches: +2.07 $\pm$ 0.22 điểm phần trăm.
+
+GRU rows trừ LSTM rows: +0.49 $\pm$ 0.21 điểm phần trăm. Rows giữ trọn ngữ cảnh ngang trong mỗi token và có ít bước hơn patches; đây là một cách diễn giải phù hợp với kết quả trên cách chia dữ liệu này. Kiến trúc cell và đường quét cùng ảnh hưởng đến khả năng tổng hợp đặc trưng.

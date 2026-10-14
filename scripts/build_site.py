@@ -29,6 +29,28 @@ def build_site(output: Path) -> Path:
     (output / 'reports').mkdir(exist_ok=True)
     shutil.copy2(pdf, output / 'reports/exercises.pdf')
     shutil.copy2(ROOT / 'reports/generated/summary.json', output / 'results.json')
+    a1_generated = ROOT / 'A1/reports/generated'
+    a1_source = ROOT / 'site/a1.html'
+    if a1_source.is_file():
+        a1 = a1_source.read_text(encoding='utf-8')
+        a1_manifest_path = a1_generated / 'manifest.json'
+        a1_manifest = json.loads(a1_manifest_path.read_text(encoding='utf-8')) if a1_manifest_path.is_file() else {}
+        a1_train, a1_test = a1_manifest.get('trained_runs', 0), a1_manifest.get('tested_runs', 0)
+        a1_status = (f'Đã tổng hợp {a1_train} lượt train và {a1_test} lượt test A1. Xem seed và setting trong báo cáo.'
+                     if a1_train else 'Chưa có kết quả thực nghiệm A1.')
+        a1 = re.sub(r'<!--A1_STATUS-->.*?<!--/A1_STATUS-->', html.escape(a1_status), a1, flags=re.DOTALL)
+        (output / 'a1.html').write_text(a1, encoding='utf-8')
+        a1_pdf = ROOT / 'A1/reports/assignment1.pdf'
+        if a1_pdf.is_file():
+            shutil.copy2(a1_pdf, output / 'reports/assignment1.pdf')
+        else:
+            a1 = (output / 'a1.html').read_text(encoding='utf-8')
+            a1 = a1.replace('href="reports/assignment1.pdf"', 'aria-disabled="true"')
+            (output / 'a1.html').write_text(a1, encoding='utf-8')
+        if (a1_generated / 'summary.json').is_file():
+            shutil.copy2(a1_generated / 'summary.json', output / 'a1-results.json')
+        else:
+            (output / 'a1-results.json').write_text('[]\n', encoding='utf-8')
     (output / '.nojekyll').touch()
     return output
 

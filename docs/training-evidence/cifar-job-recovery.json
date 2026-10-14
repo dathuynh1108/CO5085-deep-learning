@@ -1,0 +1,15 @@
+{
+  "recovery_utc": "2026-10-14T17:09:59.589073+00:00",
+  "failure": "torchvision rejected interrupted CIFAR-100 archive: File not found or corrupted",
+  "failed_archive_bytes": 13336000,
+  "failed_archive_sha256": "be794ca11b0cd5ced2528008da6e72430fb0594bf41eadc11519f0633847e1ff",
+  "exercise_trained_and_tested_preserved": 60,
+  "a1_training_started": false,
+  "frozen_sources_verified": 32,
+  "scripts_sha256": {
+    "scripts/prefetch_cifar100.py": "3d26c71f196ad3b729f46f66d4c7b8d8e4c883ce13b96a8dca4b0d0e0d0d3676",
+    "scripts/train_a1_gpu.sh": "2da76fc077e96003b6883f4c591e4b1fa152a00b8e0fcfad357840577d3a0c2c"
+  },
+  "recovery": "Sequential 512 KiB HTTP ranges from same official URL, exact Content-Range/size validation, bounded retries, full official MD5 required before atomic archive promotion. Master resumes completed E runs through native guards and reuses frozen tests.",
+  "restart_pid": 15034
+}

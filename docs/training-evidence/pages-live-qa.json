@@ -1,0 +1,54 @@
+{
+  "commit": "6180055e8b6776e1e17467d548ca5f68e6bb04d9",
+  "pages_run": 38588169554,
+  "cpu_run": 38588169653,
+  "pages_conclusion": "success",
+  "cpu_conclusion": "success",
+  "cpu_tests_passed": 37,
+  "browser": "Existing Google Chrome via bundled Playwright",
+  "url": "https://dathuynh1108.github.io/CO5085-deep-learning/",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "status": 200,
+      "title": "CO5085 · Huỳnh Thành Đạt",
+      "meaningful_content": true,
+      "no_horizontal_overflow": true,
+      "interaction": true,
+      "errors": [],
+      "links": [
+        {
+          "relative": "reports/exercises.pdf",
+          "status": 200
+        },
+        {
+          "relative": "results.json",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CO5085 · Huỳnh Thành Đạt",
+      "meaningful_content": true,
+      "no_horizontal_overflow": true,
+      "interaction": true,
+      "errors": [],
+      "links": [
+        {
+          "relative": "reports/exercises.pdf",
+          "status": 200
+        },
+        {
+          "relative": "results.json",
+          "status": 200
+        }
+      ]
+    }
+  ]
+}

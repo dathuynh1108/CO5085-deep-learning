@@ -2,13 +2,13 @@
 \toprule
 Mô hình & Tham số & Val (\%) & Test (\%) & Giây/epoch \\
 \midrule
-LSTM / rows & 82,186 & -- & -- & -- \\
-LSTM + orthogonal init & 82,186 & -- & -- & -- \\
-LSTM + orthogonal init/reg & 82,186 & -- & -- & -- \\
-LSTM + chrono bias & 82,186 & -- & -- & -- \\
-LSTM + mean pooling & 82,186 & -- & -- & -- \\
-LSTM combined & 82,186 & -- & -- & -- \\
-Combined without regularizer & 82,186 & -- & -- & -- \\
-Combined without mean pooling & 82,186 & -- & -- & -- \\
+LSTM / rows & 82,186 & 90.32 & 89.58 $\pm$ 0.05 & 1.77 \\
+LSTM + orthogonal init & 82,186 & 90.20 & 89.35 $\pm$ 0.17 & 1.77 \\
+LSTM + orthogonal init/reg & 82,186 & 90.07 & 89.47 $\pm$ 0.24 & 3.05 \\
+LSTM + chrono bias & 82,186 & 90.23 & 89.28 $\pm$ 0.19 & 1.78 \\
+LSTM + mean pooling & 82,186 & 89.28 & 88.32 $\pm$ 0.09 & 1.76 \\
+LSTM combined & 82,186 & 89.17 & 87.92 $\pm$ 0.29 & 2.97 \\
+Combined without regularizer & 82,186 & 89.07 & 87.91 $\pm$ 0.32 & 1.79 \\
+Combined without mean pooling & 82,186 & 90.17 & 89.30 $\pm$ 0.23 & 3.03 \\
 \bottomrule
 \end{tabularx}

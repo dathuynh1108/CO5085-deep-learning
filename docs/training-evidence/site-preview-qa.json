@@ -1,0 +1,68 @@
+{
+  "base": "http://127.0.0.1:8767/",
+  "browser": "Installed Google Chrome via Playwright",
+  "browserPlugin": "Browser plugin not available",
+  "flow": "Home -> A1 -> separate PDF and results -> home",
+  "viewports": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "identity": true,
+      "meaningfulContent": true,
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "navigation": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "identity": true,
+      "meaningfulContent": true,
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "navigation": true
+    }
+  ],
+  "resources": [
+    {
+      "path": "styles.css",
+      "status": 200,
+      "bytes": 3354,
+      "sha256": "3943406a4d94bfd4ab000bc3c1448a978e71eac9961c2a47b67fe831296c453a"
+    },
+    {
+      "path": "favicon.svg",
+      "status": 200,
+      "bytes": 284,
+      "sha256": "16c00eb2e7e14a420adb9c8fa1164dda23df9204fe3a0b52a4df5ccf64985128"
+    },
+    {
+      "path": "results.json",
+      "status": 200,
+      "bytes": 11567,
+      "sha256": "63715e2cb85489b6427d0cbee2dc977c377a388e69344781e63b2b1c314309df"
+    },
+    {
+      "path": "a1-results.json",
+      "status": 200,
+      "bytes": 102111,
+      "sha256": "f96ac8f6cca3a4de3774cb22854af4c7082873cde4c79f4f0e04fd2247e6de6a"
+    },
+    {
+      "path": "reports/exercises.pdf",
+      "status": 200,
+      "bytes": 846418,
+      "sha256": "4fd826f51685491ab3fe0406ed3bd29d6c4b86edd70d27081e647c0e208868e7"
+    },
+    {
+      "path": "reports/assignment1.pdf",
+      "status": 200,
+      "bytes": 557197,
+      "sha256": "41505d7d0a9f5d67a67b8a3a79316f705482d9bc5794c00677164c2b0c6a61e2"
+    }
+  ]
+}
