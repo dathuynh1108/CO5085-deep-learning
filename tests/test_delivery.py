@@ -11,10 +11,12 @@ def test_static_site_copies_pdf_and_reports_actual_empty_status(tmp_path):
     text = (target / 'index.html').read_text()
     assert 'Huỳnh Thành Đạt' in text and '2570161' in text
     manifest = json.loads((Path(__file__).resolve().parents[1] / 'reports/generated/manifest.json').read_text())
-    expected = 'Chưa huấn luyện' if manifest['train_runs'] == 0 else f"{manifest['train_runs']} lượt train"
+    expected = 'Báo cáo chưa có kết quả thực nghiệm' if manifest['train_runs'] == 0 else f"{manifest['train_runs']} lượt train"
     assert expected in text
     assert (target / 'reports/exercises.pdf').is_file()
     assert (target / 'results.json').is_file()
+    assert 'href="favicon.svg"' in text
+    assert (target / 'favicon.svg').is_file()
 
 
 def test_publish_plan_is_explicit_and_never_force_pushes():
