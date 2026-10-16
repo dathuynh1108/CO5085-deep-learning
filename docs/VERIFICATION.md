@@ -1,3 +1,5 @@
+> Layout hiện tại: xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Các đường dẫn trong phần lịch sử bên dưới là đường dẫn tại thời điểm chạy.
+
 # Kiểm tra bản bàn giao — 09/10/2026
 
 ## Kiểm tra trên GitHub Actions

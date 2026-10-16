@@ -8,8 +8,8 @@ from common.config import ROOT
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--report-root', type=Path, default=ROOT / 'reports')
-    parser.add_argument('--jobname', default='exercises', help='A1 uses assignment1 with --report-root A1/reports')
+    parser.add_argument('--report-root', type=Path, default=ROOT / 'reports/exercises')
+    parser.add_argument('--jobname', default='exercises', help='A1 uses assignment1 with --report-root reports/assignment1')
     args = parser.parse_args()
     engine = shutil.which('xelatex') or shutil.which('tectonic')
     if engine is None:

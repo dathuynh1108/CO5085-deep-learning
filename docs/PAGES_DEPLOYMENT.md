@@ -1,3 +1,5 @@
+> Layout hiện tại: xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Các đường dẫn trong phần lịch sử bên dưới là đường dẫn tại thời điểm chạy.
+
 # GitHub Pages — khắc phục ngày14/10/2026
 
 Landing: https://dathuynh1108.github.io/CO5085-deep-learning/

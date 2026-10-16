@@ -4,7 +4,7 @@ Lượt thực nghiệm đã hoàn tất 60 cấu hình/seed E1–E3 và 24 cấ
 
 ## Trước lượt chạy chính
 
-Đọc `README.md`, `docs/EXPERIMENTS.md`, `docs/REQUIREMENTS.md`. Tạo venv riêng, cài đúng cặp torch/torchvision và kiểm tra driver. Với E1–E3, không thay mô hình bằng model zoo hoặc pretrained backbone. Mọi phần dùng training loop trực tiếp, không `Trainer`, `Lightning` hay `trainer.fit`; A1 cho phép torchvision/pretrained theo đề riêng.
+Đọc `README.md`, `docs/EXPERIMENTS.md`, `docs/REQUIREMENTS.md`. Tạo venv riêng, cài đúng cặp torch/torchvision, cài `python -m pip install --no-deps -e .` và kiểm tra driver. Với E1–E3, không thay mô hình bằng model zoo hoặc pretrained backbone. Mọi phần dùng training loop trực tiếp, không `Trainer`, `Lightning` hay `trainer.fit`; A1 cho phép torchvision/pretrained theo đề riêng.
 
 Không cần chạy một batch thật để “preflight” theo yêu cầu của người học. Unit test thuần tensor không tải dữ liệu đã có và có thể chạy trước. Lượt đầu có thể chạy riêng E1 CNN đủ 30 epoch để kiểm chứng toàn quy trình, nhưng đó phải là một **run chính thức**, không giả làm benchmark toàn bộ. Khi chuyển sang suite, dùng `--resume` để không ghi đè run đã có.
 
@@ -33,8 +33,8 @@ Mỗi epoch chỉ dùng train và validation. Chọn best bằng validation accu
 
 ```bash
 python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
-python -m E3.diagnose --run runs/e3_lstm_rows/seed_42 --device cuda
-python -m E3.diagnose --run runs/e3_lstm_rows_combined/seed_42 --device cuda
+python -m E3.diagnose --run runs/exercises/e3_lstm_rows/seed_42 --device cuda
+python -m E3.diagnose --run runs/exercises/e3_lstm_rows_combined/seed_42 --device cuda
 ```
 
 Test đã đo được tái sử dụng nếu checkpoint không đổi. Không thử nhiều hyperparameter dựa vào điểm test. Diagnostic không train: dùng 256 validation images có chỉ số gốc nhỏ nhất, đo cùng subset cho các cách quét. Muốn mở rộng số mẫu thì thay `--max-samples` đồng nhất cho các đối chứng.
@@ -48,7 +48,7 @@ python -m scripts.export_report
 python -m A1.export_report
 python -m scripts.write_findings
 python -m scripts.build_report
-python -m scripts.build_report --report-root A1/reports --jobname assignment1
+python -m scripts.build_report --report-root reports/assignment1 --jobname assignment1
 python scripts/build_site.py
 ```
 
@@ -60,11 +60,11 @@ Phần phân tích đối chiếu các nội dung: khoảng cách train/validati
 
 Chỉ commit source, config, bảng/figures tổng hợp, PDF và log cần để tái lập. Không commit data/raw hoặc checkpoint nặng. Có thể lưu checkpoint ngoài Git và ghi checksum/đường dẫn được phép chia sẻ. Trước nộp cần mở lại PDF và các link Pages, kiểm tra bảng không bị tràn, không còn kết luận dự kiến viết như sự thật.
 
-A1 được bổ sung theo đề thật trong `assignments/assignment1-vne.pdf`. Code và báo cáo riêng ở `A1/`; xem `A1/README.md`. A2 đã có đề nhưng chờ người học chọn paper.
+A1 được bổ sung theo đề thật trong `assignments/assignment1-vne.pdf`. Code và báo cáo riêng ở `src/A1/`; xem `src/A1/README.md`. A2 đã có đề nhưng chờ người học chọn paper.
 
 ## Pipeline Vast của lượt ngày14/10/2026
 
-`COURSE_PYTHON=/venv/main/bin/python bash scripts/train_coursework_gpu.sh` chạy E1–E3 rồi A1 trên một GPU, mỗi suite hoàn tất train trước phase held-out test. Log ở `logs/training.log`; shell ghi `coursework.exit` và chỉ ghi `coursework.complete` khi cả report/site đã build thành công. Không sửa source/config đã hash khi suite còn chạy.
+`COURSE_PYTHON=/venv/main/bin/python bash scripts/train_coursework_gpu.sh` chạy E1–E3 rồi A1 trên một GPU, mỗi suite hoàn tất train trước phase held-out test. Log ở `artifacts/logs/training.log`; shell ghi `coursework.exit` và chỉ ghi `coursework.complete` khi cả report/site đã build thành công. Không sửa source/config đã hash khi suite còn chạy.
 
 Lượt Vast dùng `scripts.run_exercises_isolated` cho E1–E3: một child process cho mỗi config/seed ở cả train và test, cùng entrypoint và resume guards. Cách này tránh tích lũy file descriptor của pinned/persistent DataLoader qua nhiều run trong một process. Không đổi workers, precision, model, split hoặc epoch; lịch sử gián đoạn được ghi trong `docs/TRAINING_EXECUTION.md`.
 

@@ -1,0 +1,18 @@
+{
+  "source_release": "1250e569c6ce055391b5670e2f9a31faedb44b20",
+  "source_roots": {
+    "common": "src/common",
+    "E1": "src/E1",
+    "E2": "src/E2",
+    "E3": "src/E3",
+    "A1": "src/A1"
+  },
+  "artifact_roots": {
+    "reports/": "reports/exercises/",
+    "A1/reports/": "reports/assignment1/",
+    "runs/": "runs/exercises/",
+    "A1/runs/": "runs/assignment1/",
+    "logs/": "artifacts/logs/"
+  },
+  "note": "Historical JSON, CSV, source snapshot and backup manifest retain original bytes and original paths. Current training sources have a new identity; use a fresh output root for training. --archive verifies the published historical Git blobs only for reading measured runs."
+}

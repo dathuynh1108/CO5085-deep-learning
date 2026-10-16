@@ -225,8 +225,8 @@ def export_report(root: Path, report_root: Path) -> list[dict]:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--runs', type=Path, default=Path('runs'))
-    parser.add_argument('--report-root', type=Path, default=Path('reports'))
+    parser.add_argument('--runs', type=Path, default=Path('runs/exercises'))
+    parser.add_argument('--report-root', type=Path, default=Path('reports/exercises'))
     args = parser.parse_args()
     rows = export_report(args.runs, args.report_root)
     print(f"{len(rows)} configurations; {sum(r['n_train_runs'] for r in rows)} completed runs.")

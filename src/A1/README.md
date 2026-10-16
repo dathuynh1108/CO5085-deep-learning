@@ -75,12 +75,12 @@ python -m A1.run_suite --experiments resnet18_scratch --seeds 42 --device cuda -
 python -m A1.run_suite --phase test --confirm-test --device cuda --num-workers 8
 python -m A1.export_report
 python -m scripts.write_findings --study a1
-python -m scripts.build_report --report-root A1/reports --jobname assignment1
+python -m scripts.build_report --report-root reports/assignment1 --jobname assignment1
 python -m pytest -q tests/test_a1.py
 ```
 
 Có `--data-root`, `--output-root`, `--seeds`, `--experiments`, `--deterministic`.
-Default runs ở `A1/runs/<id>/seed_<seed>`. Export mặc định chỉ tổng hợp seeds
+Default runs ở `runs/assignment1/<id>/seed_<seed>`. Export mặc định chỉ tổng hợp seeds
 42/43/44; seed khác vẫn chạy nhưng không trộn vào bảng chuẩn. Giữ cùng worker,
 thiết bị, phần mềm và deterministic flag khi resume/test. Tất cả 24 run chạy
 tuần tự, không giữ nhiều backbone/optimizer đồng thời. Không có train→test tự
@@ -133,15 +133,15 @@ phạm vi seed, không trộn changed trials. `manifest.json` ghi missing/reject
 runs rõ ràng; `summary.json`, `summary.csv`, `comparison_table.tex` chỉ lấy dữ
 liệu có chứng cứ. SD chỉ với ≥2 seeds; timing không gộp khi môi trường khác
 nhau. Figure dùng seed nhỏ nhất của preset, không seed có điểm test cao nhất.
-JSON/CSV nhẹ được copy vào `A1/reports/generated/evidence/<id>/seed_<n>` cùng
+JSON/CSV nhẹ được copy vào `reports/assignment1/generated/evidence/<id>/seed_<n>` cùng
 checksum, không copy checkpoint. Metadata/evidence phục vụ tái xuất;
 checkpoint được sao lưu riêng và đối chiếu SHA256.
 
 ## Báo cáo
 
-`A1/reports/report.tex` là báo cáo A1 riêng, cùng logo/fonts/layout với báo cáo
+`reports/assignment1/report.tex` là báo cáo A1 riêng, cùng logo/fonts/layout với báo cáo
 E1–E3. Exporter kiểm tra và tổng hợp kết quả; `scripts.write_findings` tính
 so sánh theo cặp seed, tách bảng chất lượng/chi phí và ghi phân tích từ kết quả.
-XeLaTeX hoặc Tectonic build PDF từ `A1/reports/`; logo nằm tại
-`A1/reports/assets/hcmut-logo.png`. Bảng đã commit đủ để build lại PDF độc lập.
+XeLaTeX hoặc Tectonic build PDF từ `reports/assignment1/`; logo nằm tại
+`reports/assignment1/assets/hcmut-logo.png`. Bảng đã commit đủ để build lại PDF độc lập.
 Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](../AI_USE_REPORT.md).

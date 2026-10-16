@@ -41,3 +41,11 @@ reports/*.blg
 **/data/
 artifacts/
 logs/
+
+*.egg-info/
+**/report.pdf
+**/reports/**/*.aux
+**/reports/**/*.log
+**/reports/**/*.out
+**/reports/**/*.toc
+**/reports/**/*.xdv

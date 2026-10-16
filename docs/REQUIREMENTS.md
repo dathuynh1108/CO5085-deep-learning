@@ -4,15 +4,15 @@ Nguồn: `exercise-vne.pdf`, 6 trang, học kỳ 261. Số trang dưới đây t
 
 | Đề | Cách hiện thực | Minh chứng cần sau khi train |
 |---|---|---|
-| Trang 3: cùng tập ảnh nhỏ | Fashion-MNIST; split và normalization ở `common/data.py` | `run.json`, split JSON và file indices |
-| Trang 3: tự viết training loop | `common/engine.py`: forward, CE, backward, clip, optimizer.step | `history.csv`, checkpoint và log chạy |
-| Trang 3: một PDF chung | `reports/report.tex` → `reports/exercises.pdf` | PDF đã cập nhật bảng và nhận xét |
+| Trang 3: cùng tập ảnh nhỏ | Fashion-MNIST; split và normalization ở `src/common/data.py` | `run.json`, split JSON và file indices |
+| Trang 3: tự viết training loop | `src/common/engine.py`: forward, CE, backward, clip, optimizer.step | `history.csv`, checkpoint và log chạy |
+| Trang 3: một PDF chung | `reports/exercises/report.tex` → `reports/exercises/exercises.pdf` | PDF đã cập nhật bảng và nhận xét |
 | Trang 3: Pages có link repo/PDF | `site/`, `scripts/build_site.py`, workflow Pages | URL Pages hoạt động sau khi publish |
-| Trang 4: E1 softmax | `E1/models.py::SoftmaxClassifier` | Accuracy, CE, params, lỗi phân loại |
+| Trang 4: E1 softmax | `src/E1/models.py::SoftmaxClassifier` | Accuracy, CE, params, lỗi phân loại |
 | Trang 4: E1 MLP | `MLPClassifier`, flatten → 256 → 128 → 10 | Như trên |
 | Trang 4: E1 CNN | `SmallCNN`, hai conv blocks và head | Như trên |
 | Trang 4: so sánh E1 | 3 preset E1; exporter tự tổng hợp | Loss/accuracy, confusion, mẫu sai |
-| Trang 5: MSA tự viết | `E2/models.py::ManualSelfAttention` | Test forward và gradient; kết quả train |
+| Trang 5: MSA tự viết | `src/E2/models.py::ManualSelfAttention` | Test forward và gradient; kết quả train |
 | Trang 5: bản PyTorch | `TorchSelfAttention`; copy cùng khởi tạo | So sánh cùng tokenizer, seed và config |
 | Trang 5: ít nhất 2 tokenizer | Có 3: hàng, patch 4×4, CNN-stem | Accuracy, params, thời gian |
 | Trang 5: MSA trong classifier | 2 encoder blocks, pre-LN, FFN, position, mean pool | 6 preset E2 |
@@ -26,7 +26,7 @@ Phần mở rộng E3 là thí nghiệm thêm, không thay thế các mục bắ
 
 ## Đề A1/A2 được bổ sung ngày 14/10/2026
 
-Nguồn A1: `assignments/assignment1-vne.pdf` (5 trang cả bìa), được người học cung cấp. A1 có code riêng ở `A1/`, báo cáo riêng `A1/reports/report.tex` → `A1/reports/assignment1.pdf`.
+Nguồn A1: `assignments/assignment1-vne.pdf` (5 trang cả bìa), được người học cung cấp. A1 có code riêng ở `src/A1/`, báo cáo riêng `reports/assignment1/report.tex` → `reports/assignment1/assignment1.pdf`.
 
 | Tiêu chí A1 | Protocol triển khai | Evidence sau chạy |
 |---|---|---|
@@ -44,7 +44,7 @@ A2: đã lưu đề gốc nhưng chưa chọn chủ đề/paper; **chưa triển
 
 ## Trạng thái thực nghiệm
 
-Đã hoàn tất60/60 lượt E1–E3, mỗi lượt30 epoch, và24/24 lượt A1, mỗi lượt20 epoch; tất cả đã đánh giá held-out test sau khi cố định protocol. Manifest, source/data/checkpoint hashes và lịch sử sao lưu được ghi trong `docs/TRAINING_EXECUTION.md`, `reports/generated/` và `A1/reports/generated/`.
+Đã hoàn tất60/60 lượt E1–E3, mỗi lượt30 epoch, và24/24 lượt A1, mỗi lượt20 epoch; tất cả đã đánh giá held-out test sau khi cố định protocol. Manifest, source/data/checkpoint hashes và lịch sử sao lưu được ghi trong `docs/TRAINING_EXECUTION.md`, `reports/exercises/generated/` và `reports/assignment1/generated/`.
 
 ## Mốc trong đề
 

@@ -7,9 +7,9 @@ Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/ML
 
 **Kết quả ngày 15/10/2026:** E1–E3 hoàn tất 60/60 lượt train và test; A1 hoàn tất 24/24 lượt train và test trên RTX 5090. CNN E1 đạt 92,69% ±0,15%; Swin-T full A1 đạt 86,63% ±0,22% test accuracy (trung bình ±SD mẫu, ba seed). A2 chờ chọn paper. Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).
 
-A1 có tám cấu hình ResNet18/Swin-T × scratch/head/partial/full, ba seed, 20 epoch; dùng toàn bộ CIFAR-100 với split45.000/5.000/10.000. Code ở [A1](A1/README.md), báo cáo tách riêng [A1 LaTeX](A1/reports/report.tex) và [A1 PDF](A1/reports/assignment1.pdf). PDF E1–E3 không chứa assignment.
+A1 có tám cấu hình ResNet18/Swin-T × scratch/head/partial/full, ba seed, 20 epoch; dùng toàn bộ CIFAR-100 với split45.000/5.000/10.000. Code ở [A1](src/A1/README.md), báo cáo tách riêng [A1 LaTeX](reports/assignment1/report.tex) và [A1 PDF](reports/assignment1/assignment1.pdf). PDF E1–E3 không chứa assignment.
 
-[Báo cáo PDF](reports/exercises.pdf) · [LaTeX](reports/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
+[Báo cáo PDF](reports/exercises/exercises.pdf) · [LaTeX](reports/exercises/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
 
 ## Nội dung
 
@@ -35,6 +35,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements/torch-cuda.txt
+python -m pip install --no-deps -e .
 python -m pip install -r requirements.txt -r requirements/dev.txt
 ```
 
@@ -69,13 +70,13 @@ Checkpoint được chọn bằng validation accuracy, hòa thì xét validation
 
 ```bash
 python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
-python -m E3.diagnose --run runs/e3_lstm_rows/seed_42 --device cuda
-python -m E3.diagnose --run runs/e3_lstm_rows_combined/seed_42 --device cuda
+python -m E3.diagnose --run runs/exercises/e3_lstm_rows/seed_42 --device cuda
+python -m E3.diagnose --run runs/exercises/e3_lstm_rows_combined/seed_42 --device cuda
 python -m scripts.export_report
 python -m A1.export_report
 python -m scripts.write_findings
 python -m scripts.build_report
-python -m scripts.build_report --report-root A1/reports --jobname assignment1
+python -m scripts.build_report --report-root reports/assignment1 --jobname assignment1
 ```
 
 `E3.diagnose` chỉ dùng validation, không cập nhật trọng số. Nó đo gradient trên các trạng thái hồi quy thật khi unroll cùng trọng số, không lấy gradient của tensor output fused rồi gọi đó là gradient BPTT.
@@ -87,16 +88,21 @@ Bảng và hình được xuất từ log đã kiểm tra provenance. `scripts.w
 ## Cấu trúc và kiểm tra
 
 ```text
-E1/, E2/, E3/       Mô hình, entry point và chẩn đoán hồi quy
-common/             Split, training loop, checkpoint, evaluation, plots
-configs/            20 cấu hình thí nghiệm
-A1/                 Mã và báo cáo riêng A1
-scripts/            Chạy suite, xuất kết quả, build PDF, chuẩn bị Pages
-reports/            Một báo cáo E1–E3, mã LaTeX và kết quả được xuất
-site/               Trang giới thiệu cho GitHub Pages
-tests/              Kiểm thử số học và quy trình, không tải dataset
-docs/               Mapping yêu cầu, thiết kế thí nghiệm, hướng dẫn GPU
+src/                 Mã Python: common, E1, E2, E3, A1
+configs/             Protocol và cấu hình thí nghiệm
+reports/exercises/   PDF, LaTeX, hình và evidence E1–E3
+reports/assignment1/  PDF, LaTeX, hình và evidence A1 riêng
+assignments/         Đề gốc
+site/                HTML, CSS, JavaScript của landing page
+scripts/             Lệnh train, export, build và kiểm tra
+tests/              Unit và protocol tests
+docs/               Quy trình, yêu cầu và provenance
+data/               Dữ liệu cục bộ (không đưa vào Git)
+runs/               exercises/ và assignment1/ (không đưa vào Git)
+artifacts/          Log và trạng thái vận hành (không đưa vào Git)
+build/site/         Bản build Pages (không đưa vào Git)
 ```
+
 
 ```bash
 python -m pytest -q
@@ -113,7 +119,7 @@ Trong **Settings → Pages**, chọn **Source: GitHub Actions**. Sau đó chạy
 
 ```bash
 python scripts/build_site.py
-python -m http.server 8000 --directory site-preview
+python -m http.server 8000 --directory build/site
 ```
 
 Repo đã được tạo; không cần chạy `scripts/publish_github.py`. Script đó chỉ dành cho việc tạo một repository mới từ gói ZIP ban đầu, không cập nhật repo đang có.
@@ -123,3 +129,9 @@ Repo đã được tạo; không cần chạy `scripts/publish_github.py`. Scrip
 Yêu cầu thực hiện lấy từ các PDF của môn học trong `assignments/`. Repo tham khảo `dangtai111325/CO5085` chỉ được xem về cách tổ chức thư mục; các bảng, hình và kết luận thực nghiệm của bài này được tạo từ lượt chạy riêng.
 
 Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).
+
+## Đường dẫn và kết quả trước khi tổ chức lại
+
+Xem [cấu trúc repository](docs/REPOSITORY_LAYOUT.md). Cài editable package trước khi chạy các module: `python -m pip install --no-deps -e .`. Module vẫn là `E1`, `E2`, `E3`, `A1`, nhưng source nằm dưới `src/`.
+
+Các lượt GPU được giữ nguyên chữ ký nguồn trước refactor, tại commit `1250e56`. Kiểm tra bằng `python -m scripts.verify_archive --checkpoints`. Để xuất lại A1 đã đo, dùng `python -m A1.export_report --archive`; nhận xét dùng `python -m scripts.write_findings --archive`. Không resume các checkpoint này bằng mã sau refactor; chạy mới phải dùng output root mới.

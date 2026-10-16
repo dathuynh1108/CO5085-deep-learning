@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CO5085">
-  <rect width="64" height="64" rx="12" fill="#155bbb"/>
-  <text x="32" y="42" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="29" font-weight="700">CO</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#263e35"/><path d="M17 17h15a15 15 0 0 1 0 30H17z" fill="none" stroke="#f8f7f3" stroke-width="5"/><circle cx="47" cy="47" r="5" fill="#b74c32"/></svg>

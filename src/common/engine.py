@@ -22,7 +22,7 @@ from E3.models import orthogonality_penalty
 def source_fingerprint() -> str:
     digest = hashlib.sha256()
     for folder in ['common', 'E1', 'E2', 'E3']:
-        for path in sorted((ROOT / folder).glob('*.py')):
+        for path in sorted((ROOT / 'src' / folder).glob('*.py')):
             digest.update(str(path.relative_to(ROOT)).encode())
             digest.update(path.read_bytes())
     return digest.hexdigest()

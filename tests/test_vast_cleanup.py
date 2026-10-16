@@ -10,7 +10,7 @@ from scripts import vast_finalize, watch_vast_training
 @pytest.mark.parametrize('problem', ['checksum', 'endpoint'])
 def test_cleanup_never_destroys_unverified_backup_or_wrong_instance(tmp_path, monkeypatch, problem):
     monkeypatch.setattr(vast_finalize, 'ROOT', tmp_path)
-    monkeypatch.setattr(vast_finalize, 'validate_completion', lambda root: {'runs': 60, 'A1/runs': 24})
+    monkeypatch.setattr(vast_finalize, 'validate_completion', lambda root: {'runs': 60, 'runs/assignment1': 24})
     fixture = tmp_path / 'runs/fixture.pt'
     fixture.parent.mkdir(parents=True)
     fixture.write_bytes(b'checkpoint fixture, not a trained model')

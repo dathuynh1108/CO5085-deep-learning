@@ -1,0 +1,217 @@
+{
+  "excluded_test_images": 10,
+  "retained_test_images": 9990,
+  "groups": [
+    {
+      "experiment": "resnet18_scratch",
+      "accuracy": 0.6437437437437438,
+      "sd": 0.0010546199952805244
+    },
+    {
+      "experiment": "resnet18_head",
+      "accuracy": 0.6097097097097097,
+      "sd": 0.0028873283487199264
+    },
+    {
+      "experiment": "resnet18_partial",
+      "accuracy": 0.7399733066399733,
+      "sd": 0.0011730661215379708
+    },
+    {
+      "experiment": "resnet18_full",
+      "accuracy": 0.7900900900900901,
+      "sd": 0.0004363262205746474
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "accuracy": 0.02762762762762763,
+      "sd": 0.01265702335781681
+    },
+    {
+      "experiment": "swin_t_head",
+      "accuracy": 0.7169836503169836,
+      "sd": 0.0009082854580457813
+    },
+    {
+      "experiment": "swin_t_partial",
+      "accuracy": 0.7828828828828829,
+      "sd": 0.0022627937047962495
+    },
+    {
+      "experiment": "swin_t_full",
+      "accuracy": 0.8667667667667668,
+      "sd": 0.002165496261539937
+    }
+  ],
+  "runs": [
+    {
+      "experiment": "resnet18_scratch",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.6427427427427428,
+      "macro_f1": 0.6414516157189364
+    },
+    {
+      "experiment": "resnet18_scratch",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.6436436436436437,
+      "macro_f1": 0.6419695658859047
+    },
+    {
+      "experiment": "resnet18_scratch",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.6448448448448448,
+      "macro_f1": 0.6436683427889932
+    },
+    {
+      "experiment": "resnet18_head",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.6121121121121121,
+      "macro_f1": 0.610674406611222
+    },
+    {
+      "experiment": "resnet18_head",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.6065065065065065,
+      "macro_f1": 0.6048658360274078
+    },
+    {
+      "experiment": "resnet18_head",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.6105105105105105,
+      "macro_f1": 0.6091341059130078
+    },
+    {
+      "experiment": "resnet18_partial",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.7386386386386387,
+      "macro_f1": 0.7386860469027852
+    },
+    {
+      "experiment": "resnet18_partial",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.7408408408408408,
+      "macro_f1": 0.7406842593703512
+    },
+    {
+      "experiment": "resnet18_partial",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.7404404404404404,
+      "macro_f1": 0.7403022104352304
+    },
+    {
+      "experiment": "resnet18_full",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.7902902902902903,
+      "macro_f1": 0.7906753726599657
+    },
+    {
+      "experiment": "resnet18_full",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.7895895895895896,
+      "macro_f1": 0.7895760750656463
+    },
+    {
+      "experiment": "resnet18_full",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.7903903903903904,
+      "macro_f1": 0.7901928273458897
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.04124124124124124,
+      "macro_f1": 0.016671269302647604
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.025425425425425426,
+      "macro_f1": 0.00824809210437935
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.016216216216216217,
+      "macro_f1": 0.0030137806418802
+    },
+    {
+      "experiment": "swin_t_head",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.716016016016016,
+      "macro_f1": 0.7146161221836655
+    },
+    {
+      "experiment": "swin_t_head",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.7178178178178178,
+      "macro_f1": 0.7164910260781318
+    },
+    {
+      "experiment": "swin_t_head",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.7171171171171171,
+      "macro_f1": 0.7158269316999114
+    },
+    {
+      "experiment": "swin_t_partial",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.7803803803803804,
+      "macro_f1": 0.7795660328274172
+    },
+    {
+      "experiment": "swin_t_partial",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.7847847847847848,
+      "macro_f1": 0.7836985211448187
+    },
+    {
+      "experiment": "swin_t_partial",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.7834834834834835,
+      "macro_f1": 0.7828730217343929
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 42,
+      "n": 9990,
+      "accuracy": 0.8661661661661662,
+      "macro_f1": 0.8661041394635371
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 43,
+      "n": 9990,
+      "accuracy": 0.864964964964965,
+      "macro_f1": 0.865112485890646
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 44,
+      "n": 9990,
+      "accuracy": 0.8691691691691692,
+      "macro_f1": 0.8690113886430245
+    }
+  ],
+  "note": "These are not leakage-free retraining results. Two train/validation duplicate pixel hashes remain in the measured selection protocol."
+}

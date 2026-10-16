@@ -51,18 +51,18 @@ def atomic_copy(source, destination):
 
 def expected_source():
     names = ['__init__.py', 'protocol.py', 'models.py', 'data.py', 'metrics.py', 'engine.py', 'run_suite.py', 'visuals.py']
-    paths = [ROOT / 'A1' / name for name in names] + [ROOT / 'common/runtime.py']
+    paths = [ROOT / 'src/A1' / name for name in names] + [ROOT / 'src/common/runtime.py']
     return {str(path.relative_to(ROOT)): digest(path) for path in paths}
 
 
-def read_run(run, experiment, seed, protocol):
+def read_run(run, experiment, seed, protocol, *, source_files=None):
     path = run / 'metadata.json'
     if not path.exists():
         return None, 'missing metadata'
     metadata = json.loads(path.read_text())
     signature = metadata['signature']
     if (signature['protocol'] != protocol or signature['experiment'] != experiment or signature['seed'] != seed
-            or signature['source'] != expected_source() or signature['config_sha256'] != digest(CONFIG)):
+            or signature['source'] != (expected_source() if source_files is None else source_files) or signature['config_sha256'] != digest(CONFIG)):
         raise ValueError('Protocol/source/config/seed mismatch')
     from hashlib import sha256
     signature_hash = sha256(json.dumps(signature, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
@@ -130,14 +130,14 @@ def aggregate(rows, experiment):
     return result
 
 
-def export(output_root, destination):
+def export(output_root, destination, *, source_files=None):
     protocol = load_protocol()
     rows, coverage = [], []
     for experiment in protocol['experiments']:
         for seed in protocol['seeds']:
             run = output_root / experiment['id'] / f'seed_{seed}'
             try:
-                row, status = read_run(run, experiment, seed, protocol)
+                row, status = read_run(run, experiment, seed, protocol, source_files=source_files)
             except (KeyError, ValueError, OSError, IndexError, TypeError) as exc:
                 row, status = None, f'rejected: {exc}'
             if row:
@@ -248,13 +248,15 @@ def export(output_root, destination):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output-root', type=Path, default=ROOT / 'A1/runs')
-    parser.add_argument('--destination', type=Path, default=ROOT / 'A1/reports/generated')
+    parser.add_argument('--output-root', type=Path, default=ROOT / 'runs/assignment1')
+    parser.add_argument('--destination', type=Path, default=ROOT / 'reports/assignment1/generated')
+    parser.add_argument('--archive', action='store_true', help='Read the verified 1250e56 training source; never enables resume')
     args = parser.parse_args()
     destination = args.destination.resolve()
-    if destination != ROOT / 'A1/reports/generated' and ROOT / 'A1' not in destination.parents:
-        parser.error('A1 export destination must remain under A1/')
-    export(args.output_root, destination)
+    if destination != ROOT / 'reports/assignment1/generated' and ROOT / 'reports/assignment1' not in destination.parents:
+        parser.error('A1 export destination must remain under reports/assignment1/')
+    from common.archive import a1_source
+    export(args.output_root, destination, source_files=a1_source() if args.archive else None)
 
 
 if __name__ == '__main__':

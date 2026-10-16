@@ -1,0 +1,31 @@
+{
+  "train_validation_shared_hashes": [
+    "e0c7dff8a721e40ef0e3ca42cc631a16db22231ce7b4a3c508e6fa6f6d9e92f4",
+    "e4f04b5752abef9d8a585afc8db5056f4bf1f857d5955e8e6602231f3a94d28f"
+  ],
+  "test_indices_matching_train": [
+    1100,
+    1357,
+    2615,
+    2996,
+    3499,
+    3932,
+    4716,
+    5564,
+    6526,
+    9524
+  ],
+  "test_image_hashes": {
+    "1100": "86683e9dcf91816f764c8ae9170a91af950e0688d426aa96fd3bd17924f77676",
+    "1357": "29fe37917777bdd51661d2cae64ea16d5266c4947110d79ead631189febb377c",
+    "2615": "84306460e8985cdd3027d9a69441cbed223aa95052aa523ee91dab70a9d6f8c4",
+    "2996": "e4b2e4ea055b7e0c3fd8a6100fa777cf9057883f4c5451ef11eee75ad88098be",
+    "3499": "3b560d5a8768ea2b066c689def75eeb9dbd4573fba4cf533ca3c7ed175928da8",
+    "3932": "406e82f832bd11c769fbf7b5abbe3279a5c164f98ac286e78db1273539dd1538",
+    "4716": "4de97c5289587a6ad5fed134739fd3f553e3ea1596a97052ecb7d1c914156b4c",
+    "5564": "0eec83be0288eb275a9bd658e2773aaa4a83a4a52c4ec43fa3c1debb38fc2d0b",
+    "6526": "4f89e9ecee0e7fd700624c138aa06cad4e497349ad93f24a52fefb7b98842882",
+    "9524": "40f5d5f001406b27d5a2f6274cf5aadb6d8d8c98071753a762f1c0118d9b6086"
+  },
+  "note": "Exact pixel equality only. Post-hoc sensitivity on fixed predictions, no new checkpoint selection or retraining."
+}

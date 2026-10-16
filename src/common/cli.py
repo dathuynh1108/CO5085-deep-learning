@@ -10,7 +10,7 @@ def training_main(exercise: str | None = None):
     parser.add_argument('--experiment', required=True)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--data-root', type=Path, default=Path('data'))
-    parser.add_argument('--output-root', type=Path, default=Path('runs'))
+    parser.add_argument('--output-root', type=Path, default=Path('runs/exercises'))
     parser.add_argument('--device', default='auto')
     parser.add_argument('--num-workers', type=int, default=4)
     parser.add_argument('--epochs', type=int)

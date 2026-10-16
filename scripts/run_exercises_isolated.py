@@ -16,7 +16,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument('--seeds', type=int, nargs='+', default=[42])
     parser.add_argument('--phase', choices=['train', 'test'], default='train')
     parser.add_argument('--data-root', type=Path, default=Path('data'))
-    parser.add_argument('--output-root', type=Path, default=Path('runs'))
+    parser.add_argument('--output-root', type=Path, default=Path('runs/exercises'))
     parser.add_argument('--device', default='auto')
     parser.add_argument('--num-workers', type=int, default=4)
     parser.add_argument('--resume', action='store_true')

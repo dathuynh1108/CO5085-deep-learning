@@ -93,7 +93,7 @@ Từ 60.000 ảnh train, tách phân tầng 10\% làm validation với split see
 
 Ảnh được chuyển từ uint8 sang $[0,1]$, sau đó chuẩn hóa $x'=(x-\mu)/\sigma$. Hai thống kê $\mu,\sigma$ được tính trên 54.000 ảnh train và dùng lại cho validation/test. Các thí nghiệm không dùng augmentation để giữ đầu vào thống nhất khi so sánh cách biểu diễn ảnh.
 
-\code{common/data.py} lưu chỉ số từng split, checksum dữ liệu và fingerprint của cả split lẫn normalization. Loader ưu tiên HTTPS từ repo chính thức của dataset và giữ kiểm tra checksum của torchvision. Dữ liệu test có thể được tải cùng kho ảnh, nhưng không được đọc vào vòng chọn checkpoint hay tính normalization.
+\code{src/common/data.py} lưu chỉ số từng split, checksum dữ liệu và fingerprint của cả split lẫn normalization. Loader ưu tiên HTTPS từ repo chính thức của dataset và giữ kiểm tra checksum của torchvision. Dữ liệu test có thể được tải cùng kho ảnh, nhưng không được đọc vào vòng chọn checkpoint hay tính normalization.
 
 \section{Huấn luyện và chỉ số đánh giá}
 Mỗi mô hình xuất logits $z\in\R^{10}$. Với nhãn đúng $y$, cross-entropy là
@@ -337,7 +337,7 @@ Trên cùng 256 ảnh validation theo quy tắc định trước, diagnostic ghi
 
 \chapter{Tái lập và giới hạn}
 \section{Mã nguồn và tệp kết quả}
-Repo tách mô hình thành \code{E1/}, \code{E2/}, \code{E3/}; phần dùng chung nằm trong \code{common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Hyperparameter được khai báo trong một file JSON gồm 20 preset.
+Repo tách mô hình thành \code{src/E1/}, \code{src/E2/}, \code{src/E3/}; phần dùng chung nằm trong \code{src/common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Hyperparameter được khai báo trong một file JSON gồm 20 preset.
 
 Checkpoint cuối epoch lưu model, AdamW, cosine scheduler, lịch sử và trạng thái RNG của Python, NumPy, PyTorch, CUDA, shuffle generator. Resume từ epoch hoàn tất gần nhất, không từ batch đang dở. Fingerprint kiểm tra code, config, seed, dữ liệu và normalization; môi trường torch/CUDA cũng được đối chiếu. Khóa thư mục ngăn hai tiến trình ghi cùng run. Cơ chế này không hứa khả năng tái lập bitwise giữa các phần cứng khác nhau.
 

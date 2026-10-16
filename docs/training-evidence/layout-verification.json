@@ -1,0 +1,35 @@
+{
+  "source_release": "1250e569c6ce055391b5670e2f9a31faedb44b20",
+  "source_files": 32,
+  "verified_evidence_files": 420,
+  "verified_backup_files": 991,
+  "training_resumed": false,
+  "cpu_tests": 71,
+  "site_relative_links": 33,
+  "site_viewports": [
+    {
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "reports": {
+    "reports/exercises/exercises.pdf": {
+      "sha256": "7226dd68dcfea3a6f33e669b9999a7c9428dc25ae4135dc0da6fe8308e5b8b7d",
+      "visual_review": true
+    },
+    "reports/assignment1/assignment1.pdf": {
+      "sha256": "203eecc9e0b738ffcbdd9c1763309bf9f845cc17daefddf3a5d256247b05f666",
+      "visual_review": true
+    }
+  },
+  "shell_checks": [
+    "bash -n",
+    "shellcheck",
+    "shfmt -i 2 -d"
+  ],
+  "new_training_runs": 0
+}

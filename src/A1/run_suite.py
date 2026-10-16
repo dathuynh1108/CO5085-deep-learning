@@ -14,7 +14,7 @@ def parser():
     result.add_argument('--device', default='cuda')
     result.add_argument('--num-workers', type=int, default=8)
     result.add_argument('--data-root', type=Path, default=ROOT / 'data')
-    result.add_argument('--output-root', type=Path, default=ROOT / 'A1/runs')
+    result.add_argument('--output-root', type=Path, default=ROOT / 'runs/assignment1')
     result.add_argument('--resume', action='store_true')
     result.add_argument('--deterministic', action='store_true')
     return result

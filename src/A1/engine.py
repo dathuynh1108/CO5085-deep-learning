@@ -21,9 +21,9 @@ HISTORY_FIELDS = ['epoch', 'lr', 'train_ce', 'train_accuracy', 'train_macro_f1',
 
 
 def source_identity():
-    files = [ROOT / 'A1' / name for name in
+    files = [ROOT / 'src/A1' / name for name in
              ['__init__.py', 'protocol.py', 'models.py', 'data.py', 'metrics.py', 'engine.py', 'run_suite.py', 'visuals.py']]
-    files += [ROOT / 'common/runtime.py']
+    files += [ROOT / 'src/common/runtime.py']
     return {str(path.relative_to(ROOT)): file_hash(path) for path in files}
 
 

@@ -32,3 +32,9 @@ Prompt xác định phạm vi thực hiện các exercise đã có mã nguồn, 
 - [CIFAR-100 — trang dữ liệu của tác giả](https://www.cs.toronto.edu/~kriz/cifar.html).
 - [Fashion-MNIST — repository của tác giả](https://github.com/zalandoresearch/fashion-mnist).
 - Đề bài trong thư mục `assignments/`.
+
+## Tổ chức lại và dùng lại kết quả cho Image
+
+AI hỗ trợ chuyển mã vào `src/`, tách hai báo cáo trong `reports/`, cập nhật packaging/CLI/CI và landing theo phong cách của CO5177. Các hash thực nghiệm gốc và 991 tệp sao lưu được đối chiếu sau khi chuyển. Mã sau refactor có identity mới; đọc kết quả cũ qua cơ chế archive tường minh, không đổi signature để resume.
+
+Theo yêu cầu dùng lại bài phù hợp, AI chuyển A1 sang track Image của CO5177 cùng manifest nguồn, bổ sung notebook khám phá toàn bộ CIFAR-100 và phân tích prediction. Kiểm tra pixel phát hiện ảnh trùng giữa các split; giới hạn này và kiểm tra độ nhạy trên cùng checkpoint được bổ sung vào báo cáo A1. Không chạy thêm training hoặc thuê thêm GPU trong lần tổ chức này.

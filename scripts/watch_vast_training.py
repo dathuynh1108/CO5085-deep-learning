@@ -41,11 +41,11 @@ def main():
         print(json.dumps(value), flush=True)
 
     remote_code = ('import pathlib,json; r=pathlib.Path(' + repr(remote_root) + '); '
-                   'p=r/"logs/coursework.exit"; '
-                   'print(json.dumps({"complete":(r/"logs/coursework.complete").is_file(), '
+                   'p=r/"artifacts/logs/coursework.exit"; '
+                   'print(json.dumps({"complete":(r/"artifacts/logs/coursework.complete").is_file(), '
                    '"exit":int(p.read_text().strip()) if p.exists() else None, '
-                   '"exercise_trained":len(list((r/"runs").glob("*/seed_*/metrics.json"))), '
-                   '"a1_records":len(list((r/"A1/runs").glob("*/seed_*/metadata.json")))}))')
+                   '"exercise_trained":len(list((r/"runs/exercises").glob("*/seed_*/metrics.json"))), '
+                   '"a1_records":len(list((r/"runs/assignment1").glob("*/seed_*/metadata.json")))}))')
     deadline = time.monotonic() + args.max_hours * 3600
     errors = 0
     while time.monotonic() < deadline:
@@ -75,12 +75,12 @@ def main():
     try:
         # Reports/figures/evidence are preserved before the independent
         # checkpoint SHA256 guard permits destruction.
-        for folder in ['reports/generated', 'A1/reports/generated', 'site-preview']:
+        for folder in ['reports/exercises/generated', 'reports/assignment1/generated', 'build/site']:
             destination = ROOT / folder
             destination.mkdir(parents=True, exist_ok=True)
             copy_with_retry(['rsync', '-az', '--partial-dir=.rsync-partial', '-e', shlex.join(ssh),
                              f'{target}:{remote_root}/{folder}/', str(destination) + '/'])
-        for relative in ['reports/exercises.pdf', 'A1/reports/assignment1.pdf']:
+        for relative in ['reports/exercises/exercises.pdf', 'reports/assignment1/assignment1.pdf']:
             copy_with_retry(['rsync', '-az', '--partial-dir=.rsync-partial', '-e', shlex.join(ssh),
                              f'{target}:{remote_root}/{relative}', str(ROOT / relative)])
         subprocess.run([sys.executable, '-m', 'scripts.vast_finalize', '--instance', str(args.instance),
@@ -97,8 +97,8 @@ def main():
                         + 'Diagnostic baseline/combined E3 đã chạy trên validation256 ảnh cho ba seed.\n\n'
                         + f'Đã tải và kiểm tra SHA256 của {manifest["verified_files"]} artifact; '
                         + f'instance {args.instance} đã được xóa và CLI không còn liệt kê nó. '
-                        + 'Checkpoint nằm trong runs/ và A1/runs/ ở workspace, bị Git ignore. '
-                        + 'Evidence nhẹ và checksum ở reports/generated/evidence, A1/reports/generated/evidence '
+                        + 'Checkpoint nằm trong runs/exercises/ và runs/assignment1/ ở workspace, bị Git ignore. '
+                        + 'Evidence nhẹ và checksum ở reports/exercises/generated/evidence, reports/assignment1/generated/evidence '
                         + 'và docs/training-evidence/backup-manifest.json.\n\n'
                         + 'Các PDF đã build từ số liệu thật; cần bước kiểm tra hình ảnh PDF cuối của agent '
                         + 'trước khi coi bản báo cáo sẵn sàng nộp. Chưa commit/push.\n')

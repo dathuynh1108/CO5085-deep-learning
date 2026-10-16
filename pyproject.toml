@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "co5085-coursework"
+version = "1.0.0"
+description = "Reproducible CO5085 exercise and assignment experiments"
+requires-python = ">=3.12"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["common*", "E1*", "E2*", "E3*", "A1*"]

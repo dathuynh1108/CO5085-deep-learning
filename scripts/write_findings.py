@@ -35,10 +35,10 @@ def delta_text(mean, sd):
 
 
 def write_exercises():
-    records = collect_runs(ROOT / 'runs')
+    records = collect_runs(ROOT / 'runs/exercises')
     if len(records) != 60 or any(r['test'] is None for r in records):
         raise ValueError('Final exercise discussion requires all 60 train/test runs.')
-    target = ROOT / 'reports/generated'
+    target = ROOT / 'reports/exercises/generated'
     rows = json.loads((target / 'summary.json').read_text())
     by_id = {r['id']: r for r in rows}
     evidence = target / 'evidence'
@@ -156,7 +156,7 @@ def write_exercises():
     for identifier in ['e3_lstm_rows', 'e3_lstm_rows_combined']:
         summaries, gradients = [], []
         for seed in [42, 43, 44]:
-            directory = ROOT / 'runs' / identifier / f'seed_{seed}' / 'diagnostics'
+            directory = ROOT / 'runs/exercises' / identifier / f'seed_{seed}' / 'diagnostics'
             summaries.append(json.loads((directory / 'summary.json').read_text()))
             with (directory / 'temporal_gradients.csv').open() as stream:
                 gradients.append(list(csv.DictReader(stream)))
@@ -181,16 +181,16 @@ def write_exercises():
         'trong khi penalty trực giao làm tăng chi phí huấn luyện.\n')
 
 
-def write_a1():
+def write_a1(*, source_files=None):
     protocol = load_protocol()
     records = []
     for experiment in protocol['experiments']:
         for seed in [42, 43, 44]:
-            row, reason = read_run(ROOT / 'A1/runs' / experiment['id'] / f'seed_{seed}', experiment, seed, protocol)
+            row, reason = read_run(ROOT / 'runs/assignment1' / experiment['id'] / f'seed_{seed}', experiment, seed, protocol, source_files=source_files)
             if row is None or reason != 'complete':
                 raise ValueError('Final A1 discussion requires all 24 train/test runs.')
             records.append(row)
-    target = ROOT / 'A1/reports/generated'
+    target = ROOT / 'reports/assignment1/generated'
     summary = json.loads((target / 'summary.json').read_text())['groups']
     groups = {r['experiment']: r for r in summary}
     paragraphs = ['Kết quả gồm 24 lượt chạy, với ba seed 42, 43 và 44 cho mỗi cấu hình. '
@@ -276,7 +276,7 @@ def write_a1():
     for index, family in enumerate(['resnet18', 'swin_t']):
         last_rows = []
         for seed in [42, 43, 44]:
-            with (ROOT / 'A1/runs' / f'{family}_full' / f'seed_{seed}' / 'history.csv').open() as stream:
+            with (ROOT / 'runs/assignment1' / f'{family}_full' / f'seed_{seed}' / 'history.csv').open() as stream:
                 last_rows.append(list(csv.DictReader(stream))[-1])
         train = statistics.mean(float(row['train_accuracy']) for row in last_rows)
         val = statistics.mean(float(row['val_accuracy']) for row in last_rows)
@@ -287,7 +287,7 @@ def write_a1():
         'đây là dấu hiệu overfit. Điểm test trong bảng lấy từ checkpoint tốt nhất theo validation, '
         'không nhất thiết là epoch 20.\n\n')
     for family in ['resnet18', 'swin_t']:
-        run = ROOT / 'A1/runs' / f'{family}_full' / 'seed_42'
+        run = ROOT / 'runs/assignment1' / f'{family}_full' / 'seed_42'
         evaluation = json.loads((run / 'evaluation_test.json').read_text())
         matrix = evaluation['confusion']
         a, b = max(((i, j) for i in range(100) for j in range(100) if i != j), key=lambda pair: matrix[pair[0]][pair[1]])
@@ -314,11 +314,13 @@ def write_a1():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--study', choices=['all', 'exercises', 'a1'], default='all')
+    parser.add_argument('--archive', action='store_true', help='Verify the immutable measured release for A1')
     args = parser.parse_args()
     if args.study in {'all', 'exercises'}:
         write_exercises()
     if args.study in {'all', 'a1'}:
-        write_a1()
+        from common.archive import a1_source
+        write_a1(source_files=a1_source() if args.archive else None)
     print(f'Wrote factual findings for {args.study} from verified train/test runs.')
 
 

@@ -233,6 +233,15 @@ parameters/buffers được fingerprint kiểm tra sau epoch. Git commit/dirty
 Git; JSON/CSV và checksums được giữ trong generated/evidence. Sai khác
 GPU hoặc kernel có thể ảnh hưởng khả năng tái lập từng bit.
 
+\section{Mã nguồn và kiểm thử}
+Mã A1 nằm trong thư mục \code{src/A1/}, cấu hình ở \code{configs/a1_experiments.json}.
+Thí nghiệm được chạy bằng \code{A1.run_suite} trên CUDA với 8 workers;
+\code{--resume} khôi phục lượt chạy bị gián đoạn. \code{A1.export_report}
+tổng hợp bảng và hình; \code{scripts.build_report} biên dịch LaTeX thành PDF.
+Các lệnh đầy đủ được ghi trong \code{src/A1/README.md}.
+
+Các kiểm thử số học và protocol không tải dữ liệu hoặc trọng số pretrained. Phạm vi gồm split theo chỉ số, accuracy/F1, đóng băng tham số và buffers, augmentation theo epoch/worker, khôi phục checkpoint/RNG và kiểm tra signature.
+
 \chapter{Kết quả thực nghiệm và thảo luận}
 \section{So sánh các chế độ huấn luyện}
 \begin{table}[htbp]\centering\small
@@ -270,18 +279,6 @@ trong các tệp CSV kèm báo cáo.
 \section{Kết luận}
 \input{generated/conclusion.tex}
 
-\section{Tổ chức mã nguồn và tái lập}
-Mã A1 nằm trong thư mục \code{A1/}, cấu hình ở \code{configs/a1_experiments.json}.
-Thí nghiệm được chạy bằng \code{A1.run_suite} trên CUDA với 8 workers;
-\code{--resume} khôi phục lượt chạy bị gián đoạn. \code{A1.export_report}
-tổng hợp bảng và hình; \code{scripts.build_report} biên dịch LaTeX thành PDF.
-Các lệnh đầy đủ được ghi trong \code{A1/README.md}.
-
-Các kiểm thử không tải dataset hoặc trọng số pretrained. Phạm vi kiểm tra gồm
-chia tập không chồng lấp, accuracy/F1, đóng băng tham số và thống kê BatchNorm,
-stochastic depth, augmentation theo epoch và worker, khôi phục checkpoint,
-RNG, optimizer, scheduler, kiểm tra signature và xử lý kết quả thiếu khi export.
-
 \section{Giới hạn}
 Ảnh gốc $32\times32$ và đầu vào $96\times96$ khác với kích thước phổ biến
 $224\times224$ của pretrained. Thực nghiệm chỉ khảo sát CIFAR-100, hai kiến
@@ -289,6 +286,9 @@ trúc và ngân sách 20 epoch; đặc biệt, scratch có thể tiếp tục c�
 được huấn luyện lâu hơn. Hai họ còn khác capacity và recipe ImageNet.
 Ba seed mô tả biến thiên giữa các lượt khởi tạo, với cùng phần cứng và
 thiết lập workers. Tình trạng license của dữ liệu vẫn là chưa rõ.
+
+\subsection{Ảnh trùng giữa các split}
+Audit toàn bộ pixel và nhãn, khớp hash dữ liệu gốc, phát hiện 2 nội dung ảnh trùng train--validation và 10 trùng train--test; không có trùng validation--test. Split và checkpoint gốc được giữ nguyên. Loại 10 ảnh test trùng train khỏi prediction đã lưu cho accuracy trung bình 79.009\% với ResNet18 full và 86.677\% với Swin-T full. Đây là kiểm tra độ nhạy, không phải train lại sau loại trùng. Hai nội dung trùng train--validation vẫn có thể ảnh hưởng chọn checkpoint; near duplicates chưa được đánh giá. Chi tiết nằm trong \code{docs/training-evidence/cifar100-pixel-audit.json} và các tệp overlap/sensitivity.
 
 Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md} trong repository.
 

@@ -22,7 +22,7 @@ def validate_completion(root: Path) -> dict:
     from common.runtime import state_fingerprint
     current_source = source_fingerprint()
     counts = {}
-    for config_path, runs_path, expected in [('configs/experiments.json', 'runs', 60)]:
+    for config_path, runs_path, expected in [('configs/experiments.json', 'runs/exercises', 60)]:
         configs = json.loads((root / config_path).read_text())
         count = 0
         for config in configs:
@@ -62,7 +62,7 @@ def validate_completion(root: Path) -> dict:
     a1_count = 0
     for config in protocol['experiments']:
         for seed in [42, 43, 44]:
-            run = root / 'A1/runs' / config['id'] / f'seed_{seed}'
+            run = root / 'runs/assignment1' / config['id'] / f'seed_{seed}'
             if (run / '.a1.lock').exists():
                 raise ValueError(f'Active training/evaluation lock: {run}')
             row, missing = read_run(run, config, seed, protocol)
@@ -79,7 +79,7 @@ def validate_completion(root: Path) -> dict:
             a1_count += 1
     if a1_count != 24:
         raise ValueError(f'A1 coverage changed: {a1_count} != 24')
-    counts['A1/runs'] = a1_count
+    counts['runs/assignment1'] = a1_count
     return counts
 
 
@@ -122,12 +122,12 @@ def main():
                            + shlex.quote('from pathlib import Path; from scripts.vast_finalize import validate_completion; '
                                          'print(validate_completion(Path(".")))')], check=True)
     remote_code = ('import hashlib,json,pathlib; root=pathlib.Path(' + repr(args.remote_root) + '); '
-                   'files=[p for folder in ["runs","A1/runs","data/processed","logs"] '
+                   'files=[p for folder in ["runs/exercises","runs/assignment1","data/processed","artifacts/logs"] '
                    'for p in (root/folder).rglob("*") if p.is_file()]; '
                    'print(json.dumps({str(p.relative_to(root)):hashlib.file_digest(p.open("rb"),"sha256").hexdigest() '
                    'for p in files},sort_keys=True))')
     hashes = json.loads(subprocess.check_output(ssh + [target, '/venv/main/bin/python -c ' + shlex.quote(remote_code)], text=True))
-    for folder in ['runs', 'A1/runs', 'data/processed', 'logs']:
+    for folder in ['runs/exercises', 'runs/assignment1', 'data/processed', 'artifacts/logs']:
         destination = ROOT / folder
         destination.mkdir(parents=True, exist_ok=True)
         copy_with_retry(['rsync', '-az', '--partial-dir=.rsync-partial', '-e', shlex.join(ssh),
