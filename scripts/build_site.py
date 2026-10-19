@@ -17,6 +17,18 @@ def accuracy_text(mean, sd):
     return f'{mean*100:.2f} ± {sd*100:.2f}%'
 
 
+A1_NAMES = {
+    'resnet18_scratch': 'ResNet18 — huấn luyện từ đầu',
+    'resnet18_head': 'ResNet18 — chỉ học bộ phân loại',
+    'resnet18_partial': 'ResNet18 — tinh chỉnh khối cuối',
+    'resnet18_full': 'ResNet18 — tinh chỉnh toàn bộ',
+    'swin_t_scratch': 'Swin-T — huấn luyện từ đầu',
+    'swin_t_head': 'Swin-T — chỉ học bộ phân loại',
+    'swin_t_partial': 'Swin-T — tinh chỉnh khối cuối',
+    'swin_t_full': 'Swin-T — tinh chỉnh toàn bộ',
+}
+
+
 def result_markup(exercises, assignment):
     rows = []
     for key in ['e1_softmax', 'e1_mlp', 'e1_cnn', 'e3_gru_rows']:
@@ -24,13 +36,13 @@ def result_markup(exercises, assignment):
         mean, sd = row['test_accuracy_mean'], row['test_accuracy_std']
         value = accuracy_text(mean, sd)
         width = 0 if mean is None else mean*100
-        rows.append(f'<div class="result-row"><span>{html.escape(row["label"])}</span><div class="result-track"><i style="--score:{width:.3f}%"></i></div><strong>{value}</strong></div>')
+        rows.append(f'<div class="result-row"><span>{html.escape("GRU (hàng ảnh)" if key == "e3_gru_rows" else row["label"])}</span><div class="result-track"><i style="--score:{width:.3f}%"></i></div><strong>{value}</strong></div>')
     a1 = []
     for row in assignment['groups']:
         mean, sd = row['test_accuracy']['mean'], row['test_accuracy']['sd']
         value = accuracy_text(mean, sd)
         f1 = row['test_macro_f1']['mean']
-        a1.append(f'<tr><th scope="row">{html.escape(row["experiment"])}</th><td>{value}</td><td>{"—" if f1 is None else f"{f1:.4f}"}</td></tr>')
+        a1.append(f'<tr><th scope="row">{html.escape(A1_NAMES[row["experiment"]])}</th><td>{value}</td><td>{"—" if f1 is None else f"{f1:.4f}"}</td></tr>')
     return ''.join(rows), ''.join(a1)
 
 
@@ -49,8 +61,8 @@ def build_site(output: Path) -> Path:
     result_rows, a1_rows = result_markup(summaries, assignment)
     count = manifest['train_runs']
     status = ('Báo cáo chưa có kết quả thực nghiệm.' if not count else
-              f'Đã tổng hợp {count} lượt train và {manifest["test_runs"]} lượt test trên Fashion-MNIST.')
-    a1_status = f'{am["trained_runs"]} lượt train · {am["tested_runs"]} lượt test · 3 seed'
+              f'Đã tổng hợp {count} lượt huấn luyện và {manifest["test_runs"]} lượt đánh giá trên tập kiểm tra Fashion-MNIST.')
+    a1_status = f'{am["trained_runs"]} lượt huấn luyện · {am["tested_runs"]} lượt đánh giá trên tập kiểm tra'
     for name in ['index.html', 'a1.html']:
         source = (ROOT / 'site' / name).read_text()
         for token, value in [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),

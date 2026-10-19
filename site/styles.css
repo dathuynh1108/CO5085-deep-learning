@@ -16,3 +16,11 @@
 @media(max-width:800px){.hero{grid-template-columns:1fr;padding-block:42px 50px;gap:30px}.hero h1{font-size:clamp(40px,9vw,64px)}.hero-copy{max-width:580px}.study-art{width:min(460px,100%);margin-inline:auto;min-height:410px}.model-sheet{width:245px}.model-sheet:nth-child(3){width:260px;left:25px}.feature-layout{grid-template-columns:1fr;gap:30px}.result-row{grid-template-columns:90px 1fr 125px;gap:12px;font-size:12px}.result-panel{padding:22px}.study-item{grid-template-columns:40px 1fr;gap:16px}.study-item>a{grid-column:2}.protocol-grid{gap:20px}.feature-stat{font-size:68px}.detail-hero h1{font-size:52px}}
 @media(max-width:420px){.model-sheet{width:215px;padding:19px}.model-sheet:nth-child(3){width:235px}.study-art{min-height:410px}.model-sheet strong{font-size:25px}.result-row{grid-template-columns:1fr 130px}.result-track{grid-row:2;grid-column:1/-1}.protocol-grid{grid-template-columns:1fr}.hero h1{font-size:41px}.hero-art{max-width:100%}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Use descriptive headings with the same typeface throughout the report site. */
+h1,h2,h3{text-wrap:balance}
+.hero h1{max-width:none;line-height:1.15;text-wrap:pretty}
+.detail-hero h1{font-size:clamp(38px,4.2vw,58px);line-height:1.18}
+.table-wrap caption{text-align:left;font-size:13px;color:var(--muted);margin-bottom:12px}
+.table-wrap tbody th{font:500 13px/1.6 var(--sans);min-width:15rem}
+@media(max-width:420px){.detail-hero h1{font-size:38px}}

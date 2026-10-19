@@ -11,7 +11,7 @@ def test_static_site_copies_pdf_and_reports_actual_empty_status(tmp_path):
     text = (target / 'index.html').read_text()
     assert 'Huỳnh Thành Đạt' in text and '2570161' in text
     manifest = json.loads((Path(__file__).resolve().parents[1] / 'reports/exercises/generated/manifest.json').read_text())
-    expected = 'Báo cáo chưa có kết quả thực nghiệm' if manifest['train_runs'] == 0 else f"{manifest['train_runs']} lượt train"
+    expected = 'Báo cáo chưa có kết quả thực nghiệm' if manifest['train_runs'] == 0 else f"{manifest['train_runs']} lượt huấn luyện"
     assert expected in text
     assert (target / 'reports/exercises.pdf').is_file()
     assert (target / 'results.json').is_file()

@@ -1,4 +1,106 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>A1 · CNN và Transformer · CO5085</title><meta name="description" content="ResNet18 và Swin-T trên CIFAR-100: cùng split, ba seed, bốn chế độ huấn luyện và báo cáo thực nghiệm riêng."><meta name="theme-color" content="#263e35"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><script src="app.js" defer></script></head><body>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A1 · So sánh CNN và Transformer · CO5085</title>
+  <meta name="description" content="Thiết lập và kết quả thực nghiệm ResNet18 và Swin-T trên CIFAR-100: dữ liệu, bốn chế độ huấn luyện, độ chính xác và macro-F1.">
+  <meta name="theme-color" content="#263e35">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
 <a class="skip-link" href="#main">Đến nội dung chính</a>
-<header class="site-header"><div class="container header-inner"><a class="brand" href="index.html" aria-label="Trang chủ CO5085"><span class="wordmark">CO5085<b>.</b></span><span class="brand-meta">HỌC SÂU<br>HỌC KỲ 261</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Mở điều hướng">Menu <span class="menu-icon" aria-hidden="true"></span></button><nav class="main-nav" id="site-nav" aria-label="Điều hướng chính"><a href="index.html#exercises">Bài tập E1–E3</a><a href="a1.html">Bài tập lớn A1</a><a href="index.html#reports">Báo cáo</a></nav><a class="header-link" href="https://github.com/dathuynh1108/CO5085-deep-learning">GitHub <span aria-hidden="true">↗</span></a></div></header><main id="main" class="container"><nav class="breadcrumb" aria-label="Đường dẫn"><a href="index.html">Trang chủ</a><span>/</span><span aria-current="page">A1</span></nav><section class="detail-hero"><div><span class="tag elective">Bài tập lớn A1</span><h1>CNN và Transformer<em>trên CIFAR-100.</em></h1><p>So sánh học từ đầu với ba mức fine-tuning trên ResNet18 và Swin-T.</p></div><div class="detail-meta"><span class="mono">Thực nghiệm</span><strong>8 cấu hình × 3 seed</strong><p><!--A1_STATUS-->24 lượt train · 24 lượt test<!--/A1_STATUS--></p></div></section><div class="detail-layout"><aside class="detail-aside" aria-label="Trong trang này"><span class="mono">Nội dung</span><a href="#data">01 · Dữ liệu</a><a href="#protocol">02 · Thiết lập</a><a href="#results">03 · Kết quả</a><a href="#files">04 · Tài liệu</a></aside><div class="detail-content"><section class="detail-section" id="data"><h2>Dữ liệu và cách chia</h2><p>CIFAR-100 gồm 60.000 ảnh màu thuộc 100 lớp. Từ 50.000 ảnh train chính thức, tách phân tầng 5.000 ảnh làm validation; giữ nguyên 10.000 ảnh test chính thức.</p><div class="specs"><div class="spec"><strong>45.000</strong><span>train</span></div><div class="spec"><strong>5.000</strong><span>validation</span></div><div class="spec"><strong>10.000</strong><span>test</span></div></div><p>Ảnh gốc 32×32 được resize lên 96×96. Resize không tạo thêm chi tiết; đây là giới hạn cần xét khi đọc kết quả của pretrained models.</p><p class="source-note">Nguồn: <a class="text-link" href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-100, University of Toronto ↗</a>. Nguồn tác giả không nêu license rõ ràng; dataset card uoft-cs ghi unknown. Raw data không được đưa vào repository.</p><p class="source-note">Audit pixel phát hiện 2 nội dung trùng train–validation và 10 nội dung trùng train–test. Báo cáo ghi rõ giới hạn này và kiểm tra độ nhạy trên cùng predictions.</p></section><section class="detail-section" id="protocol"><h2>Thiết lập so sánh</h2><p>Mỗi kiến trúc dùng bốn chế độ: scratch, pretrained chỉ học head, mở stage cuối và fine-tune toàn bộ. Các lượt pretrained dùng IMAGENET1K_V1.</p><div class="protocol-grid"><div><strong>20 epoch / seed</strong><p>Seed 42, 43, 44; split seed 2026.</p></div><div><strong>AdamW + cosine</strong><p>Batch 128, BF16 trên RTX 5090.</p></div><div><strong>Chọn bằng validation</strong><p>Accuracy cao nhất; hòa thì chọn CE thấp hơn.</p></div><div><strong>Test sau khi chốt protocol</strong><p>Dùng cùng checkpoint đã chọn; không tuning theo test.</p></div></div></section><section class="detail-section" id="results"><h2>Kết quả thực nghiệm</h2><p>Trung bình ± SD qua ba seed; accuracy tính theo phần trăm.</p><div class="table-wrap"><table><caption class="sr-only">Kết quả test CIFAR-100</caption><thead><tr><th scope="col">Cấu hình</th><th scope="col">Test accuracy</th><th scope="col">Macro-F1</th></tr></thead><tbody><!--A1_RESULTS--><!--/A1_RESULTS--></tbody></table></div><p>Swin-T full đạt kết quả cao nhất trong thiết lập này. Swin-T scratch học kém trong ngân sách 20 epoch; kết quả được giữ nguyên để thể hiện giới hạn của đối chứng scratch.</p><p class="source-note">Không diễn giải đây là so sánh khi mọi mô hình đã hội tụ. Thời gian, bộ nhớ, đường cong học và lỗi theo lớp được phân tích trong PDF.</p></section><section class="detail-section" id="files"><h2>Báo cáo và cách chạy</h2><div class="resource-list"><a class="resource-link" href="reports/assignment1.pdf"><span class="resource-title">Báo cáo A1 · PDF</span><span>↗</span></a><a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/reports/assignment1"><span class="resource-title">LaTeX, bảng và hình</span><span>↗</span></a><a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/src/A1"><span class="resource-title">Code và README A1</span><span>↗</span></a><a class="resource-link" href="a1-results.json"><span class="resource-title">Kết quả JSON</span><span>↗</span></a></div></section></div></div></main><footer class="site-footer"><div class="container footer-inner"><a class="footer-brand" href="index.html">CO5085<span>.</span></a><p>Huỳnh Thành Đạt · 2570161 · Học kỳ 261</p><a href="#main">Lên đầu trang ↑</a></div></footer></body></html>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="Trang chủ CO5085"><span class="wordmark">CO5085<b>.</b></span><span class="brand-meta">HỌC SÂU<br>HỌC KỲ 261</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Mở điều hướng">Danh mục <span class="menu-icon" aria-hidden="true"></span></button>
+    <nav class="main-nav" id="site-nav" aria-label="Điều hướng chính">
+      <a href="index.html#exercises">Bài tập E1–E3</a>
+      <a href="a1.html" aria-current="page">Bài tập lớn A1</a>
+      <a href="index.html#reports">Báo cáo</a>
+    </nav>
+    <a class="header-link" href="https://github.com/dathuynh1108/CO5085-deep-learning">GitHub <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+<main id="main" class="container">
+  <nav class="breadcrumb" aria-label="Đường dẫn"><a href="index.html">Trang chủ</a><span aria-hidden="true">/</span><span aria-current="page">A1</span></nav>
+  <section class="detail-hero">
+    <div>
+      <span class="tag elective">Bài tập lớn A1</span>
+      <h1>So sánh CNN và Transformer trên CIFAR-100</h1>
+      <p>Khảo sát ảnh hưởng của tiền huấn luyện và mức độ tinh chỉnh đến kết quả phân loại ảnh của ResNet18 và Swin-T.</p>
+    </div>
+    <div class="detail-meta"><span class="mono">Phạm vi thực nghiệm</span><strong>8 cấu hình · 3 giá trị seed · 20 epoch</strong><p><!--A1_STATUS-->Số lượt thực nghiệm được tổng hợp từ kết quả đã lưu.<!--/A1_STATUS--></p></div>
+  </section>
+  <div class="detail-layout">
+    <aside class="detail-aside" aria-label="Mục lục trang A1">
+      <span class="mono">Mục lục</span>
+      <a href="#data">01 · Dữ liệu</a>
+      <a href="#protocol">02 · Thiết lập thực nghiệm</a>
+      <a href="#results">03 · Kết quả và nhận xét</a>
+      <a href="#files">04 · Báo cáo và mã nguồn</a>
+    </aside>
+    <div class="detail-content">
+      <section class="detail-section" id="data">
+        <h2>Dữ liệu và tiền xử lý</h2>
+        <p>CIFAR-100 gồm 60.000 ảnh màu thuộc 100 lớp. Từ 50.000 ảnh huấn luyện chính thức, tách phân tầng 5.000 ảnh làm tập xác thực. Tập kiểm tra chính thức gồm 10.000 ảnh được giữ nguyên.</p>
+        <div class="specs">
+          <div class="spec"><strong>45.000</strong><span>ảnh huấn luyện</span></div>
+          <div class="spec"><strong>5.000</strong><span>ảnh xác thực</span></div>
+          <div class="spec"><strong>10.000</strong><span>ảnh kiểm tra</span></div>
+        </div>
+        <p>Ảnh gốc có kích thước 32×32 và được nội suy lên 96×96. Phép nội suy thay đổi kích thước đầu vào nhưng không bổ sung chi tiết ảnh, nên độ phân giải gốc vẫn là một giới hạn của thí nghiệm.</p>
+        <p>Tập huấn luyện sử dụng phép cắt ngẫu nhiên với đệm biên và lật ngang trước khi đổi kích thước. Tập xác thực và tập kiểm tra chỉ được đổi kích thước. Tất cả ảnh được chuẩn hóa bằng trung bình và độ lệch chuẩn ImageNet.</p>
+        <p class="source-note">Nguồn dữ liệu: <a class="text-link" href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-100, University of Toronto <span aria-hidden="true">↗</span></a>. Trang của tác giả không công bố giấy phép sử dụng cụ thể; thẻ dữ liệu uoft-cs/cifar100 ghi “unknown”.</p>
+        <p class="source-note">Kiểm tra pixel phát hiện 2 ảnh xác thực và 10 ảnh kiểm tra trùng với ảnh huấn luyện. Báo cáo A1 phân tích thêm ảnh hưởng của các ảnh trùng trên kết quả đánh giá.</p>
+      </section>
+
+      <section class="detail-section" id="protocol">
+        <h2>Thiết lập thực nghiệm</h2>
+        <p>Với mỗi kiến trúc, một cấu hình được huấn luyện từ đầu và ba cấu hình sử dụng trọng số tiền huấn luyện IMAGENET1K_V1. Ba mức tinh chỉnh lần lượt cập nhật bộ phân loại cuối, khối cuối cùng với bộ phân loại, hoặc toàn bộ tham số.</p>
+        <div class="protocol-grid">
+          <div><strong>20 epoch mỗi lượt</strong><p>Seed huấn luyện: 42, 43 và 44. Seed chia dữ liệu: 2026.</p></div>
+          <div><strong>AdamW và lịch học cosine</strong><p>Kích thước batch 128; tính toán BF16 trên GPU RTX 5090.</p></div>
+          <div><strong>Chọn checkpoint bằng tập xác thực</strong><p>Ưu tiên độ chính xác cao nhất; nếu bằng nhau, chọn cross-entropy thấp hơn.</p></div>
+          <div><strong>Đánh giá trên tập kiểm tra</strong><p>Thực hiện sau khi cố định cấu hình và chọn checkpoint; không dùng kết quả kiểm tra để điều chỉnh siêu tham số.</p></div>
+        </div>
+      </section>
+
+      <section class="detail-section" id="results">
+        <h2>Kết quả và nhận xét</h2>
+        <p>Bảng trình bày trung bình ± độ lệch chuẩn qua ba giá trị seed. Độ chính xác tính theo phần trăm; macro-F1 tính trên thang 0–1.</p>
+        <div class="table-wrap">
+          <table>
+            <caption>Kết quả phân loại CIFAR-100 trên tập kiểm tra</caption>
+            <thead><tr><th scope="col">Mô hình và chế độ huấn luyện</th><th scope="col">Độ chính xác</th><th scope="col">Macro-F1</th></tr></thead>
+            <tbody><!--A1_RESULTS--><!--/A1_RESULTS--></tbody>
+          </table>
+        </div>
+        <p>Swin-T tinh chỉnh toàn bộ đạt độ chính xác cao nhất, 86,63 ± 0,22%, so với 78,97 ± 0,04% của ResNet18 ở cùng chế độ. Với cả hai kiến trúc, tinh chỉnh khối cuối hoặc toàn bộ mô hình cho kết quả cao hơn việc chỉ cập nhật bộ phân loại cuối.</p>
+        <p>Swin-T huấn luyện từ đầu đạt 2,76 ± 1,26%, thấp hơn nhiều so với các cấu hình tiền huấn luyện. Kết quả cho thấy cấu hình này chưa học được biểu diễn hiệu quả trong ngân sách 20 epoch.</p>
+        <p class="source-note">So sánh được thực hiện với đầu vào 96×96 và cùng ngân sách 20 epoch. Phân tích thời gian, bộ nhớ, đường cong học và các lớp dễ nhầm lẫn được trình bày trong báo cáo A1.</p>
+      </section>
+
+      <section class="detail-section" id="files">
+        <h2>Báo cáo và mã nguồn</h2>
+        <div class="resource-list">
+          <a class="resource-link" href="reports/assignment1.pdf"><span class="resource-title">Báo cáo bài tập lớn A1 · PDF</span><span aria-hidden="true">↗</span></a>
+          <a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/reports/assignment1"><span class="resource-title">Mã LaTeX, bảng số liệu và hình</span><span aria-hidden="true">↗</span></a>
+          <a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/src/A1"><span class="resource-title">Mã nguồn và hướng dẫn chạy A1</span><span aria-hidden="true">↗</span></a>
+          <a class="resource-link" href="a1-results.json"><span class="resource-title">Số liệu thực nghiệm · JSON</span><span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a class="footer-brand" href="index.html">CO5085<span>.</span></a>
+    <p>Huỳnh Thành Đạt · 2570161 · Học kỳ 261</p>
+    <a href="#main">Lên đầu trang ↑</a>
+  </div>
+</footer>
+</body>
+</html>

@@ -18,3 +18,5 @@ Read `docs/REQUIREMENTS.md` and `docs/GPU_RUNBOOK.md` before changes.
 - Keep `AI_USE_REPORT.md` accurate about assistance, student-supplied decisions and actual checks; do not claim student implementation or measurements without evidence.
 
 - Current layout: Python packages in `src/`, E1–E3 reports in `reports/exercises/`, A1 reports in `reports/assignment1/`; see `docs/REPOSITORY_LAYOUT.md`. Install `pip install --no-deps -e .` before module commands. Historical measurements and source snapshots keep original bytes and signatures; use explicit `--archive` only to read the verified published source. Never enable archive identities for training/resume.
+
+- Website copy follows the same neutral Vietnamese academic register as reports. Use descriptive headings about methods, data, settings or findings. Avoid slogans, rhetorical fragments, isolated italic words in headings, handoff commentary, and unnecessary English in narrative text. Keep model names and established technical terms precise.
