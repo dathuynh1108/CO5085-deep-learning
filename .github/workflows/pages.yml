@@ -1,0 +1,40 @@
+name: Pages
+on:
+  push:
+    branches: [main]
+    paths: ['site/**', 'reports/**', 'scripts/build_site.py', '.github/workflows/pages.yml']
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Build report']
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/build_site.py --output build/site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

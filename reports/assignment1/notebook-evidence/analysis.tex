@@ -1,0 +1,11 @@
+\subsection{Ảnh hưởng của mức tinh chỉnh}
+
+ResNet18 chỉ học bộ phân loại đạt 60,95\%, thấp hơn 64,35\% của bản học từ đầu. Khi các tầng đặc trưng giữ nguyên, bộ phân loại tuyến tính chỉ có thể thay đổi ranh giới trên biểu diễn đã học từ ImageNet. Tinh chỉnh khối cuối đạt 73,96\%, còn cập nhật toàn bộ đạt 78,97\%. Kết quả cho thấy mức thích nghi của bộ trích xuất đặc trưng có ảnh hưởng đáng kể trên CIFAR-100.
+
+Swin-T chỉ học bộ phân loại đạt 71,67\%, tinh chỉnh một phần đạt 78,25\% và tinh chỉnh toàn bộ đạt 86,63\%. Bản khởi tạo ngẫu nhiên ở lịch 20 epoch chỉ đạt 2,76\%. Hai trong ba seed kết thúc ở 1\% trên tập validation, với cross-entropy huấn luyện gần $\ln(100)$. Điểm thấp xuất hiện trên cả hai tập, phù hợp với việc tối ưu chưa học được biểu diễn hữu ích. Lịch 40 epoch ở chương sau dùng chung tốc độ học và cách cập nhật cho hai cách khởi tạo Swin-T.
+
+\subsection{Chi phí và lỗi phân loại}
+
+Khi tinh chỉnh toàn bộ, Swin-T cao hơn ResNet18 7,66 điểm phần trăm độ chính xác trên tập test. Tính theo trung bình ba seed, Swin-T cần thời gian huấn luyện gấp 2,64 lần và bộ nhớ cấp phát cực đại gấp 4,73 lần. Với Swin-T, chỉ học bộ phân loại hoặc tinh chỉnh khối cuối giảm thời gian và bộ nhớ so với cập nhật toàn bộ, nhưng độ chính xác cũng thấp hơn. Với ResNet18, thời gian của ba chế độ tiền huấn luyện gần nhau trong lần đo này, trong khi bộ nhớ giảm rõ khi đóng băng nhiều tầng hơn.
+
+Ở epoch 20, ResNet18 tinh chỉnh toàn bộ đạt khoảng 99,1\% trên tập huấn luyện và 79,2\% trên tập validation; Swin-T tương ứng đạt 98,7\% và 86,7\%. Khoảng cách này cho thấy sai số khái quát hóa vẫn còn dù độ chính xác huấn luyện cao. Checkpoint dùng để đánh giá được chọn theo độ chính xác trên tập validation. Trong cả hai ma trận của seed 42, lớp cây sồi thường bị gán thành cây phong. Các ví dụ sai cho thấy độ phân giải gốc $32\times32$ khiến chi tiết hình dáng và kết cấu khó phân biệt.
