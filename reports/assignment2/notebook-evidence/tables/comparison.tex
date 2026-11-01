@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}Xrrrr@{}}
+\toprule
+Mô hình & Ảnh train & mIoU (\%) & FPS & GPU\\
+\midrule
+PIDNet-S công bố & 468 & 80,10 & 153,70 & RTX 3090\\
+Checkpoint tác giả, đo lại & 468 & 80,10 & $230{,}23 \pm 0{,}04$ & RTX 5090\\
+PIDNet-S đủ loss & 367 & $79{,}03 \pm 0{,}44$ & $231{,}32 \pm 0{,}06$ & RTX 5090\\
+PIDNet-S bỏ BAS-Loss & 367 & $78{,}38 \pm 0{,}47$ & \textemdash & RTX 5090\\
+\bottomrule
+\end{tabularx}
+\caption{Đối chiếu trên CamVid test 233 ảnh ở $960\times720$. mIoU của hai biến thể A2 tổng hợp ba seed; FPS của bản đủ loss chỉ đo checkpoint seed 42. FPS đo lại là trung bình và SD của năm lượt, mỗi lượt 200 forward sau 20 warm-up, batch 1, FP32, tắt auxiliary heads. Không có phép đo FPS riêng cho bản bỏ BAS-Loss. Bài báo dùng train+validation và điều kiện đo riêng \cite{pidnet}.}
+\label{tab:a2-comparison}
+\end{table}

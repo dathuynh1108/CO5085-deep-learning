@@ -17,11 +17,11 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8597777777777778,
-    "test_accuracy_mean": 0.8451,
-    "test_accuracy_std": 0.0014933184523068107,
-    "test_macro_f1_mean": 0.8436284026823173,
-    "median_train_seconds_mean": 0.28226519329473376,
+    "validation_accuracy_mean": 0.8605,
+    "test_accuracy_mean": 0.8460000000000001,
+    "test_accuracy_std": 0.0005291502622129018,
+    "test_macro_f1_mean": 0.8443005656360597,
+    "median_train_seconds_mean": 0.776352524679775,
     "mixed_timing_environments": false
   },
   {
@@ -42,11 +42,11 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.9102222222222223,
-    "test_accuracy_mean": 0.8988,
-    "test_accuracy_std": 0.0014422205101856061,
-    "test_macro_f1_mean": 0.8985010598930356,
-    "median_train_seconds_mean": 0.36283588071819395,
+    "validation_accuracy_mean": 0.9063333333333333,
+    "test_accuracy_mean": 0.8985333333333333,
+    "test_accuracy_std": 0.0008326663997864858,
+    "test_macro_f1_mean": 0.8983226531638833,
+    "median_train_seconds_mean": 0.8348253356913725,
     "mixed_timing_environments": false
   },
   {
@@ -67,66 +67,16 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.9305,
-    "test_accuracy_mean": 0.9268666666666666,
-    "test_accuracy_std": 0.0005507570547286134,
-    "test_macro_f1_mean": 0.9267803196172933,
-    "median_train_seconds_mean": 0.4655550199871262,
-    "mixed_timing_environments": false
-  },
-  {
-    "id": "e2_patches_manual",
-    "label": "patches / manual",
-    "exercise": "E2",
-    "group": "required",
-    "parameters": 71946,
-    "n_train_runs": 3,
-    "n_test_runs": 3,
-    "train_seeds": [
-      42,
-      43,
-      44
-    ],
-    "test_seeds": [
-      42,
-      43,
-      44
-    ],
-    "validation_accuracy_mean": 0.8702777777777778,
-    "test_accuracy_mean": 0.8592666666666666,
-    "test_accuracy_std": 0.00595343038368078,
-    "test_macro_f1_mean": 0.8590012694974996,
-    "median_train_seconds_mean": 1.0981840710155666,
-    "mixed_timing_environments": false
-  },
-  {
-    "id": "e2_patches_torch",
-    "label": "patches / torch",
-    "exercise": "E2",
-    "group": "required",
-    "parameters": 71946,
-    "n_train_runs": 3,
-    "n_test_runs": 3,
-    "train_seeds": [
-      42,
-      43,
-      44
-    ],
-    "test_seeds": [
-      42,
-      43,
-      44
-    ],
-    "validation_accuracy_mean": 0.8709444444444444,
-    "test_accuracy_mean": 0.8602333333333334,
-    "test_accuracy_std": 0.003663786747797043,
-    "test_macro_f1_mean": 0.8600941890200995,
-    "median_train_seconds_mean": 1.0547771726657327,
+    "validation_accuracy_mean": 0.929611111111111,
+    "test_accuracy_mean": 0.9265666666666666,
+    "test_accuracy_std": 0.0010969655114602744,
+    "test_macro_f1_mean": 0.9261843202625929,
+    "median_train_seconds_mean": 0.9634306373385092,
     "mixed_timing_environments": false
   },
   {
     "id": "e2_rows_manual",
-    "label": "rows / manual",
+    "label": "Hàng / tự viết",
     "exercise": "E2",
     "group": "required",
     "parameters": 71370,
@@ -142,16 +92,16 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8861111111111111,
-    "test_accuracy_mean": 0.8792,
-    "test_accuracy_std": 0.00026457513110642993,
-    "test_macro_f1_mean": 0.8787235490883579,
-    "median_train_seconds_mean": 0.9921532860413814,
+    "validation_accuracy_mean": 0.8851666666666667,
+    "test_accuracy_mean": 0.8795666666666667,
+    "test_accuracy_std": 0.0015502687938977943,
+    "test_macro_f1_mean": 0.8793232042816262,
+    "median_train_seconds_mean": 1.314976926582555,
     "mixed_timing_environments": false
   },
   {
     "id": "e2_rows_torch",
-    "label": "rows / torch",
+    "label": "Hàng / PyTorch",
     "exercise": "E2",
     "group": "required",
     "parameters": 71370,
@@ -167,16 +117,66 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8860555555555555,
-    "test_accuracy_mean": 0.8786333333333334,
-    "test_accuracy_std": 0.0001527525231652263,
-    "test_macro_f1_mean": 0.8781424629865938,
-    "median_train_seconds_mean": 0.9397852373464654,
+    "validation_accuracy_mean": 0.8852222222222222,
+    "test_accuracy_mean": 0.8799,
+    "test_accuracy_std": 0.0015620499351813508,
+    "test_macro_f1_mean": 0.8796158553691836,
+    "median_train_seconds_mean": 1.3113167146220803,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_patches_manual",
+    "label": "Patch / tự viết",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 71946,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8627222222222222,
+    "test_accuracy_mean": 0.8602,
+    "test_accuracy_std": 0.001252996408614197,
+    "test_macro_f1_mean": 0.8602337212133535,
+    "median_train_seconds_mean": 1.450951453919212,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_patches_torch",
+    "label": "Patch / PyTorch",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 71946,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8637777777777779,
+    "test_accuracy_mean": 0.8602,
+    "test_accuracy_std": 0.0015394804318340652,
+    "test_macro_f1_mean": 0.859992797613455,
+    "median_train_seconds_mean": 1.4639782812446356,
     "mixed_timing_environments": false
   },
   {
     "id": "e2_cnn_manual",
-    "label": "cnn / manual",
+    "label": "CNN-stem / tự viết",
     "exercise": "E2",
     "group": "required",
     "parameters": 89770,
@@ -192,16 +192,16 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8928333333333334,
-    "test_accuracy_mean": 0.8858666666666667,
-    "test_accuracy_std": 0.0033946035605551105,
-    "test_macro_f1_mean": 0.8859740037939804,
-    "median_train_seconds_mean": 1.0122976580169052,
+    "validation_accuracy_mean": 0.8904444444444444,
+    "test_accuracy_mean": 0.887,
+    "test_accuracy_std": 0.006089334939055279,
+    "test_macro_f1_mean": 0.8867907451177585,
+    "median_train_seconds_mean": 1.3664586966236432,
     "mixed_timing_environments": false
   },
   {
     "id": "e2_cnn_torch",
-    "label": "cnn / torch",
+    "label": "CNN-stem / PyTorch",
     "exercise": "E2",
     "group": "required",
     "parameters": 89770,
@@ -217,16 +217,66 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8937777777777778,
-    "test_accuracy_mean": 0.885,
-    "test_accuracy_std": 0.00391535439009039,
-    "test_macro_f1_mean": 0.8847910916195576,
-    "median_train_seconds_mean": 0.9575158649822697,
+    "validation_accuracy_mean": 0.8910555555555555,
+    "test_accuracy_mean": 0.8864000000000001,
+    "test_accuracy_std": 0.0033045423283716534,
+    "test_macro_f1_mean": 0.8860210230014989,
+    "median_train_seconds_mean": 1.3656503492966294,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e3_mlp",
+    "label": "MLP",
+    "exercise": "E3",
+    "group": "required",
+    "parameters": 235146,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.9053333333333334,
+    "test_accuracy_mean": 0.9001666666666667,
+    "test_accuracy_std": 0.0007023769168568825,
+    "test_macro_f1_mean": 0.899980945629811,
+    "median_train_seconds_mean": 0.8452963434004536,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e3_cnn",
+    "label": "CNN",
+    "exercise": "E3",
+    "group": "required",
+    "parameters": 421738,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.9297777777777778,
+    "test_accuracy_mean": 0.9248,
+    "test_accuracy_std": 0.0027404379212089365,
+    "test_macro_f1_mean": 0.924608774755002,
+    "median_train_seconds_mean": 0.9626581304085752,
     "mixed_timing_environments": false
   },
   {
     "id": "e3_lstm_rows",
-    "label": "LSTM / rows",
+    "label": "LSTM / hàng",
     "exercise": "E3",
     "group": "required",
     "parameters": 82186,
@@ -242,16 +292,16 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.9031666666666667,
-    "test_accuracy_mean": 0.8957666666666667,
-    "test_accuracy_std": 0.0004509249752822972,
-    "test_macro_f1_mean": 0.8956046845949841,
-    "median_train_seconds_mean": 0.3676888383148859,
+    "validation_accuracy_mean": 0.900111111111111,
+    "test_accuracy_mean": 0.8936666666666667,
+    "test_accuracy_std": 0.001601041327803035,
+    "test_macro_f1_mean": 0.8932517381377324,
+    "median_train_seconds_mean": 0.9142793706463029,
     "mixed_timing_environments": false
   },
   {
     "id": "e3_gru_rows",
-    "label": "GRU / rows",
+    "label": "GRU / hàng",
     "exercise": "E3",
     "group": "required",
     "parameters": 61962,
@@ -267,16 +317,16 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.9105,
-    "test_accuracy_mean": 0.9006666666666666,
-    "test_accuracy_std": 0.0016862186493255451,
-    "test_macro_f1_mean": 0.9005594826644544,
-    "median_train_seconds_mean": 0.3626952520183598,
+    "validation_accuracy_mean": 0.9037222222222222,
+    "test_accuracy_mean": 0.9017333333333334,
+    "test_accuracy_std": 0.0011930353445448812,
+    "test_macro_f1_mean": 0.9015372822971347,
+    "median_train_seconds_mean": 0.8826690573090067,
     "mixed_timing_environments": false
   },
   {
     "id": "e3_lstm_patches",
-    "label": "LSTM / patches",
+    "label": "LSTM / patch",
     "exercise": "E3",
     "group": "required",
     "parameters": 76042,
@@ -292,16 +342,16 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8882777777777778,
-    "test_accuracy_mean": 0.8765,
-    "test_accuracy_std": 0.003758989225842476,
-    "test_macro_f1_mean": 0.8761899701996979,
-    "median_train_seconds_mean": 0.5766750166658312,
+    "validation_accuracy_mean": 0.8825555555555556,
+    "test_accuracy_mean": 0.8776333333333333,
+    "test_accuracy_std": 0.0006658328118479299,
+    "test_macro_f1_mean": 0.8774815025542185,
+    "median_train_seconds_mean": 1.17249562474899,
     "mixed_timing_environments": false
   },
   {
     "id": "e3_gru_patches",
-    "label": "GRU / patches",
+    "label": "GRU / patch",
     "exercise": "E3",
     "group": "required",
     "parameters": 57354,
@@ -317,11 +367,11 @@
       43,
       44
     ],
-    "validation_accuracy_mean": 0.8897222222222222,
-    "test_accuracy_mean": 0.8799666666666667,
-    "test_accuracy_std": 0.0023437861108329618,
-    "test_macro_f1_mean": 0.8794401656454658,
-    "median_train_seconds_mean": 0.5539666819774235,
+    "validation_accuracy_mean": 0.8873333333333333,
+    "test_accuracy_mean": 0.8818666666666667,
+    "test_accuracy_std": 0.003219213154380001,
+    "test_macro_f1_mean": 0.8817359940108899,
+    "median_train_seconds_mean": 1.12612161731037,
     "mixed_timing_environments": false
   }
 ]

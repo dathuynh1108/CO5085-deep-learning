@@ -77,3 +77,11 @@ reports/**/*.lot
 /src/E1/README.md
 /src/E2/README.md
 /src/E3/README.md
+
+# Result tables consumed by the A2 landing page
+!/reports/assignment2/notebook-evidence/results.csv
+!/reports/assignment2/notebook-evidence/summary.csv
+!/reports/assignment2/notebook-evidence/paper_comparison.csv
+
+!/reports/assignment2/notebook-evidence/tables/
+!/reports/assignment2/notebook-evidence/tables/*.tex

@@ -1,17 +1,35 @@
-\subsection{Độ chính xác theo vùng}
+\section{Ảnh hưởng của BAS-Loss theo từng lớp}
+Bảng~\ref{tab:a2-per-class} và Hình~\ref{fig:a2-per-class} cho thấy mức tăng trung bình lớn nhất ở SignSymbol (2,31 điểm phần trăm), Column\_Pole (2,15 điểm phần trăm) và Bicyclist (2,00 điểm phần trăm). Pedestrian tăng 0,98 điểm phần trăm. Ba lớp Column\_Pole, Bicyclist và Pedestrian đều tăng ở cả ba cặp seed. Đây là các lớp nhỏ hoặc có hình dạng mảnh, phù hợp với mục tiêu bổ sung giám sát ở vùng biên dự đoán.
 
-Hai mô hình cùng có 11.302.116 tham số được huấn luyện. So với trộn cố định, trộn theo biên thay đổi mIoU $-0{,}18\pm0{,}12$ điểm phần trăm và macro-Dice $-0{,}11\pm0{,}09$ điểm phần trăm khi ghép theo seed. mIoU giảm ở cả ba cặp, lần lượt $0{,}16$, $0{,}31$ và $0{,}07$ điểm phần trăm. Mức giảm IoU trung bình lớn nhất thuộc vùng vật thể ($0{,}28$ điểm phần trăm), tiếp đến là nền và dải chuyển tiếp (đều khoảng $0{,}13$ điểm phần trăm). IoU dải chuyển tiếp tăng $0{,}11$ điểm phần trăm ở seed 44, nhưng giảm ở hai seed còn lại. Ba cặp seed chỉ mô tả độ dao động trong thiết lập đã khảo sát.
+\input{notebook-evidence/tables/per_class.tex}
 
-Dải chuyển tiếp vẫn là vùng khó nhất, với IoU khoảng 55\%, thấp hơn IoU vật thể khoảng 86\% và IoU nền trên 92\%. Confusion matrix ở Hình~\ref{fig:confusion} cho thấy khoảng 68,4\% pixel thực của dải chuyển tiếp được nhận đúng ở cả hai biến thể. Với bản cố định, 15,1\% bị gán thành vật thể và 16,6\% thành nền; các tỷ lệ tương ứng của bản theo biên là 14,7\% và 16,9\%. Tỷ lệ nhận đúng dải chuyển tiếp gần bằng nhau nhưng IoU vẫn có thể khác vì IoU tính thêm các pixel từ lớp khác bị dự đoán thành dải này. Chẳng hạn, tỷ lệ pixel vật thể bị gán nhãn chuyển tiếp tăng từ 5,4\% lên 5,6\% ở bản theo biên.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{notebook-evidence/figures/per_class_iou.png}
+\caption[IoU test từng lớp qua ba seed.]{IoU test của 11 lớp, lấy trung bình qua ba seed; thanh sai số là độ lệch chuẩn mẫu.}
+\label{fig:a2-per-class}
+\end{figure}
 
-\subsection{Tín hiệu biên và trường hợp sai}
+\Needspace{6\baselineskip}
+Mức tăng ở SignSymbol có độ dao động lớn: giảm 0,29 điểm phần trăm ở seed 42, tăng 5,29 ở seed 43 và tăng 1,92 ở seed 44. Trong khi đó, các lớp Car, Fence, Road, Sidewalk và Sky giảm nhẹ về trung bình, với mức giảm dưới 0,22 điểm phần trăm mỗi lớp. Lợi ích mIoU tổng thể vì vậy chủ yếu đến từ một số lớp nhỏ, thay vì tăng đồng đều ở mọi lớp.
 
-Điểm sigmoid của đầu biên sau upsampling ở bản theo biên đạt trung bình 0,772 trên dải chuyển tiếp, 0,311 trên vật thể và 0,182 trên nền. Bản cố định, chỉ dùng đầu này cho loss phụ, cũng phân biệt các vùng với các giá trị tương ứng 0,792, 0,297 và 0,180. Đầu phụ đã học tín hiệu phân biệt vùng chuyển tiếp, nhưng sự phân biệt này chưa chuyển thành lợi ích về IoU khi dùng trong phép trộn. BCE cân bằng đặt trọng số khác nhau cho hai nhóm pixel nên điểm sigmoid được diễn giải như mức đáp ứng của đầu biên.
+Cả hai biến thể vẫn học biên bằng weighted BCE và dùng D trong Light-Bag. Phần bổ sung của bản đủ loss là cross-entropy ngữ nghĩa ở các pixel được boundary head chọn. Kết quả ba cặp seed ủng hộ việc dùng thêm BAS-Loss trong thiết lập này. Phép đo hiện tại là IoU theo lớp, nên chưa tách riêng sai số trong một dải có độ rộng cố định quanh biên.
 
-Hình~\ref{fig:examples} dùng bốn vị trí cách đều trong danh sách test tại seed 42. Với \code{Abyssinian\_2}, cả hai mô hình nới dải chuyển tiếp ở phần đuôi; IoU dải này lần lượt là 64,5\% và 66,5\% cho bản cố định và bản theo biên. Với \code{yorkshire\_terrier\_99}, bản theo biên đưa thêm nhãn chuyển tiếp vào phần trong thân, trong khi IoU dải này giảm từ 54,8\% xuống 48,9\%. Các ví dụ cho thấy tác động của phép trộn thay đổi theo từng ảnh.
+\subsection{Nhầm lẫn giữa các lớp và ví dụ dự đoán}
+Column\_Pole và SignSymbol vẫn là hai lớp khó nhất ở bản đủ loss, với IoU trung bình 45,82\% và 54,28\%. Ở seed 42, bản đủ loss nhận đúng 58,37\% pixel cột, so với 55,58\% của bản bỏ BAS-Loss. Khoảng 20,82\% pixel cột vẫn bị gán thành Building. Với SignSymbol, 24,07\% pixel bị gán thành Building ở bản đủ loss. Các cột và biển báo nhỏ nằm trước tòa nhà vì vậy còn dễ bị lẫn với nền phía sau.
 
-Đối chứng đã nhận đặc trưng chi tiết ở mọi vị trí và được huấn luyện bằng cùng loss biên. Lợi ích của cổng thích nghi vì vậy còn phụ thuộc vào khả năng phân biệt biên và thông tin bổ sung giữa hai nhánh. Với đặc trưng stride 4 và nhãn trimap có bề rộng, tín hiệu đó có thể thay đổi phép trộn cả ở nơi cần ngữ cảnh để phân biệt vật thể với nền. Thí nghiệm hiện tại chưa tách riêng ảnh hưởng của độ phân giải đặc trưng và cách tạo nhãn biên.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{notebook-evidence/figures/test_confusion.png}
+\caption[Confusion matrix test của hai checkpoint seed 42.]{Confusion matrix trên test của hai checkpoint seed 42, chuẩn hóa theo hàng. Đường chéo là tỷ lệ pixel của mỗi lớp được nhận đúng; các con số trên đường chéo tính bằng phần trăm.}
+\label{fig:a2-confusion}
+\end{figure}
 
-\subsection{Chi phí huấn luyện}
+Hình~\ref{fig:a2-examples} dùng ba ảnh tại các vị trí cố định 0, 77 và 155 trong danh sách test, cùng checkpoint seed 42. Hai bản đều nhận ra các vùng lớn như mặt đường, tòa nhà và xe. Các cành cây mảnh còn bị gộp thành những vùng Tree đặc hơn so với nhãn đúng. Sự khác biệt giữa hai bản khó thấy khi chỉ nhìn các vùng lớn; bảng IoU theo lớp và confusion matrix bổ sung thông tin cho các ví dụ này.
 
-Trên RTX 5090, tổng thời gian cập nhật trọng số qua 12 epoch trung bình là $8{,}75\pm0{,}33$ giây với trộn cố định và $8{,}58\pm0{,}04$ giây với trộn theo biên. Khoảng thời gian này gồm tải batch và huấn luyện, không gồm lượt validation. Bộ nhớ GPU cấp phát cực đại, có tính cả validation, lần lượt là $559{,}7\pm1{,}2$ MiB và $572{,}2\pm0{,}0$ MiB. Chênh lệch thời gian nhỏ giữa sáu lượt chạy không xác lập lợi thế tốc độ của cơ chế trộn. Lượt thực nghiệm này chưa đo độ trễ suy luận nên không đối chiếu tốc độ trực tiếp với FPS của PIDNet.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,height=0.72\textheight,keepaspectratio]{notebook-evidence/figures/qualitative_comparison_report.png}
+\caption[Ba ảnh test và dự đoán của hai biến thể ở seed 42.]{Ba ảnh CamVid test, nhãn đúng và dự đoán của hai biến thể ở seed 42. Màu theo Bảng~\ref{tab:camvid-labels}; màu đen trong nhãn đúng là vùng bỏ qua.}
+\label{fig:a2-examples}
+\end{figure}

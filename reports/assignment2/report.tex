@@ -1,13 +1,13 @@
 \documentclass[12pt,a4paper]{report}
 \input{../course-report.tex}
 \CourseReportHeader{CO5085 · A2}
-\hypersetup{pdftitle={PIDNet: phan tich kien truc va thuc nghiem fusion theo bien},pdfauthor={Huynh Thanh Dat}}
+\hypersetup{pdftitle={PIDNet: phan tich va ap dung phan doan ngu nghia tren CamVid},pdfauthor={Huynh Thanh Dat}}
 
 \begin{document}
 \CourseCover{assets/hcmut-logo.png}
   {BÁO CÁO BÀI TẬP LỚN A2}
   {CO5085 · Học sâu và ứng dụng trong thị giác máy tính}
-  {PIDNet: phân tích kiến trúc và thực nghiệm fusion theo biên}
+  {PIDNet: phân tích và áp dụng phân đoạn ngữ nghĩa trên CamVid}
   {Học viên}
   {Huỳnh Thành Đạt & 2570161\\[0.5em]
    Giảng viên & Lê Thành Sách\\
@@ -19,144 +19,175 @@
 }
 
 \CourseOverview{
-Bài toán & Phân đoạn vật thể, nền và dải chuyển tiếp trên Oxford-IIIT Pet.\\
+Bài toán & Phân đoạn ngữ nghĩa cảnh đường phố trên CamVid, gồm 11 lớp và vùng bỏ qua.\\
 Bài báo & PIDNet của Xu, Xiong và Bhattacharyya, IEEE/CVF CVPR 2023 \cite{pidnet}.\\
-Đối chứng & ResNet18 dùng chung kiến trúc và giám sát biên. Hai biến thể lần lượt dùng tỷ lệ 50/50 và hệ số trộn theo vị trí.\\
-Phép đo & mIoU, macro-Dice và IoU theo vùng trên 3.669 ảnh test. Mỗi biến thể chạy ba seed.\\
-Kết quả chính & mIoU của trộn cố định và trộn theo biên lần lượt là 78,00\% và 77,82\%.\\
-Đối chiếu & Mức thay đổi mIoU trong các phép ablation công bố và thí nghiệm A2.\\
+Mô hình & PIDNet-S đầy đủ ba nhánh P/I/D, Pag, PAPPM và Light-Bag.\\
+Đối chứng & PIDNet-S đủ loss và PIDNet-S bỏ BAS-Loss; giữ nguyên kiến trúc và giám sát biên.\\
+Thiết lập & 367 ảnh train, 101 validation, 233 test; ba seed, 200 epoch; khởi tạo Cityscapes.\\
+Kết quả & Bản đủ loss đạt $79{,}03\pm0{,}44$\% mIoU, hơn bản bỏ BAS-Loss $0{,}66\pm0{,}13$ điểm phần trăm.\\
 }
 
 \CourseContents
 
 \input{prose/introduction.tex}
-
 \input{prose/paper_analysis.tex}
 
 \chapter{Dữ liệu và thiết lập thực nghiệm}
-\section{Dữ liệu và phân tích khám phá}
-Oxford-IIIT Pet có 7.349 ảnh với 37 giống chó và mèo, kích thước và tư thế đa dạng \cite{pets,petsdata}. Mỗi ảnh có trimap, trong đó giá trị 1 là vật thể, 2 là nền và 3 là vùng chưa phân loại. Báo cáo gọi nhãn 3 là \emph{dải chuyển tiếp} và dùng nó làm tín hiệu gần đúng cho biên. Nhãn giống chỉ phục vụ việc chia tập. Dữ liệu được tải từ trang Visual Geometry Group, University of Oxford. Bản gốc lưu ảnh JPG trong \code{images/}, trimap PNG trong \code{annotations/trimaps/} và danh sách ảnh cùng nhãn giống trong \code{annotations/trainval.txt} và \code{annotations/test.txt}.
+\section{Nguồn dữ liệu và nhãn}
+CamVid gồm 701 khung hình video giao thông có nhãn cho từng pixel. Một ảnh có thể chứa mặt đường, nhà, cây, xe và người với kích thước rất khác nhau \cite{camvid,camviddata}. Ảnh và nhãn được lấy từ bản phân phối Kaggle mà kho mã PIDNet dẫn nguồn \cite{pidnetcode,camvidarchive}. Ảnh và nhãn có kích thước gốc $960\times720$ pixel, được lưu dưới dạng PNG RGB. Từ 32 lớp trong bộ nhãn gốc, thí nghiệm sử dụng 11 lớp theo quy ước của PIDNet; các lớp còn lại được bỏ qua khi tính loss và chỉ số đánh giá.
 
-Từ 3.680 ảnh trong tập train/validation chính thức, chọn 10 ảnh mỗi giống làm tập validation bằng seed 2026. Phần còn lại gồm 3.310 ảnh dùng để cập nhật trọng số. Tập test chính thức gồm 3.669 ảnh được giữ riêng. Đối chiếu kích thước và pixel RGB giải mã không tìm thấy ảnh trùng chính xác giữa các tập; phép đối chiếu này chỉ phát hiện ảnh trùng pixel.
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}rlrl@{}}
+\toprule
+ID & Lớp & RGB & Tỷ lệ pixel train (\%)\\
+\midrule
+0 & Bicyclist & $(0,128,192)$ & 0,31\\
+1 & Building & $(128,0,0)$ & 25,46\\
+2 & Car & $(64,0,128)$ & 4,67\\
+3 & Column\_Pole & $(192,192,128)$ & 1,10\\
+4 & Fence & $(64,64,128)$ & 1,26\\
+5 & Pedestrian & $(64,64,0)$ & 0,72\\
+6 & Road & $(128,64,128)$ & 33,23\\
+7 & Sidewalk & $(0,0,192)$ & 4,36\\
+8 & SignSymbol & $(192,128,128)$ & 0,07\\
+9 & Sky & $(128,128,128)$ & 18,93\\
+10 & Tree & $(128,128,0)$ & 9,89\\
+\bottomrule
+\end{tabular}
+\caption{Ánh xạ màu sang ID lớp theo PIDNet và phân bố đo trên toàn bộ 367 ảnh train. Tỷ lệ dùng tổng số pixel có nhãn hợp lệ làm mẫu số.}
+\label{tab:camvid-labels}
+\end{table}
 
-\input{notebook-evidence/data_analysis.tex}
+\section{Chia tập và phân tích khám phá}
+Dữ liệu được chia theo danh sách của tác giả PIDNet: 367 ảnh train, 101 ảnh validation và 233 ảnh test \cite{pidnetcode}. Ba tập không trùng ảnh. Tập train dùng để cập nhật trọng số, validation dùng để chọn checkpoint và test được giữ riêng cho đánh giá cuối cùng.
 
+Trong tập train, Road, Building và Sky chiếm 77,62\% pixel hợp lệ, còn SignSymbol chỉ chiếm 0,07\% (Bảng~\ref{tab:camvid-labels}). Nếu dự đoán tốt các lớp lớn nhưng bỏ sót biển báo, mô hình vẫn có thể đạt pixel accuracy cao. Vì vậy, báo cáo dùng mIoU để mỗi lớp có trọng số ngang nhau, đồng thời xem IoU của từng lớp. Các vùng ngoài 11 lớp chiếm khoảng 10,82\% tổng pixel train và được bỏ qua.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-1.png}
-\caption{Tỷ lệ điểm ảnh theo nhãn và số ảnh theo giống ở tập train và validation. Tỷ lệ pixel được tính sau khi đưa ảnh về lưới thực nghiệm và bỏ vùng padding.}
-\label{fig:eda}
+\includegraphics[width=\linewidth]{notebook-evidence/figures/eda_class_distribution_report.png}
+\caption[Tỷ lệ pixel và số ảnh theo lớp ở tập train.]{Tỷ lệ pixel hợp lệ và số ảnh có mỗi lớp trên toàn bộ 367 ảnh train. Road, Building và Sky chiếm phần lớn pixel, trong khi các lớp nhỏ xuất hiện với tỷ lệ thấp.}
+\label{fig:a2-eda}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-2.png}
-\caption{Bốn ảnh validation và trimap tương ứng. Xanh lục là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp và xám nhạt là vùng padding. Ảnh và trimap từ Oxford-IIIT Pet \cite{petsdata}.}
-\label{fig:trimaps}
+\includegraphics[width=\linewidth]{notebook-evidence/figures/eda_examples_augmentation.png}
+\caption[Ảnh, mặt nạ và ví dụ tăng cường dữ liệu.]{Ba ảnh train, mặt nạ 11 lớp, nhãn biên và ví dụ tăng cường dữ liệu được thực hiện trong notebook. Màu đen trên mặt nạ là vùng bỏ qua; crop và flip được áp dụng đồng thời cho ảnh và nhãn.}
+\label{fig:a2-augmentation}
 \end{figure}
 
-\section{Cài đặt và giao thức đánh giá}
-\subsection{Tiền xử lý}
+\section{Mô hình và hai biến thể đối chứng}
+Thí nghiệm dùng PIDNet-S với ba nhánh P/I/D, Pag, PAPPM và Light-Bag đã trình bày ở chương trước. Mô hình bắt đầu từ checkpoint Cityscapes 19 lớp của tác giả \cite{pidnetcode}. Hai lớp convolution cuối của các đầu ngữ nghĩa được thay để dự đoán 11 lớp CamVid và khởi tạo lại. Phần còn lại nhận trọng số pretrained; toàn bộ mạng tiếp tục được cập nhật trong quá trình fine-tuning. Mô hình khi train có 7.718.871 tham số, bao gồm hai auxiliary head. Khi bỏ các head này để inference, số tham số còn 7.624.683, tương ứng mức làm tròn 7,6 triệu của PIDNet-S; cả ba nhánh P/I/D vẫn được giữ.
 
-Ảnh được resize cạnh dài về 192 pixel, giữ aspect ratio rồi thêm padding bên phải hoặc phía dưới để tạo đầu vào $192\times192$. Ảnh RGB dùng bilinear interpolation; trimap dùng nearest-neighbor interpolation để giữ giá trị nhãn. Pixel padding được bỏ qua trong loss và metric. Tập train dùng shuffle và random horizontal flip đồng thời ảnh với mask, xác suất 0,5. Validation và test dùng phép biến đổi cố định. RGB normalization sử dụng mean và standard deviation ImageNet.
+PIDNet-S đủ loss và PIDNet-S bỏ BAS-Loss dùng cùng kiến trúc, chỉ khác việc có tính thêm semantic cross-entropy tại vùng biên dự đoán hay không. Ở mỗi seed, chúng có cùng khởi tạo, dữ liệu và cách tăng cường ảnh. Giám sát biên cùng các loss còn lại được giữ nguyên, để phép so sánh tập trung vào tác dụng của BAS.
 
-\subsection{Hai biến thể có cùng cấu trúc}
+\section{Tiền xử lý dữ liệu}
+Trong tập train, ảnh được thay đổi tỷ lệ ngẫu nhiên trong khoảng $[0{,}5;2{,}0]$ nhưng vẫn giữ tỷ lệ khung hình. Sau đó, lấy crop $960\times720$ và lật ngang với xác suất 0,5. Ảnh được nội suy bilinear; nhãn dùng nearest-neighbor để giữ nguyên lớp. Ảnh nhỏ hơn kích thước crop được thêm viền đen, còn phần nhãn tương ứng được bỏ qua. Các kênh RGB được chuẩn hóa theo mean và standard deviation của ImageNet. Validation và test giữ nguyên kích thước ảnh, không dùng phép biến đổi ngẫu nhiên.
 
-Hai mô hình dùng ResNet18 với trọng số pretrained ImageNet từ torchvision \cite{resnet,torchvision}. Đầu phân loại của ResNet18 được bỏ. Đặc trưng nông lấy từ \code{layer1} ở stride 4 và đặc trưng sâu lấy từ \code{layer4} ở stride 32. Hai nhánh được chiếu về 64 kênh; đặc trưng sâu được upsampling về lưới đặc trưng nông. Một đầu dự đoán biên trên đặc trưng nông xuất một logit $e$ tại mỗi vị trí.
+Nhãn biên được tạo từ mặt nạ ngữ nghĩa bằng Canny, sau đó dilation với kernel $4\times4$, theo cách xử lý CamVid của tác giả. Ảnh, mặt nạ lớp và mặt nạ biên luôn được biến đổi đồng thời để giữ đúng vị trí tương ứng.
+
+\section{Hàm mất mát}
+Gọi $\ell_0$ là auxiliary semantic CE, $\ell_1$ là weighted boundary BCE, $\ell_2$ là main semantic OHEM CE và $\ell_3$ là BAS semantic OHEM CE. Hai hàm mục tiêu là
+\begin{align}
+ L_{\mathrm{FULL}}&=0{,}4\ell_0+20\ell_1+\ell_2+\ell_3,\\
+ L_{\mathrm{NO\_BAS}}&=0{,}4\ell_0+20\ell_1+\ell_2.
+\end{align}
+Weighted BCE cân bằng đóng góp giữa pixel biên và pixel không biên. OHEM ưu tiên những pixel mà mạng gán xác suất thấp cho lớp đúng, với ngưỡng 0,9 và mốc chọn 131.072 pixel theo cấu hình CamVid của tác giả. BAS-Loss tính thêm semantic cross-entropy với OHEM tại những pixel có điểm sigmoid của boundary head lớn hơn 0,8. Đây là các pixel mô hình dự đoán là biên. Nếu không có pixel được chọn, BAS-Loss bằng 0.
+
+PIDNet-S bỏ BAS-Loss vẫn giữ ba nhánh P/I/D, vẫn huấn luyện boundary head bằng weighted BCE và vẫn dùng đặc trưng D trong Light-Bag. Đối chứng vì vậy trả lời việc tính thêm lỗi phân loại tại vùng biên dự đoán có giúp cải thiện kết quả hay không.
+
+\section{Huấn luyện và chọn checkpoint}
+Mỗi biến thể được huấn luyện với ba seed 42, 43 và 44. Cả sáu lượt dùng cùng thiết lập trong Bảng~\ref{tab:training-setup} và cập nhật trọng số trên toàn bộ 367 ảnh train ở mỗi epoch.
 
 \begin{table}[htbp]
 \centering
-\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-Biến thể & Phép trộn tại từng vị trí & Vai trò của đầu dự đoán biên\\
+Thành phần & Thiết lập chung\\
 \midrule
-Trộn cố định & $0{,}5P+0{,}5I$ & Học bằng hàm mất mát phụ.\\
-Trộn theo biên & $\sigma(e)P+(1-\sigma(e))I$ & Học bằng hàm mất mát phụ và tham gia trộn đặc trưng.\\
+Số epoch & 200\\
+Batch size & 12\\
+Kiểu tính toán & FP32\\
+Optimizer & SGD, momentum 0,9; weight decay $5\times10^{-4}$\\
+Learning rate & Ban đầu $10^{-3}$; giảm theo lịch polynomial, power 0,9\\
 \bottomrule
 \end{tabularx}
-\caption{Hai biến thể cùng số tham số, trọng số khởi tạo và giao thức huấn luyện.}
-\label{tab:variants}
+\caption{Thiết lập train chung cho PIDNet-S đủ loss và PIDNet-S bỏ BAS-Loss.}
+\label{tab:training-setup}
 \end{table}
 
-Bộ phân loại điểm ảnh giống nhau ở hai biến thể. Logit của ba vùng được upsampling về lưới ảnh trước khi tính loss và lấy nhãn có logit lớn nhất. Thí nghiệm giữ phép trộn theo sigmoid của Bag, dùng một hệ số chung cho mọi kênh và một encoder ResNet18. Các khối Pag, PAPPM và nhánh D độc lập của PIDNet nằm ngoài cấu hình này. Đầu phụ và giám sát biên giống nhau ở hai biến thể, giúp cô lập việc đưa bản đồ biên vào phép trộn.
+Learning rate được cập nhật ở đầu mỗi epoch theo $\eta_e=10^{-3}(1-e/200)^{0{,}9}$, với $e=0,\ldots,199$. Sau mỗi epoch, mô hình được đánh giá trên 101 ảnh validation. Checkpoint có mIoU cao nhất được giữ lại; nếu nhiều epoch bằng nhau, chọn epoch sớm nhất. Toàn bộ lịch huấn luyện vẫn được chạy đủ trước khi dùng checkpoint đã chọn để đánh giá test.
+Sáu lượt chạy được thực hiện trên NVIDIA GeForce RTX 5090, dùng PyTorch 2.10.0 với CUDA 13.0 và kiểu tính toán FP32. Thời gian train gồm chuẩn bị batch và cập nhật trọng số; thời gian tổng còn gồm validation và ghi checkpoint.
 
-\subsection{Huấn luyện}
+\section{Đánh giá phân đoạn}
+Tập test gồm 233 ảnh chỉ được dùng sau khi cố định thiết kế thực nghiệm và chọn checkpoint bằng validation. Dự đoán lấy từ đầu ngữ nghĩa chính, ở một tỷ lệ ảnh và không flip. Logit được nội suy về kích thước gốc $960\times720$ trước khi chọn lớp; các pixel không thuộc 11 lớp được bỏ qua.
 
-Với $\Omega$ là các điểm ảnh có nhãn, hàm mục tiêu là cross-entropy ba vùng cộng BCE cân bằng theo nhóm. Gọi $\Omega_b$ là dải chuyển tiếp, $\Omega_n$ là phần còn lại của $\Omega$, và $\ell_{\mathrm{BCE}}(e,y)$ là BCE tính trực tiếp từ logit. Khi hai nhóm đều có điểm ảnh,
+Các dự đoán được gộp vào một confusion matrix cho toàn tập: hàng là lớp đúng, cột là lớp dự đoán. Từ đó tính IoU từng lớp và lấy trung bình thành mIoU:
 \[
- L=L_{\mathrm{CE}}+0{,}25 L_b,\quad
- L_b=\frac{1}{2|\Omega_b|}\sum_{i\in\Omega_b}\ell_{\mathrm{BCE}}(e_i,1)
-    +\frac{1}{2|\Omega_n|}\sum_{i\in\Omega_n}\ell_{\mathrm{BCE}}(e_i,0).
+ \mathrm{IoU}_c=\frac{TP_c}{TP_c+FP_c+FN_c},\qquad
+ \mathrm{mIoU}=\frac{1}{11}\sum_{c=0}^{10}\mathrm{IoU}_c.
 \]
-Nếu một nhóm rỗng trong batch, đóng góp của nhóm đó bằng 0. Việc lấy trung bình riêng giúp dải chuyển tiếp vẫn đóng góp vào gradient dù chiếm ít điểm ảnh. Khác với loss có ngưỡng của PIDNet, thành phần CE ở đây luôn tính trên toàn bộ $\Omega$. Tín hiệu biên của bản trộn theo biên còn nhận gradient qua loss chính vì phép trộn khả vi.
+Với lớp $c$, $TP_c$ là số pixel dự đoán đúng; $FP_c$ là số pixel của lớp khác bị gán thành $c$; $FN_c$ là số pixel thuộc $c$ nhưng bị gán sang lớp khác. IoU đo phần giao giữa vùng dự đoán và vùng nhãn đúng so với phần hợp của chúng.
 
-Mỗi biến thể chạy 12 epoch với ba seed 42, 43 và 44. Batch size là 32. AdamW dùng weight decay $10^{-4}$ và learning rate ban đầu $2\times10^{-4}$ cho encoder, $10^{-3}$ cho các đầu mới. Learning rate giảm theo cosine sau mỗi epoch. Vòng lặp gọi trực tiếp forward, tính loss, lan truyền ngược và cập nhật trọng số. Sáu lượt huấn luyện được thực hiện trực tiếp từ notebook trên NVIDIA GeForce RTX 5090, BF16 autocast với loss tính bằng FP32, 4 worker tải dữ liệu và 4 luồng CPU của PyTorch. Môi trường gồm Python 3.12.12, PyTorch 2.10.0, torchvision 0.25.0 và CUDA 13.0.
-
-\subsection{Chọn checkpoint và chỉ số đánh giá}
-
-Mỗi lượt chọn checkpoint có mIoU trên tập validation cao nhất. Khi bằng nhau, chọn epoch sớm hơn. Tập test chỉ được đánh giá sau khi cả sáu lượt huấn luyện hoàn tất và giao thức đã cố định.
-
-Với mỗi lớp $c$, lấy $TP_c$, $FP_c$ và $FN_c$ từ ma trận đếm điểm ảnh trên toàn tập. Các chỉ số được tính như sau:
-\[
-  \mathrm{IoU}_c=\frac{TP_c}{TP_c+FP_c+FN_c},\qquad
-  \mathrm{Dice}_c=\frac{2TP_c}{2TP_c+FP_c+FN_c}.
-\]
-mIoU và macro-Dice là trung bình đều trên ba lớp. Cách gộp này cho dải chuyển tiếp cùng trọng số với các lớp lớn, dù số điểm ảnh mỗi lớp khác nhau. IoU riêng của dải chuyển tiếp dùng đúng nhãn trimap ở lưới $192\times192$ và phản ánh độ khớp vùng. Sai lệch biên tính bằng khoảng cách trên ảnh gốc nằm ngoài phép đo.
 
 \chapter{Kết quả thực nghiệm}
-\section{So sánh các biến thể}
-\input{notebook-evidence/results.tex}
+\section{Kết quả tổng hợp và từng lượt chạy}
+Trên 233 ảnh test, PIDNet-S đủ loss đạt $79{,}03\pm0{,}44$\% mIoU, còn PIDNet-S bỏ BAS-Loss đạt $78{,}38\pm0{,}47$\%. Macro-Dice tương ứng là $87{,}29\pm0{,}32$\% và $86{,}75\pm0{,}41$\%. Các giá trị sau dấu $\pm$ là độ lệch chuẩn mẫu qua ba seed.
 
-Cả hai biến thể chọn các epoch 10, 8 và 9 theo thứ tự seed 42, 43 và 44 trong lịch 12 epoch. Hình~\ref{fig:curves} cho thấy loss huấn luyện tiếp tục giảm đến cuối lịch, trong khi mIoU trên tập validation chững lại quanh 77\% sau epoch 8. Các đường validation gần nhau nên mức khác biệt được xem thêm qua từng cặp seed và từng vùng trên tập test.
+\input{notebook-evidence/tables/summary.tex}
+\input{notebook-evidence/tables/runs.tex}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-3.png}
-\caption{Loss huấn luyện và mIoU trên tập validation theo epoch của sáu lượt chạy. Màu thể hiện biến thể, kiểu nét phân biệt seed; mỗi đường là một lượt thực nghiệm.}
-\label{fig:curves}
-\end{figure}
+Bản đủ loss có mIoU cao hơn ở cả ba cặp seed, lần lượt 0,80; 0,63 và 0,54 điểm phần trăm. Chênh lệch ghép theo seed là $0{,}66\pm0{,}13$ điểm phần trăm (Bảng~\ref{tab:a2-paired}). Thời gian train trung bình tăng từ 26,19 lên 26,60 phút mỗi lượt khi thêm BAS-Loss; thời gian tổng của một lượt vào khoảng 30--31 phút.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.95\linewidth,height=0.75\textheight,keepaspectratio]{notebook-evidence/figures/notebook-5.png}
-\caption{Bốn ảnh test tại seed 42, lần lượt gồm ảnh RGB, trimap, dự đoán trộn cố định và dự đoán trộn theo biên. Xanh lục là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp. Ảnh và trimap từ Oxford-IIIT Pet \cite{petsdata}.}
-\label{fig:examples}
-\end{figure}
+\input{notebook-evidence/tables/paired.tex}
+
+\section{Loss train, mIoU validation và lựa chọn checkpoint}
+Với các seed 42, 43 và 44, bản đủ loss chọn lần lượt epoch 21, 19 và 77; bản bỏ BAS-Loss chọn epoch 30, 42 và 75. Các mốc này đều được quyết định bằng mIoU validation trong lịch 200 epoch. Test chỉ được đánh giá sau khi sáu lượt train và việc chọn checkpoint hoàn tất.
+
+Hình~\ref{fig:a2-curves} cho thấy loss giảm nhanh ở giai đoạn đầu rồi giảm chậm hơn, trong khi mIoU validation dao động quanh 78--80\%. Ở các epoch cuối, loss tiếp tục giảm nhưng mIoU validation thấp hơn mốc tốt nhất đã chọn. Vì vậy, dùng checkpoint theo validation giữ được các mô hình tốt hơn trên tập này so với lấy mặc định epoch cuối. Loss tổng của bản đủ loss có thêm thành phần BAS, nên độ cao hai đường loss được đọc theo từng hàm mục tiêu.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-4.png}
-\caption{Confusion matrix theo pixel, gộp ba seed của mỗi biến thể. Hàng là nhãn thực, cột là nhãn dự đoán; tỷ lệ được chuẩn hóa theo từng hàng.}
-\label{fig:confusion}
+\includegraphics[width=\linewidth]{notebook-evidence/figures/training_curves.png}
+\caption[Loss train và mIoU validation của sáu lượt chạy.]{Loss train và mIoU validation của sáu lượt chạy. Màu phân biệt biến thể, kiểu nét phân biệt seed. Mỗi đường biểu diễn một lượt; loss của bản đủ loss có thêm BAS-Loss.}
+\label{fig:a2-curves}
 \end{figure}
 
 \input{prose/discussion.tex}
 
 \section{Đối chiếu với kết quả công bố}
+Split chuẩn của CamVid gồm 367 ảnh train, 101 ảnh validation và 233 ảnh test. Ở kết quả test cuối cùng, tác giả PIDNet gộp 367 ảnh train với 101 ảnh validation thành 468 ảnh để train. A2 giữ riêng 101 ảnh validation để chọn checkpoint, nên dùng 367 ảnh train. Đánh giá lại checkpoint tác giả đạt 80,1039\% mIoU, gần mốc 80,1\% công bố; bản đủ loss của A2 đạt trung bình 79,03\%. Bảng~\ref{tab:a2-comparison} trình bày các kết quả cùng số ảnh train tương ứng.
 
-\begin{table}[htbp]
-\centering\small
-\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xrr@{}}
-\toprule
-Thí nghiệm & Điều kiện đối chứng & mIoU trước/sau (\%) & Chênh lệch (đpt)\\
-\midrule
-PIDNet, Bảng 1 & Cityscapes (validation), BiSeNet--ResNet18, thêm nhánh biên và Bag. & $75{,}4 / 76{,}7$ & $+1{,}3$\\
-PIDNet, Bảng 3 & Cityscapes, PIDNet-S giữ PAPPM, thay phép cộng bằng Light-Bag. & $78{,}4 / 78{,}8$ & $+0{,}4$\\
-A2 & Oxford-IIIT Pet (test), ResNet18 giữ giám sát biên, thay trộn 50/50 bằng trộn theo biên. & $78{,}00 / 77{,}82$ & $-0{,}18$\\
-\bottomrule
-\end{tabularx}
-\caption{Đối chiếu tác động của phép trộn trong bài báo gốc \cite{pidnet} và A2. Đpt là điểm phần trăm. Giá trị A2 là trung bình qua ba seed, chênh lệch tính trước khi làm tròn.}
-\label{tab:paper-comparison}
-\end{table}
+\input{notebook-evidence/tables/comparison.tex}
 
-Bảng~\ref{tab:paper-comparison} đối chiếu chênh lệch mIoU trong từng giao thức. Hai thí nghiệm Cityscapes đo thay đổi khi thêm nhánh biên cùng Bag vào BiSeNet, hoặc thay phép cộng bằng Light-Bag trong PIDNet-S. Trên Oxford-IIIT Pet, cả hai biến thể ResNet18 đã học với cùng loss biên. Mức chênh lệch đo được ở A2 vì vậy mô tả tác dụng của việc đưa bản đồ biên vào phép trộn trong cấu hình đó. Dải chưa phân loại của trimap khác nhãn biên ngữ nghĩa của Cityscapes về độ dày và cách tạo nhãn. Khác biệt này, cùng với kiến trúc và độ phân giải, giới hạn phạm vi đối chiếu giữa hai nghiên cứu.
+\Needspace{4\baselineskip}
+Trên cùng RTX 5090, tốc độ forward của hai checkpoint chỉ chênh khoảng 1 FPS, phù hợp với việc giữ nguyên kiến trúc PIDNet-S. Mốc 153,7 FPS trong bài báo dùng RTX 3090, nên việc so sánh tốc độ cần xét cả phần cứng và quy trình đo.
+
+\section{Suy luận trên video}
+Video minh họa lấy một đoạn liên tục từ chuỗi CamVid \code{0005VD.MXF}, ghi cảnh đường phố từ camera phía trước xe \cite{camviddata,samplevideo}. Video gốc được cung cấp qua liên kết dữ liệu trong kho mã chính thức TMANet. Đoạn được chọn có 869 khung hình, dài gần 29 giây ở tốc độ nguồn 29,97 FPS.
+
+Checkpoint seed 42 của PIDNet-S đủ loss xử lý từng khung hình ở độ phân giải $960\times720$, tạo mask rồi chồng màu phân đoạn lên ảnh. Phép chạy này dùng RTX 5090 và FP32. Hình~\ref{fig:a2-video-demo} cho thấy ba khung hình đầu vào và kết quả vừa chạy.
+
+\input{notebook-evidence/tables/video_timing.tex}
+
+Độ trễ trung bình từ ảnh đến mask là 19,39 ms, tương đương 51,56 mask/giây, cao hơn tốc độ nguồn. Khi tính cả đọc, vẽ và ghi video, tốc độ toàn luồng còn 21,45 FPS; xuất toàn bộ đoạn mất 40,52 giây. Vì vậy, bước tạo mask đáp ứng được tốc độ nguồn trong phép chạy này, còn toàn luồng xuất video chưa đạt 29,97 FPS. Các giá trị này đo công việc rộng hơn forward và được trình bày riêng với benchmark ở Bảng~\ref{tab:a2-comparison}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{notebook-evidence/figures/video_demo_frames.png}
+\caption[Khung hình CamVid 0005VD và kết quả phân đoạn.]{Ba khung hình 90, 420 và 780 từ đoạn CamVid 0005VD vừa chạy qua checkpoint PIDNet-S đủ loss, seed 42. Cột trái là ảnh đầu vào; cột phải là mask dự đoán được chồng màu lên ảnh. Các vùng mặt đường, vỉa hè, tòa nhà, cây và xe được hiển thị theo 11 lớp CamVid.}
+\label{fig:a2-video-demo}
+\end{figure}
+
+Video minh họa quá trình phân đoạn trên các khung hình liên tiếp; độ chính xác được đánh giá trên 233 ảnh CamVid test. Bản video được cung cấp trên \href{https://dathuynh1108.github.io/CO5085-deep-learning/a2.html}{trang A2}.
 
 \chapter{Kết luận và giới hạn}
 \input{prose/conclusion.tex}
 
-Tập ảnh chủ yếu gồm một thú cưng nổi bật, nên kết quả chưa bao quát cảnh có nhiều lớp tiếp giáp hoặc vật thể nhỏ như Cityscapes. Dải chưa phân loại trong trimap có độ dày khác nhau giữa các ảnh. Đổi độ phân giải ảnh và mặt nạ cũng làm thay đổi độ dày biểu kiến của dải này. Ngoài ra, chỉ ba lượt khởi tạo cho mỗi biến thể được dùng để mô tả độ ổn định.
+Thực nghiệm có ba giới hạn chính. CamVid ít ảnh có nhãn và các khung hình cùng video thường chứa cảnh tương tự. Các mô hình bắt đầu từ trọng số Cityscapes, nên kết quả là đánh giá fine-tuning trên CamVid. Cuối cùng, ba seed của PIDNet-S cho biết độ dao động trong thiết lập này; tác dụng của BAS trên mạng lớn hơn hoặc tập dữ liệu khác cần được kiểm tra riêng.
 
-Các đường cong, confusion matrix và ảnh dự đoán được trích từ kết quả thực thi của \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb}{notebook A2}.
+Notebook thực nghiệm được cung cấp tại \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb}{notebook A2}.
 
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 
@@ -179,19 +210,22 @@ European Conference on Computer Vision (ECCV), tr.~325--341, 2018.
 arXiv:2101.06085, 2021.
 \url{https://arxiv.org/abs/2101.06085}.
 
-\bibitem{pets} O. M. Parkhi, A. Vedaldi, A. Zisserman và C. V. Jawahar.
-\emph{Cats and Dogs}. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), tr.~3498--3505, 2012.
-\href{https://doi.org/10.1109/CVPR.2012.6248092}{DOI: 10.1109/CVPR.2012.6248092}.
+\bibitem{camvid} Gabriel J. Brostow, Julien Fauqueur và Roberto Cipolla.
+\emph{Semantic Object Classes in Video: A High-Definition Ground Truth Database}.
+Pattern Recognition Letters, tập~30, số~2, tr.~88--97, 2009.
+\href{https://doi.org/10.1016/j.patrec.2008.04.005}{DOI: 10.1016/j.patrec.2008.04.005}.
 
-\bibitem{petsdata} Visual Geometry Group, University of Oxford.
-\emph{The Oxford-IIIT Pet Dataset}. \url{https://www.robots.ox.ac.uk/~vgg/data/pets/}.
+\bibitem{camviddata} University of Cambridge.
+\emph{Cambridge-driving Labeled Video Database (CamVid)}.
+\url{https://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/}.
 
-\bibitem{resnet} K. He, X. Zhang, S. Ren và J. Sun.
-\emph{Deep Residual Learning for Image Recognition}.
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR), tr.~770--778, 2016.
-\href{https://doi.org/10.1109/CVPR.2016.90}{DOI: 10.1109/CVPR.2016.90}.
+\bibitem{pidnetcode} Jiacong Xu. \emph{PIDNet: official implementation, CamVid data lists and model checkpoints}.
+\url{https://github.com/XuJiacong/PIDNet}.
 
-\bibitem{torchvision} Torchvision. \emph{ResNet18 and ImageNet weights}.
-\url{https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.resnet18.html}.
+\bibitem{samplevideo} Nhóm tác giả TMANet. \emph{Video CamVid gốc: 0005VD.MXF}, liên kết dữ liệu tại mục Usage của kho mã chính thức.
+\url{https://github.com/wanghao9610/TMANet#usage}.
+
+\bibitem{camvidarchive} Carlo Lepelaars. \emph{CamVid}, bản phân phối ảnh và nhãn màu trên Kaggle được kho mã PIDNet dẫn nguồn.
+\url{https://www.kaggle.com/datasets/carlolepelaars/camvid}.
 \end{thebibliography}
 \end{document}

@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}Xrrr@{}}
+\toprule
+Lớp & Đủ loss (\%) & Bỏ BAS-Loss (\%) & Chênh lệch (đpt)\\
+\midrule
+Bicyclist & $75{,}51 \pm 0{,}63$ & $73{,}51 \pm 1{,}84$ & $+2{,}00 \pm 2{,}10$\\
+Building & $90{,}73 \pm 0{,}27$ & $90{,}62 \pm 0{,}10$ & $+0{,}11 \pm 0{,}26$\\
+Car & $95{,}09 \pm 0{,}30$ & $95{,}24 \pm 0{,}09$ & $-0{,}16 \pm 0{,}21$\\
+Column\_Pole & $45{,}82 \pm 0{,}33$ & $43{,}67 \pm 0{,}76$ & $+2{,}15 \pm 0{,}82$\\
+Fence & $70{,}64 \pm 1{,}91$ & $70{,}86 \pm 1{,}91$ & $-0{,}22 \pm 0{,}97$\\
+Pedestrian & $74{,}78 \pm 0{,}39$ & $73{,}80 \pm 1{,}27$ & $+0{,}98 \pm 1{,}31$\\
+Road & $97{,}13 \pm 0{,}07$ & $97{,}24 \pm 0{,}05$ & $-0{,}11 \pm 0{,}11$\\
+Sidewalk & $91{,}59 \pm 0{,}07$ & $91{,}72 \pm 0{,}09$ & $-0{,}13 \pm 0{,}12$\\
+SignSymbol & $54{,}28 \pm 2{,}02$ & $51{,}98 \pm 4{,}74$ & $+2{,}31 \pm 2{,}81$\\
+Sky & $92{,}61 \pm 0{,}24$ & $92{,}67 \pm 0{,}07$ & $-0{,}06 \pm 0{,}20$\\
+Tree & $81{,}17 \pm 0{,}22$ & $80{,}82 \pm 0{,}29$ & $+0{,}35 \pm 0{,}39$\\
+\bottomrule
+\end{tabularx}
+\caption{IoU từng lớp: trung bình và SD qua ba seed. Chênh lệch được ghép theo seed trước khi tổng hợp.}
+\label{tab:a2-per-class}
+\end{table}

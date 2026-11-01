@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}Xrrrrrr@{}}
+\toprule
+Seed & Epoch chọn & Val mIoU & Test mIoU & Macro-Dice & Train (phút) & Tổng (phút)\\
+\midrule
+\multicolumn{7}{@{}l}{\textbf{PIDNet-S đủ loss}}\\
+42 & 21 & 79,89 & 79,11 & 87,36 & 26,56 & 30,75\\
+43 & 19 & 80,16 & 78,56 & 86,94 & 26,59 & 30,79\\
+44 & 77 & 79,07 & 79,42 & 87,56 & 26,64 & 30,81\\
+\multicolumn{7}{@{}l}{\textbf{PIDNet-S bỏ BAS-Loss}}\\
+42 & 30 & 79,31 & 78,31 & 86,78 & 26,17 & 30,34\\
+43 & 42 & 79,70 & 77,94 & 86,32 & 26,18 & 30,35\\
+44 & 75 & 79,38 & 78,88 & 87,13 & 26,21 & 30,38\\
+\bottomrule
+\end{tabularx}
+\caption{Kết quả của sáu lượt train 200 epoch. Các chỉ số phân đoạn tính bằng phần trăm. Thời gian train gồm chuẩn bị batch và cập nhật trọng số; thời gian tổng còn gồm validation và ghi checkpoint.}
+\label{tab:a2-runs}
+\end{table}

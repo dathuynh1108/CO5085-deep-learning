@@ -1,6 +1,9 @@
 """Build the course site from separate reports and verified measured summaries."""
 from pathlib import Path
 import argparse
+import csv
+import math
+import statistics
 import html
 import json
 import re
@@ -18,14 +21,14 @@ def accuracy_text(mean, sd):
 
 
 A1_NAMES = {
-    'resnet18_scratch': 'ResNet18 — huấn luyện từ đầu',
-    'resnet18_head': 'ResNet18 — chỉ học bộ phân loại',
-    'resnet18_partial': 'ResNet18 — tinh chỉnh khối cuối',
-    'resnet18_full': 'ResNet18 — tinh chỉnh toàn bộ',
-    'swin_t_scratch': 'Swin-T — huấn luyện từ đầu',
-    'swin_t_head': 'Swin-T — chỉ học bộ phân loại',
-    'swin_t_partial': 'Swin-T — tinh chỉnh khối cuối',
-    'swin_t_full': 'Swin-T — tinh chỉnh toàn bộ',
+    'resnet18_scratch': 'ResNet18 — scratch',
+    'resnet18_head': 'ResNet18 — head-only',
+    'resnet18_partial': 'ResNet18 — partial fine-tuning',
+    'resnet18_full': 'ResNet18 — full fine-tuning',
+    'swin_t_scratch': 'Swin-T — scratch',
+    'swin_t_head': 'Swin-T — head-only',
+    'swin_t_partial': 'Swin-T — partial fine-tuning',
+    'swin_t_full': 'Swin-T — full fine-tuning',
 }
 
 
@@ -52,31 +55,80 @@ def a1_table_rows(assignment):
 
 def a2_markup(report):
     evidence = report / 'notebook-evidence'
-    summary = json.loads((evidence / 'summary.json').read_text())
-    if not summary['train_runs'] == summary['test_runs'] == 2 * len(summary['seeds']):
-        raise ValueError('A2 requires complete training and evaluation evidence.')
-    names = {'fixed': 'Trộn cố định', 'guided': 'Trộn theo biên'}
+    with (evidence / 'results.csv').open(newline='') as stream:
+        results = list(csv.DictReader(stream))
+    variants = ('FULL', 'NO_BAS')
+    variant_names = {'FULL': 'PIDNet-S (đủ loss)', 'NO_BAS': 'PIDNet-S (bỏ BAS-Loss)',
+                     'PIDNet-S, published': 'PIDNet-S (paper)',
+                     'Released author checkpoint': 'Checkpoint tác giả'}
+    if len(results) != 6 or any(
+        sorted(int(row['seed']) for row in results if row['variant'] == variant) != [42, 43, 44]
+        for variant in variants
+    ):
+        raise ValueError('A2 requires FULL and NO_BAS test results for seeds 42, 43, and 44.')
+    metrics = {}
     rows = []
-    for variant, name in names.items():
-        group = summary['groups'][variant]
-        values = [accuracy_text(group[key]['mean'], group[key]['sd']).replace('.', ',')
-                  for key in ['miou', 'macro_dice', 'transition_iou']]
-        rows.append(f'<tr><th scope="row">{name}</th>' +
+    for variant in variants:
+        group = [row for row in results if row['variant'] == variant]
+        metrics[variant] = {}
+        for key in ('test_miou', 'test_macro_dice', 'train_seconds'):
+            values = [float(row[key]) for row in group]
+            if not all(math.isfinite(value) for value in values):
+                raise ValueError(f'Nonfinite A2 metric: {variant}/{key}')
+            metrics[variant][key] = (statistics.mean(values), statistics.stdev(values))
+        values = [accuracy_text(*metrics[variant][key]).replace('.', ',')
+                  for key in ('test_miou', 'test_macro_dice')]
+        seconds, sd = metrics[variant]['train_seconds']
+        values.append(f'{seconds / 60:.2f} ± {sd / 60:.2f} phút'.replace('.', ','))
+        rows.append(f'<tr><th scope="row">{html.escape(variant_names[variant])}</th>' +
                     ''.join(f'<td>{value}</td>' for value in values) + '</tr>')
-    status = (f'{summary["train_runs"]} lượt huấn luyện và '
-              f'{summary["test_runs"]} lượt đánh giá trên tập test.')
-    difference = summary['guided_minus_fixed']
-    delta = f'{100 * difference["miou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
-    edge = f'{100 * difference["transition_iou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
-    finding = (f'Chênh lệch trung bình khi chuyển từ trộn cố định sang trộn theo biên là {delta} điểm phần trăm '
-               f'mIoU và {edge} điểm phần trăm IoU dải chuyển tiếp. Chênh lệch được tính theo cặp cùng seed.')
-    return [('A2_STATUS', html.escape(status)), ('A2_RESULTS', ''.join(rows)),
-            ('A2_FINDING', html.escape(finding))]
+    paired = []
+    for seed in (42, 43, 44):
+        values = {row['variant']: float(row['test_miou']) for row in results if int(row['seed']) == seed}
+        paired.append(values['FULL'] - values['NO_BAS'])
+    delta = f'{100 * statistics.mean(paired):+.2f}'.replace('.', ',').replace('-', '−')
+    delta_sd = f'{100 * statistics.stdev(paired):.2f}'.replace('.', ',')
+    finding = (f'Bản đủ loss có mIoU cao hơn bản bỏ BAS-Loss trung bình {delta.lstrip("+")} ± {delta_sd} '
+               'điểm phần trăm qua ba cặp seed. Kiến trúc và thiết lập train được giữ giống nhau.')
+    with (evidence / 'paper_comparison.csv').open(newline='') as stream:
+        comparison = list(csv.DictReader(stream))
+    comparison_rows = []
+    for row in comparison:
+        miou = float(row['mIoU (%)'])
+        fps = float(row['FPS']) if row['FPS'] else float('nan')
+        values = [row['Training images'], f'{miou:.2f}%'.replace('.', ','),
+                  row['GPU'], '—' if not math.isfinite(fps) else f'{fps:.1f}'.replace('.', ',')]
+        comparison_rows.append(f'<tr><th scope="row">{html.escape(variant_names.get(row["Model"], row["Model"]))}</th>' +
+                               ''.join(f'<td>{html.escape(value)}</td>' for value in values) + '</tr>')
+    return [('A2_STATUS', '6 lượt huấn luyện và 6 lượt đánh giá trên tập test CamVid.'),
+            ('A2_RESULTS', ''.join(rows)), ('A2_FINDING', html.escape(finding)),
+            ('A2_COMPARISON', ''.join(comparison_rows))]
+
+
+def measured_copy(exercises, assignment, followup):
+    exercise_values = {row['id']: row for row in exercises}
+    ex_finding = 'Độ chính xác trung bình trên tập test: ' + '; '.join(
+        f'{name} {accuracy_text(exercise_values[key]["test_accuracy_mean"], exercise_values[key]["test_accuracy_std"])}'
+        for key, name in [('e1_cnn', 'CNN'), ('e1_mlp', 'MLP'), ('e3_gru_rows', 'GRU đọc hàng')]) + '.'
+    groups = {row['experiment']: row for row in assignment['groups']}
+    swin = groups['swin_t_full']['test_accuracy']
+    resnet = groups['resnet18_full']['test_accuracy']
+    finding = (f'Trong lịch 20 epoch, Swin-T full fine-tuning đạt {accuracy_text(swin["mean"], swin["sd"])}, '
+               f'còn ResNet18 ở cùng chế độ đạt {accuracy_text(resnet["mean"], resnet["sd"])}.')
+    followup_groups = {row['experiment']: row for row in followup['groups']}
+    scratch = followup_groups['swin_t_scratch']['test_accuracy']
+    full = followup_groups['swin_t_full']['test_accuracy']
+    followup_finding = (f'Trong lịch 40 epoch, Swin-T khởi tạo ngẫu nhiên đạt {accuracy_text(scratch["mean"], scratch["sd"])}; '
+                        f'bản khởi tạo ImageNet đạt {accuracy_text(full["mean"], full["sd"])}.')
+    return [('EX_FINDING', html.escape(ex_finding)), ('A1_FINDING', html.escape(finding)),
+            ('A1_FOLLOWUP_FINDING', html.escape(followup_finding)),
+            ('A1_FEATURE', f'{100 * swin["mean"]:.2f}'.replace('.', ',') + '<small>%</small>'),
+            ('A1_FEATURE_SD', f'Độ lệch chuẩn: {100 * swin["sd"]:.2f} điểm phần trăm'.replace('.', ','))]
 
 
 def build_site(output: Path) -> Path:
     output = Path(output).resolve()
-    protected = [ROOT, ROOT / 'site', ROOT / 'src', ROOT / 'reports']
+    protected = [ROOT, ROOT / 'site', ROOT / 'reports']
     if any(output == p or (p != ROOT and p in output.parents) for p in protected):
         raise ValueError('Use a separate build directory, not the source directories.')
     output.mkdir(parents=True, exist_ok=True)
@@ -99,7 +151,7 @@ def build_site(output: Path) -> Path:
     a1_status = f'{a1_trained} lượt huấn luyện · {a1_tested} lượt đánh giá trên tập test'
     replacements = [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),
                     ('RESULTS', result_markup(summaries)), ('A1_RESULTS', a1_table_rows(assignment)),
-                    ('A1_FOLLOWUP', a1_table_rows(followup))] + a2_markup(a2)
+                    ('A1_FOLLOWUP', a1_table_rows(followup))] + measured_copy(summaries, assignment, followup) + a2_markup(a2)
     for name in ['index.html', 'a1.html', 'a2.html']:
         source = (ROOT / 'site' / name).read_text()
         for token, value in replacements:
@@ -110,15 +162,20 @@ def build_site(output: Path) -> Path:
     (output / 'reports').mkdir(exist_ok=True)
     for directory, name in [(ex, 'exercises.pdf'), (a1, 'assignment1.pdf'), (a2, 'assignment2.pdf')]:
         shutil.copy2(directory / name, output / 'reports' / name)
+    a1_media = output / 'a1-media'
+    a1_media.mkdir(exist_ok=True)
+    for name in ('class_counts.png', 'augmentation_examples.png'):
+        shutil.copy2(a1 / 'notebook-evidence/figures' / name, a1_media / name)
     media = output / 'a2-media'
     media.mkdir(exist_ok=True)
-    for name, source in [('dataset.png', 'notebook-1.png'), ('examples.png', 'notebook-5.png')]:
+    for name, source in [('dataset.png', 'eda_class_distribution.png'), ('examples.png', 'qualitative_comparison.png')]:
         shutil.copy2(a2 / 'notebook-evidence/figures' / source, media / name)
     shutil.copy2(a2 / 'demo.mp4', media / 'demo.mp4')
     (output / 'results.json').write_text(json.dumps(summaries, ensure_ascii=False, indent=2) + '\n')
     shutil.copy2(a1 / 'notebook-evidence/summary.json', output / 'a1-results.json')
     shutil.copy2(a1 / 'swin-followup/summary.json', output / 'a1-swin-followup.json')
-    shutil.copy2(a2 / 'notebook-evidence/summary.json', output / 'a2-results.json')
+    for name in ('results.csv', 'summary.csv', 'paper_comparison.csv'):
+        shutil.copy2(a2 / 'notebook-evidence' / name, output / ('a2-' + name))
     (output / '.nojekyll').touch()
     return output
 

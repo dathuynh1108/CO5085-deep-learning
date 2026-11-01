@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}Xr@{}}
+\toprule
+Phép đo video & Giá trị\\
+\midrule
+Số khung hình & 869\\
+Tốc độ nguồn (FPS) & 29,97\\
+Độ dài đoạn nguồn (giây) & 29,00\\
+Độ trễ từ ảnh đến mask (ms) & 19,39\\
+FPS từ ảnh đến mask & 51,56\\
+FPS toàn luồng xuất video & 21,45\\
+Thời gian xuất (giây) & 40,52\\
+\bottomrule
+\end{tabularx}
+\caption{Phép chạy trên toàn bộ 869 khung hình CamVid 0005VD bằng checkpoint PIDNet-S đủ loss, seed 42, ở $960\times720$ trên RTX 5090, FP32. Độ trễ từ ảnh đến mask gồm tiền xử lý, suy luận và tạo mask; toàn luồng còn gồm đọc, vẽ và ghi video.}
+\label{tab:a2-video-timing}
+\end{table}

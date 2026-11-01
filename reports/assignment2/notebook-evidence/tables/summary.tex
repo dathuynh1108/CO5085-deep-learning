@@ -1,0 +1,13 @@
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}Xrrr@{}}
+\toprule
+Mô hình & mIoU (\%) & Macro-Dice (\%) & Train (phút)\\
+\midrule
+PIDNet-S đủ loss & $79{,}03 \pm 0{,}44$ & $87{,}29 \pm 0{,}32$ & $26{,}60 \pm 0{,}04$\\
+PIDNet-S bỏ BAS-Loss & $78{,}38 \pm 0{,}47$ & $86{,}75 \pm 0{,}41$ & $26{,}19 \pm 0{,}02$\\
+\bottomrule
+\end{tabularx}
+\caption{Trung bình và độ lệch chuẩn mẫu của ba seed trên 233 ảnh test. Thời gian train tính trên RTX 5090.}
+\label{tab:a2-summary}
+\end{table}

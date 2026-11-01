@@ -1,10 +1,10 @@
 \chapter{Phân tích PIDNet}
 \section{Từ mạng hai nhánh đến vấn đề overshoot}
-Các mạng encoder--decoder mở rộng receptive field qua strided convolution hoặc pooling, rồi khôi phục độ phân giải bằng upsampling. Chi tiết đã mất ở encoder không thể được khôi phục chỉ bằng việc tăng kích thước feature map. Dilated convolution và các kiến trúc nhiều độ phân giải giảm bớt vấn đề này, nhưng chi phí thực tế còn phụ thuộc cách truy cập bộ nhớ và khả năng thực thi trên GPU.
+Trong mạng encoder--decoder, encoder giảm kích thước feature map để mỗi vị trí nhìn được một vùng ảnh rộng hơn. Vùng ảnh đó được gọi là receptive field. Nhờ có ngữ cảnh rộng, mạng dễ nhận ra một vùng là mặt đường hay tòa nhà, nhưng có thể làm mất chi tiết của cột mảnh hoặc người ở xa. Upsampling chỉ tăng kích thước feature map; những chi tiết đã mất vẫn cần được bổ sung từ các tầng có độ phân giải cao. Dilated convolution và mạng nhiều độ phân giải là hai cách giữ thêm chi tiết, với chi phí tính toán khác nhau.
 
-BiSeNet \cite{bisenet} tách một luồng giữ chi tiết không gian khỏi một luồng học ngữ cảnh. DDRNet \cite{ddrnet} duy trì hai độ phân giải và tăng trao đổi thông tin giữa chúng. Cách tổ chức này giảm chi phí của việc giữ mọi tầng ở độ phân giải cao, nhưng chưa bảo đảm fusion cuối cùng giữ đúng biên. Tại mép một vật thể mảnh, receptive field rộng có thể chứa chủ yếu pixel nền. Nếu đặc trưng ngữ cảnh chiếm ưu thế, nhãn nền lan qua mép hoặc làm biến mất vật thể nhỏ, dù luồng chi tiết còn giữ được vị trí của nó.
+BiSeNet \cite{bisenet} giải quyết bài toán bằng hai luồng: một luồng giữ chi tiết, một luồng học ngữ cảnh. DDRNet \cite{ddrnet} cũng duy trì hai độ phân giải và cho hai luồng trao đổi thông tin nhiều lần. Khi ghép chúng bằng fusion, ngữ cảnh vẫn có thể lấn át chi tiết ở biên. Chẳng hạn, một cột nhỏ nằm giữa vùng đường và tòa nhà có thể bị gán thành nền vì phần lớn receptive field chứa pixel nền, dù luồng chi tiết còn nhận ra đường viền cột.
 
-Paper gọi hiện tượng trên là \emph{overshoot}, liên hệ sự lan thông tin qua biên không gian với đáp ứng vượt mức trong điều khiển. Điểm cần giải quyết là phân bổ ảnh hưởng của ngữ cảnh theo vị trí: vùng trong vật thể cần ngữ nghĩa ổn định, còn vùng tiếp giáp cần giữ biến thiên cục bộ. Chỉ cộng thêm đặc trưng độ phân giải cao không trực tiếp giải quyết việc hai nguồn thông tin có thể mâu thuẫn tại cùng một pixel.
+Bài báo gọi sự lan nhãn qua biên này là \emph{overshoot}, lấy ý tưởng từ đáp ứng vượt mức trong điều khiển. Vấn đề cần xử lý là quyết định nơi nào nên dựa nhiều vào ngữ cảnh, nơi nào cần giữ chi tiết. PIDNet bổ sung nhánh D để học vị trí biên, rồi dùng thông tin đó khi ghép hai luồng còn lại.
 
 \section{Cơ sở PID và ý nghĩa của nhánh D}
 \subsection{PID truyền thống}
@@ -13,27 +13,27 @@ Với sai số $e(t)=r(t)-y(t)$ giữa giá trị đặt và đầu ra hệ th�
  u(t)=K_Pe(t)+K_I\int_0^t e(\tau)\,d\tau+K_D\frac{de(t)}{dt}.
  \label{eq:pid-continuous}
 \end{equation}
-Thành phần proportional phản ứng với sai số hiện tại; integral tích lũy sai số; derivative phản ứng với tốc độ thay đổi của sai số. Trong dạng rời rạc với chu kỳ lấy mẫu hấp thụ vào các hệ số, công thức tương ứng là
+Trong công thức trên, $u(t)$ là tín hiệu điều khiển; $K_P$, $K_I$ và $K_D$ là hệ số của ba thành phần. P phản ứng với sai số hiện tại, I cộng dồn sai số theo thời gian, còn D phản ứng với tốc độ thay đổi của sai số. Khi lấy mẫu theo từng bước và gộp chu kỳ lấy mẫu vào các hệ số, công thức trở thành
 \begin{equation}
  u[n]=k_pe[n]+k_i\sum_{j=0}^{n}e[j]
       +k_d\big(e[n]-e[n-1]\big).
  \label{eq:pid-discrete}
 \end{equation}
-Công thức (1) của paper chỉ gồm hai hạng P và I; hạng D trong Hình~3 của paper hoàn thiện biểu thức~\eqref{eq:pid-discrete}. Khi sai số giảm, hạng $e[n]-e[n-1]$ có thể âm, bù lại phần tích lũy vẫn còn lớn. Đây là trực giác về tác dụng giảm overshoot; mức đáp ứng cụ thể còn phụ thuộc hệ được điều khiển và các hệ số.
+Ở đây, $n$ là bước thời gian và $k_p,k_i,k_d$ là các hệ số rời rạc. Khi sai số đang giảm, hiệu $e[n]-e[n-1]$ có thể âm. Hạng D khi đó bù bớt tác dụng của hạng I đang còn tích lũy nhiều sai số, giúp giảm overshoot. Công thức (1) của bài báo trình bày hai hạng P và I; Hình~3 bổ sung vai trò của D như trong biểu thức~\eqref{eq:pid-discrete}.
 
-Với điều kiện đầu bằng 0, hàm truyền rời rạc và đáp ứng trên đường tròn đơn vị là
+Có thể nhìn ba thành phần này dưới góc độ lọc tín hiệu. Với điều kiện đầu bằng 0, hàm truyền trong miền $z$ và đáp ứng theo tần số là
 \begin{align}
  C(z)&=k_p+\frac{k_i}{1-z^{-1}}+k_d(1-z^{-1}),\label{eq:pid-z}\\
  C(e^{j\omega})&=k_p+\frac{k_i}{1-e^{-j\omega}}
                      +k_d(1-e^{-j\omega}).\label{eq:pid-frequency}
 \end{align}
-Biểu thức~\eqref{eq:pid-frequency} tương ứng công thức (4) của paper. Với $0<\omega\leq\pi$, bỏ qua hệ số khuếch đại,
+Trong đó, $z$ là biến của phép biến đổi Z; thay $z=e^{j\omega}$ cho đáp ứng tại tần số góc $\omega$, với $j^2=-1$. Biểu thức~\eqref{eq:pid-frequency} tương ứng công thức (4) của bài báo. Độ lớn đáp ứng của riêng I và D, bỏ qua hệ số khuếch đại, là
 \begin{equation}
  |H_I(e^{j\omega})|=\frac{1}{2|\sin(\omega/2)|},\qquad
  |H_D(e^{j\omega})|=2|\sin(\omega/2)|.
  \label{eq:pid-magnitudes}
 \end{equation}
-Khi $\omega$ tăng, gain của integral giảm còn gain của derivative tăng; proportional có gain không đổi. Tác giả dùng quan sát này để liên hệ ngữ cảnh tổng hợp với thành phần tần số thấp và tín hiệu chuyển lớp với thành phần tần số cao. Trong ảnh, tần số ở đây mô tả biến thiên theo không gian, không phải diễn biến theo thời gian của chuỗi ảnh.
+Với $0<\omega\leq\pi$, I có độ khuếch đại lớn ở tần số thấp, còn D nhấn mạnh tần số cao; P giữ độ khuếch đại không đổi. Trên ảnh, vùng mặt đường có màu và nhãn thay đổi chậm là ví dụ về thành phần tần số thấp. Mép giữa người đi bộ và nền thay đổi nhanh hơn, nên chứa nhiều thành phần tần số cao. Tác giả dựa vào đặc điểm này để gắn I với ngữ cảnh và D với biên. Tần số ở đây mô tả sự thay đổi theo vị trí trong ảnh.
 
 \begin{figure}[htbp]
 \centering
@@ -42,17 +42,47 @@ Khi $\omega$ tăng, gain của integral giảm còn gain của derivative tăng;
 \label{fig:paper-pid-analogy}
 \end{figure}
 
-\subsection{Phép tương tự trong CNN và giới hạn của lập luận}
-Paper xét hai CNN một chiều gồm ba tầng, bỏ BatchNorm và ReLU, để phân tích ảnh hưởng của receptive field. Viết gọn công thức (2)--(3) của paper dưới dạng tổng, với $x$ là tín hiệu đầu vào,
+\subsection{Từ phép tương tự PID đến CNN}
+Để giải thích sự khác nhau giữa detail và context, bài báo xét hai CNN một chiều gồm ba tầng và bỏ BatchNorm, ReLU để phép tính dễ theo dõi. Các công thức (2)--(3) được viết gọn như sau:
 \begin{align}
  O_{\mathrm{detail}}[i]&=\sum_{r=-3}^{3}K^D_{i+r}x[i+r],\label{eq:toy-detail}\\
  O_{\mathrm{context}}[i]&=\sum_{r=-7}^{7}K^C_{i+r}x[i+r].\label{eq:toy-context}
 \end{align}
-Các hệ số $K$ là tổ hợp của trọng số convolution qua ba tầng; ký hiệu $D$ trong $K^D$ chỉ \emph{detail}, khác với nhánh derivative của PIDNet. Trong ví dụ này, luồng detail phụ thuộc vào lân cận hẹp hơn, còn luồng context nhận thông tin từ vùng rộng hơn. Đây là cơ sở để tác giả liên hệ detail với P và context với I.
+Ở đây, $x[i+r]$ là giá trị đầu vào cách vị trí $i$ một khoảng $r$; các hệ số $K$ được tạo từ trọng số convolution của ba tầng. Luồng detail chỉ dùng bảy vị trí từ $i-3$ đến $i+3$, còn context dùng 15 vị trí từ $i-7$ đến $i+7$. Context vì vậy tổng hợp thông tin trên vùng rộng hơn, tương tự vai trò cộng dồn của I; detail giữ thay đổi cục bộ tốt hơn, gần với P. Chữ $D$ trong $K^D$ viết tắt cho \emph{detail}, khác với tên nhánh D của PIDNet.
 
-Lập luận trên giải thích một xu hướng thiết kế, nhưng không chứng minh mọi CNN hai nhánh đều là bộ điều khiển PI. Trọng số convolution được học có thể mang dấu khác nhau; BatchNorm, ReLU và residual connection còn làm thay đổi đáp ứng. PIDNet cũng không duy trì trạng thái tích lũy sai số theo thời gian hay tối ưu các gain $k_p,k_i,k_d$ của một vòng điều khiển. Ý tưởng PID được chuyển thành việc học ba loại thông tin bổ sung nhau trong miền không gian. Nhánh D học \emph{semantic boundary}, vì biến thiên màu hoặc texture lớn chưa chắc là nơi nhãn lớp thay đổi.
+Phép tương tự này là cơ sở thiết kế mạng. CNN thực tế còn có trọng số học được, BatchNorm, ReLU và residual connection, nên đáp ứng phức tạp hơn các bộ lọc trên. PIDNet dùng ba nhánh để học chi tiết, ngữ cảnh và biên trong ảnh; mạng không tích lũy sai số theo thời gian như một bộ điều khiển PID.
 
 \section{Kiến trúc ba nhánh và trao đổi thông tin}
+\subsection{Residual block và luồng đặc trưng trong PIDNet-S}
+PIDNet-S được ghép từ các residual block \cite{pidnet,pidnetcode}. BasicBlock dùng hai convolution $3\times3$. Bottleneck dùng chuỗi $1\times1$, $3\times3$, $1\times1$, với số kênh đầu ra gấp đôi số kênh bên trong. Trong mỗi block, shortcut đưa đầu vào đến phép cộng với kết quả của nhánh convolution. Mạng nhờ đó học phần thay đổi cần thêm vào đặc trưng đã có. Với block có ReLU sau phép cộng,
+\begin{equation}
+ \mathbf h_{k+1}=\operatorname{ReLU}\!\left(F_k(\mathbf h_k)+S_k(\mathbf h_k)\right).
+ \label{eq:residual-block}
+\end{equation}
+Trong đó, $\mathbf h_k$ là đầu vào block thứ $k$, $F_k$ là nhánh convolution, còn $S_k$ là shortcut. Khi kích thước không đổi, $S_k(\mathbf h_k)=\mathbf h_k$. Khi đổi số kênh hoặc stride, shortcut dùng convolution $1\times1$ và BatchNorm để hai vế có cùng kích thước trước khi cộng. Một số block bỏ ReLU sau phép cộng.
+
+Hai convolution đầu và hai tầng residual tạo đặc trưng dùng chung, rồi mạng tách thành P, I và D như Bảng~\ref{tab:pidnet-s-feature-flow}. Các block tiếp theo xử lý đặc trưng trong từng nhánh; Pag và các kết nối I--D giúp chúng trao đổi thông tin. Trước Light-Bag, P và D đều có 128 kênh trên lưới bằng $1/8$ ảnh đầu vào. PAPPM đưa I về 128 kênh, rồi upsampling đến cùng lưới để fusion. Đầu ngữ nghĩa sau đó xuất 11 logit tại mỗi vị trí và nội suy về kích thước ảnh CamVid.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXcc@{}}
+\toprule
+Luồng & Các tầng chính & Tỷ lệ không gian & Số kênh\\
+\midrule
+Dùng chung & Hai convolution $3\times3$; hai BasicBlock & $1/4$ & 32\\
+Dùng chung & Hai BasicBlock, block đầu stride 2 & $1/8$ & 64\\
+P & Hai tầng, mỗi tầng hai BasicBlock; một Bottleneck & $1/8$ & 128\\
+I & Hai tầng, mỗi tầng ba BasicBlock; hai Bottleneck & $1/16\to1/32\to1/64$ & $128\to256\to512$\\
+I & PAPPM và upsampling & $1/8$ & 128\\
+D & Một BasicBlock; hai Bottleneck & $1/8$ & $32\to64\to128$\\
+Fusion & Light-Bag & $1/8$ & 128\\
+Đầu ra & Đầu ngữ nghĩa; nội suy về ảnh gốc & $1/8\to1$ & 11\\
+\bottomrule
+\end{tabularx}
+\caption{Luồng đặc trưng của PIDNet-S với $C=32$, $m=2$, $n=3$ và đầu phân đoạn 11 lớp. Tỷ lệ không gian là mức giảm danh nghĩa so với ảnh đầu vào; kích thước các tầng sâu còn phụ thuộc padding và làm tròn. Các kết nối Pag và I--D được minh họa ở Hình~\ref{fig:paper-architecture}.}
+\label{tab:pidnet-s-feature-flow}
+\end{table}
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{assets/pidnet/architecture.png}
@@ -60,23 +90,23 @@ Lập luận trên giải thích một xu hướng thiết kế, nhưng không c
 \label{fig:paper-architecture}
 \end{figure}
 
-Hình~\ref{fig:paper-architecture} cho thấy ba nhánh dùng chung các tầng đầu rồi đảm nhiệm những vai trò khác nhau:
+Hình~\ref{fig:paper-architecture} cho thấy cách ba nhánh chia việc:
 \begin{itemize}
- \item \textbf{P (proportional):} duy trì feature map ở khoảng $1/8$ kích thước đầu vào để giữ vị trí, hình dạng và chi tiết của vật thể. Độ sâu ở mức vừa phải nhằm hạn chế chi phí trên lưới còn tương đối lớn.
- \item \textbf{I (integral):} tiếp tục downsampling qua các mức $1/16$, $1/32$ và $1/64$, sử dụng nhiều tầng hơn và context aggregation để nhận ra vật thể từ vùng quan sát rộng.
- \item \textbf{D (derivative):} là nhánh nông học các vùng chuyển lớp. Boundary supervision giúp nhánh này tập trung vào biên ngữ nghĩa, thay vì đáp ứng với mọi cạnh ảnh.
+ \item \textbf{P (proportional):} giữ feature map ở khoảng $1/8$ kích thước ảnh. Nhánh này theo dõi vị trí và đường viền, chẳng hạn hình dạng người đi bộ hay cột bên đường. Số tầng vừa phải giúp giảm chi phí tính toán trên lưới lớn.
+ \item \textbf{I (integral):} giảm dần độ phân giải qua các mức $1/16$, $1/32$ và $1/64$. Nhánh này dùng nhiều tầng hơn để nhận ra lớp từ ngữ cảnh rộng, chẳng hạn phân biệt mặt đường với vỉa hè.
+ \item \textbf{D (derivative):} học vị trí chuyển từ lớp này sang lớp khác. Nhãn biên tạo từ mặt nạ phân đoạn giúp D tập trung vào đường phân cách ngữ nghĩa.
 \end{itemize}
-Nhánh I truyền thông tin sang D bằng phép cộng và sang P bằng Pag. Ở cuối mạng, context feature được upsampling về lưới phù hợp rồi kết hợp với P dưới sự hướng dẫn của D qua Bag. Vì P và D ít tầng hơn, thông tin từ I giúp chúng phân biệt đường viền vật thể với texture bên trong vật thể. Ngược lại, giữ luồng chi tiết riêng hạn chế việc ngữ cảnh quyết định nhãn ở mọi vị trí.
+I gửi ngữ cảnh sang P qua Pag và sang D qua phép cộng. Ví dụ, một cạnh mạnh có thể là mép ô tô hoặc chỉ là bóng đổ trên đường; ngữ cảnh giúp P và D phân biệt hai trường hợp này. Ở cuối mạng, Bag dùng đặc trưng D để quyết định mức đóng góp của P và I tại từng vị trí. Nhờ vậy, vùng bên trong vật thể có thể dùng nhiều ngữ cảnh, còn vùng biên giữ nhiều chi tiết hơn.
 
-PIDNet-S/M/L tăng năng lực bằng cách thay đổi độ sâu và số kênh. Các auxiliary head giúp tối ưu khi train và được bỏ ở inference; feature của nhánh D vẫn cần để tính Bag. Vì vậy, bỏ boundary prediction head khi inference không đồng nghĩa bỏ nhánh D khỏi mô hình.
+PIDNet-S/M/L thay đổi số block và số kênh để cân bằng độ chính xác với tốc độ. Ký hiệu $(m,n,C)$ lần lượt chỉ số BasicBlock ở các tầng giữ chi tiết, số BasicBlock ở hai tầng ngữ cảnh trung gian và độ rộng cơ sở. Các cấu hình công bố là S: $(2,3,32)$, M: $(2,4,64)$ và L: $(3,4,64)$. Khi train, auxiliary semantic head và boundary head tạo thêm loss. Khi inference, có thể bỏ hai head này; đặc trưng D vẫn được giữ để tính Bag.
 
 \subsection{Pag: tiếp nhận ngữ cảnh có chọn lọc}
-Với $\mathbf p$ và $\mathbf i$ là vector đặc trưng của P và I tại cùng vị trí sau khi căn chỉnh kích thước, Pag dùng hai phép chiếu để tính mức tương đồng:
+P cần thêm ngữ cảnh từ I trong quá trình xử lý, nhưng lượng thông tin nhận vào nên thay đổi theo vị trí. Pag thực hiện việc này bằng cách đo mức tương đồng giữa hai đặc trưng:
 \begin{align}
  \alpha&=\operatorname{sigmoid}\!\left(f_p(\mathbf p)^\top f_i(\mathbf i)\right),\label{eq:pag-attention}\\
  \mathbf y_{\mathrm{Pag}}&=\alpha\mathbf i+(1-\alpha)\mathbf p.\label{eq:pag-fusion}
 \end{align}
-Đây là công thức (7)--(8) của paper. Khi $\alpha$ lớn, P tiếp nhận nhiều ngữ cảnh hơn; khi hai biểu diễn không phù hợp, tỷ trọng của P được giữ cao hơn. Pag được áp dụng trước fusion cuối, nên mục tiêu là tránh làm mất chi tiết ngay trong quá trình trao đổi thông tin. Điểm sigmoid là hệ số attention được học, không mặc nhiên là xác suất đã được calibration.
+Trong công thức (7)--(8) của bài báo, $\mathbf p$ và $\mathbf i$ là đặc trưng P và I tại cùng vị trí sau khi căn chỉnh kích thước; $f_p$ và $f_i$ là các phép chiếu học được. Tích vô hướng đo mức phù hợp giữa hai đặc trưng, còn sigmoid đưa hệ số $\alpha$ về khoảng $(0,1)$. Khi $\alpha$ gần 1, đầu ra nhận nhiều thông tin từ I; khi gần 0, đầu ra giữ nhiều thông tin từ P. Pag vì vậy bổ sung ngữ cảnh có chọn lọc ở các tầng trung gian, trước bước fusion cuối.
 
 \begin{figure}[htbp]
 \centering
@@ -86,17 +116,17 @@ Với $\mathbf p$ và $\mathbf i$ là vector đặc trưng của P và I tại c
 \end{figure}
 
 \subsection{PAPPM: tổng hợp ngữ cảnh với độ trễ thấp}
-Context aggregation phải thu nhận cả thông tin cục bộ và toàn ảnh. DAPPM kết hợp nhiều mức pooling theo chuỗi, nên một số nhánh phải chờ đầu ra của nhánh trước. PAPPM thay các phụ thuộc nối tiếp bằng cấu trúc có thể xử lý song song và giảm số kênh ở mỗi mức từ 128 xuống 96. PIDNet-S/M dùng PAPPM để phù hợp mục tiêu tốc độ, còn PIDNet-L giữ DAPPM với số kênh điều chỉnh. Điểm thay đổi nằm ở cả cấu trúc phụ thuộc tính toán và độ rộng đặc trưng, không chỉ số mức pooling.
+Sau khi giảm độ phân giải, I cần ghép thông tin từ nhiều vùng quan sát. Pooling ở vùng nhỏ giữ ngữ cảnh lân cận; pooling trên toàn feature map cho biết bối cảnh chung của ảnh. DAPPM ghép các mức này theo chuỗi, nên mức sau phải chờ kết quả mức trước. PAPPM tổ chức lại để các mức được xử lý song song hơn và giảm số kênh mỗi mức từ 128 xuống 96. PIDNet-S/M dùng PAPPM để giảm độ trễ; PIDNet-L dùng DAPPM với số kênh được điều chỉnh.
 
 \subsection{Bag và Light-Bag: dùng biên để điều tiết fusion}
-Gọi $\mathbf d$ là vector đặc trưng nhánh D. Công thức (9)--(10) của paper là
+Ở bước fusion cuối, thông tin biên giúp chọn giữa chi tiết và ngữ cảnh. Bag thực hiện phép chọn mềm theo công thức (9)--(10) của bài báo:
 \begin{align}
  \boldsymbol\beta&=\operatorname{sigmoid}(\mathbf d),\label{eq:bag-attention}\\
  \mathbf y_{\mathrm{Bag}}&=f_{\mathrm{out}}\!\left(
  (1-\boldsymbol\beta)\odot\mathbf i+\boldsymbol\beta\odot\mathbf p\right).
  \label{eq:bag-fusion}
 \end{align}
-Phép $\odot$ là nhân theo phần tử; $f_{\mathrm{out}}$ kết hợp convolution, BatchNorm và ReLU. Khác với Pag, hệ số Bag lớn làm tăng đóng góp của \emph{P}. Vai trò này phù hợp vùng biên: biểu diễn I có thể đã trộn ngữ nghĩa của hai phía, còn P giữ vị trí rõ hơn. Trong vùng đồng nhất, tăng đóng góp của I giúp tránh phân mảnh do texture. $\boldsymbol\beta$ được tính từ \emph{feature vector} của D, có thể khác theo kênh; nó không phải xác suất vô hướng của auxiliary boundary head.
+Trong đó, $\mathbf d$ là đặc trưng của D, $\boldsymbol\beta$ là hệ số sau sigmoid và $\odot$ là phép nhân theo phần tử. Phép $f_{\mathrm{out}}$ gồm convolution, BatchNorm và ReLU. Khi $\boldsymbol\beta$ lớn, Bag giữ nhiều đặc trưng P; khi nhỏ, Bag dùng nhiều đặc trưng I. Ở mép người đi bộ, P giúp giữ đúng đường viền. Trong vùng mặt đường rộng, I giúp dự đoán nhãn ổn định hơn. Hệ số này được tính cho từng kênh từ đặc trưng D; boundary head riêng mới tạo một điểm biên tại mỗi pixel.
 
 \begin{figure}[htbp]
 \centering
@@ -113,7 +143,7 @@ Light-Bag thay convolution $3\times3$ bằng hai luồng convolution $1\times1$,
  \end{split}
  \label{eq:light-bag}
 \end{equation}
-Mỗi luồng giữ một thành phần trực tiếp và nhận thêm thành phần được điều tiết từ luồng kia. Do còn hai phép biến đổi học được và phép cộng đầu ra, Light-Bag không đơn thuần là trung bình có trọng số của hai vector. Thiết kế này cho phép giảm chi phí convolution trong khi vẫn dùng biên để điều chỉnh sự phối hợp detail--context.
+Ở đây, $f_p$ và $f_i$ là hai phép biến đổi convolution $1\times1$ kèm BatchNorm. Luồng thứ nhất giữ trực tiếp P và nhận thêm $(1-\boldsymbol\beta)\odot\mathbf i$; luồng thứ hai giữ trực tiếp I và nhận thêm $\boldsymbol\beta\odot\mathbf p$. Hai kết quả được cộng lại. Light-Bag nhờ đó vẫn dùng D để điều chỉnh trao đổi detail--context, với convolution nhẹ hơn Bag.
 
 \section{Boundary supervision và hàm mục tiêu}
 PIDNet phối hợp bốn loss:
@@ -121,21 +151,21 @@ PIDNet phối hợp bốn loss:
  L_{\mathrm{PIDNet}}=0{,}4\ell_0+20\ell_1+\ell_2+\ell_3.
  \label{eq:pidnet-loss}
 \end{equation}
-Theo công thức (6) và Hình~4 của paper, $\ell_0$ là auxiliary semantic cross-entropy sau Pag đầu tiên; $\ell_1$ là weighted boundary BCE; $\ell_2$ là semantic cross-entropy ở đầu ra chính; $\ell_3$ là boundary-awareness cross-entropy (BAS-Loss). Auxiliary semantic loss tạo tín hiệu tối ưu cho P ở tầng trung gian, còn weighted BCE xử lý sự chênh lệch số pixel biên và không biên. Nhãn biên của paper được tạo từ nhãn segmentation bằng Canny rồi dilation, như Hình~\ref{fig:paper-architecture}.
+Trong công thức (6), $\ell_0$ là auxiliary semantic cross-entropy sau Pag đầu tiên, giúp P học phân loại ngay ở tầng trung gian. $\ell_1$ là weighted boundary BCE, dùng trọng số để cân bằng nhóm pixel biên ít hơn nhóm không biên. $\ell_2$ là semantic cross-entropy ở đầu ra chính. $\ell_3$ là boundary-awareness cross-entropy, gọi tắt là BAS-Loss, tập trung vào lỗi phân loại tại những vị trí được dự đoán là biên. Nhãn cho boundary head được tạo từ mặt nạ phân đoạn bằng Canny rồi dilation.
 
-Với $b_i$ là điểm sigmoid của boundary head tại pixel $i$, $s_{i,c}$ là nhãn one-hot và $\hat s_{i,c}$ là xác suất dự đoán lớp $c$, công thức (5) của paper là
+BAS-Loss được viết trong công thức (5) của bài báo như sau:
 \begin{equation}
  \ell_3=-\sum_{i,c}\mathbf{1}[b_i>0{,}8]\,
                    s_{i,c}\log\hat s_{i,c}.
  \label{eq:bas-loss}
 \end{equation}
-Loss này nhấn mạnh semantic error tại những vị trí boundary head có đáp ứng cao. Ngưỡng $0{,}8$ chọn vị trí đóng góp vào BAS-Loss; Bag vẫn dùng sigmoid liên tục và không áp dụng ngưỡng này cho phép fusion. Hai tác dụng vì vậy khác nhau: boundary BCE học cách phát hiện biên, BAS-Loss tăng giám sát ngữ nghĩa ở vùng được chọn, còn Bag dùng boundary feature để thay đổi đường truyền đặc trưng.
+Ở đây, $b_i$ là điểm sigmoid của boundary head tại pixel $i$; $s_{i,c}$ bằng 1 nếu nhãn đúng là lớp $c$ và bằng 0 ở các lớp còn lại; $\hat s_{i,c}$ là xác suất mạng dự đoán cho lớp đó. Hàm chỉ thị $\mathbf{1}[b_i>0{,}8]$ giữ pixel có điểm biên lớn hơn 0,8 và bỏ các pixel khác khỏi BAS-Loss. Ba cơ chế dùng biên có vai trò riêng: BCE dạy D tìm biên, BAS nhấn mạnh lỗi ngữ nghĩa ở vùng biên dự đoán, còn Bag dùng đặc trưng D để ghép P và I. Ngưỡng 0,8 chỉ dùng cho BAS; Bag dùng hệ số sigmoid liên tục.
 
-Một giới hạn của cơ chế là biên dự đoán sai có thể ảnh hưởng cả vị trí được nhấn mạnh trong loss và hệ số fusion. Texture lông hoặc nền có cạnh mạnh không đồng nghĩa semantic boundary. Ngược lại, biên mờ nhưng có đổi nhãn vẫn cần được nhận ra. Do đó, chất lượng nhãn và tương quan giữa detail--context quyết định mức hữu ích của D, chứ sự tồn tại của một boundary head không tự bảo đảm tăng mIoU.
+Biên ngữ nghĩa là nơi nhãn lớp thay đổi, chẳng hạn từ người sang mặt đường. Một vạch sơn hay bóng đổ có thể tạo cạnh ảnh mạnh nhưng vẫn thuộc cùng lớp Road. Nếu D nhầm các cạnh này thành biên, cả fusion và vùng được BAS chọn đều có thể bị ảnh hưởng. Đây là điểm cần xem xét khi phân tích những trường hợp dự đoán sai.
 
 \section{Thí nghiệm và mức đóng góp của paper}
 \subsection{Giao thức và kết quả chính}
-Paper đánh giá Cityscapes, CamVid và PASCAL Context với mIoU. Mô hình dùng ImageNet pretraining trước segmentation; Cityscapes có lịch 484 epoch, random scaling trong $[0{,}5;2{,}0]$ và crop $1024\times1024$. Trước khi đánh giá test Cityscapes/CamVid, tác giả train trên cả train và validation. FPS được đo trên một RTX 3090, batch size 1, sau khi gộp BatchNorm vào convolution. Các điều kiện này cần được giữ khi diễn giải tuyên bố về tốc độ.
+Bài báo đánh giá trên Cityscapes, CamVid và PASCAL Context, dùng mIoU để đo độ chính xác. Mạng được pretrained trên ImageNet trước khi học phân đoạn; riêng CamVid tiếp tục từ trọng số Cityscapes. Trên Cityscapes, lịch train gồm 484 epoch, thay đổi tỷ lệ ảnh trong $[0{,}5;2{,}0]$ và crop $1024\times1024$. Tác giả dùng cả train và validation để huấn luyện mô hình nộp test Cityscapes/CamVid. Tốc độ trong bảng được đo trên một RTX 3090, batch size 1, sau khi gộp BatchNorm vào convolution.
 
 \begin{table}[htbp]
 \centering\small
@@ -154,35 +184,18 @@ PIDNet-L & PASCAL Context validation, 59 lớp & 51,9 & --\\
 \label{tab:paper-main-results}
 \end{table}
 
-Trong phạm vi các mô hình được tác giả so sánh tại thời điểm công bố, PIDNet cải thiện đánh đổi mIoU--FPS của real-time segmentation. PIDNet-L tăng accuracy so với PIDNet-S nhưng giảm tốc độ rõ rệt; cấu hình lớn không thay thế cấu hình nhỏ cho mọi ứng dụng. Trên PASCAL Context, PIDNet-L đạt 51,9\% mIoU ở giao thức 59 lớp, thấp hơn 54,0\% của HRNet-W48 trong cùng bảng. Kết quả này giới hạn tuyên bố về ưu thế vào bối cảnh real-time và điều kiện so sánh cụ thể.
+Bảng~\ref{tab:paper-main-results} cho thấy PIDNet-L đạt mIoU cao hơn S trên Cityscapes, nhưng tốc độ giảm từ 93,2 xuống 31,1 FPS. PIDNet-S vì vậy phù hợp hơn khi ưu tiên tốc độ, còn L dành thêm tính toán để tăng độ chính xác. Trên PASCAL Context, PIDNet-L đạt 51,9\% mIoU với 59 lớp, so với 54,0\% của HRNet-W48 trong cùng bảng của bài báo. Đóng góp chính của PIDNet là cân bằng tốc độ và độ chính xác cho real-time segmentation.
 
-\subsection{Ablation cho thấy điều gì?}
-Bảng~1 của paper thêm đồng thời auxiliary derivative branch và Bag vào các mạng hai nhánh. BiSeNet--ResNet18 tăng từ 75,4 lên 76,7\% mIoU, còn DDRNet-23 tăng từ 79,5 lên 80,0\%; FPS tương ứng giảm từ 63,2 xuống 52,1 và từ 51,4 xuống 39,2. Đây là bằng chứng cho một gói thay đổi gồm nhánh biên và fusion, chưa tách riêng lợi ích của Bag khỏi boundary supervision.
+\subsection{Đóng góp từng thành phần qua ablation}
+Ablation thay đổi một hoặc một nhóm thành phần để xem chúng đóng góp thế nào. Bảng~1 bổ sung đồng thời nhánh D phụ và Bag vào hai baseline. BiSeNet--ResNet18 tăng từ 75,4 lên 76,7\% mIoU; DDRNet-23 tăng từ 79,5 lên 80,0\%. Đổi lại, FPS lần lượt giảm từ 63,2 xuống 52,1 và từ 51,4 xuống 39,2. Phép so sánh này đo tác dụng chung của nhánh biên và fusion.
 
-Bảng~3 giữ PAPPM trong PIDNet-S, thay phép cộng bằng Light-Bag: mIoU tăng từ 78,4 lên 78,8\%, FPS giảm từ 97,8 xuống 93,2. Khi giữ Light-Bag và thay DAPPM bằng PAPPM, mIoU giữ ở 78,8\% còn tốc độ tăng từ 83,7 lên 93,2 FPS. Hai phép so sánh cho thấy tác giả xử lý đồng thời chất lượng fusion và chi phí context aggregation.
+Bảng~3 khảo sát riêng fusion và context aggregation trên PIDNet-S. Khi giữ PAPPM và thay phép cộng bằng Light-Bag, mIoU tăng từ 78,4 lên 78,8\%, còn tốc độ giảm từ 97,8 xuống 93,2 FPS. Khi giữ Light-Bag và thay DAPPM bằng PAPPM, mIoU vẫn là 78,8\% nhưng tốc độ tăng từ 83,7 lên 93,2 FPS. Như vậy, Light-Bag giúp tăng độ chính xác, còn PAPPM giảm thời gian xử lý trong các cặp đối chứng này.
 
-Bảng~2 trên PIDNet-L cho thấy cấu hình pretrained dùng Pag và Bag đạt 80,9\% mIoU, so với 80,7\% khi cả lateral connection và fusion đều dùng phép cộng. Hai cấu hình chỉ thay một trong hai thành phần đều đạt 80,5\%. Kết quả ủng hộ việc duy trì cơ chế chọn lọc nhất quán trong trao đổi và fusion; lợi ích của một module còn phụ thuộc vào phần còn lại của mạng.
+Bảng~2 xem Pag và Bag có phối hợp hiệu quả hay không trên PIDNet-L pretrained. Dùng cả hai đạt 80,9\% mIoU, so với 80,7\% khi chỉ dùng phép cộng ở các kết nối và fusion. Hai cấu hình chỉ dùng một trong hai mô-đun đều đạt 80,5\%. Trong thí nghiệm này, kết hợp Pag với Bag tốt hơn thay riêng một thành phần.
 
-OHEM (Online Hard Example Mining) ưu tiên các pixel khó khi tối ưu semantic loss. Bảng~4 lần lượt bổ sung auxiliary semantic loss, boundary loss, BAS-Loss và OHEM trên PIDNet-L. mIoU tăng theo chuỗi 78,6; 78,8; 79,9; 80,5 và 80,9\%. Bước thêm boundary loss tạo mức tăng 1,1 điểm phần trăm trong chuỗi này. Như vậy, kết quả cuối không chỉ đến từ biểu thức Bag: cách giám sát, khai thác ví dụ khó và tương tác giữa các module cũng có ảnh hưởng. Các bước được thêm tuần tự nên mức tăng phụ thuộc cấu hình đã có trước đó.
+Bảng~4 khảo sát cách giám sát trên PIDNet-L. Khi lần lượt thêm auxiliary semantic loss, boundary loss, BAS-Loss rồi OHEM, mIoU đi từ 78,6 qua 78,8; 79,9; 80,5 đến 80,9\%. Boundary loss tạo mức tăng 1,1 điểm phần trăm tại bước được thêm vào. BAS tiếp tục tăng 0,6 điểm phần trăm. OHEM (Online Hard Example Mining) ưu tiên các pixel mà mạng còn khó phân loại và tăng thêm 0,4 điểm phần trăm. Chuỗi này cho thấy cách tính loss đóng góp bên cạnh kiến trúc ba nhánh; mỗi mức tăng ứng với cấu hình ở ngay bước trước.
 
 \section{Liên hệ với thiết kế thực nghiệm A2}
-Thực nghiệm giữ ý tưởng của công thức~\eqref{eq:bag-fusion} nhưng dùng một boundary head vô hướng trên feature nông của ResNet18. Bảng~\ref{tab:paper-local-scope} xác định các khác biệt chi phối cách đọc kết quả.
-\begin{table}[htbp]
-\centering\small
-\begin{tabularx}{\linewidth}{@{}lXX@{}}
-\toprule
-Thành phần & PIDNet & Thực nghiệm A2\\
-\midrule
-Detail và context & Ba nhánh chuyên biệt; P/D khoảng stride 8, I xuống stride 64. & Hai feature của một ResNet18 ở stride 4 và 32.\\
-Tín hiệu fusion & Sigmoid của feature vector nhánh D. & Sigmoid của một logit biên tại mỗi vị trí, dùng chung hệ số cho mọi kênh.\\
-Trao đổi / context & Pag và PAPPM/DAPPM. & Chiếu kênh và upsampling; không có các module này.\\
-Boundary target & Biên từ semantic mask qua Canny và dilation. & Vùng chưa phân loại có sẵn trong trimap.\\
-Loss & Bốn thành phần và OHEM trong cấu hình cuối. & CE ba vùng cộng balanced boundary BCE.\\
-Đối chứng & Các ablation theo module và loss. & Giữ boundary supervision, chỉ đổi hệ số fusion.\\
-\bottomrule
-\end{tabularx}
-\caption{Quan hệ giữa phương pháp gốc và pipeline được đánh giá.}
-\label{tab:paper-local-scope}
-\end{table}
+Thực nghiệm A2 chọn PIDNet-S trên CamVid và so sánh PIDNet-S đủ loss với PIDNet-S bỏ BAS-Loss. Bản đủ loss dùng bốn thành phần trong công thức~\eqref{eq:pidnet-loss}; bản bỏ BAS-Loss chỉ bỏ $\ell_3$, tức phần cross-entropy ngữ nghĩa bổ sung tại các pixel được dự đoán là biên. Cả hai giữ ba nhánh P/I/D, Pag, PAPPM, Light-Bag và các đầu dự đoán. Auxiliary semantic loss, weighted boundary BCE và main semantic loss với OHEM vẫn được tính ở cả hai.
 
-Đối chứng này cô lập vai trò của việc \emph{sử dụng} bản đồ biên trong fusion khi cả hai mô hình đã \emph{học} từ biên. Nó không kiểm tra đầy đủ ưu thế của kiến trúc PIDNet. Nếu kết quả không tăng, khả năng phân biệt biên, chất lượng hai luồng đặc trưng và sự phù hợp của trimap đều là những yếu tố cần xem xét. Các giải thích này được đối chiếu với IoU từng vùng, điểm boundary head và failure case ở phần kết quả; chưa thể tách tác động của từng yếu tố khi chưa có ablation tương ứng.
+Lựa chọn này xuất phát từ Bảng~4: sau khi đã học phân đoạn và biên, BAS tăng thêm giám sát ngữ nghĩa tại các pixel có điểm biên cao. A2 kiểm tra tác dụng đó trên PIDNet-S và CamVid, với cùng OHEM ở hai biến thể. Câu hỏi thực nghiệm là: việc nhấn mạnh thêm lỗi ở vùng biên dự đoán có cải thiện mIoU và IoU từng lớp hay không?

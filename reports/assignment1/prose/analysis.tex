@@ -1,13 +1,42 @@
 \subsection{Ảnh hưởng của chế độ fine-tuning}
 
-ResNet18 head-only đạt 60,95\%, thấp hơn 64,35\% của bản học từ đầu. Khi các tầng đặc trưng giữ nguyên, bộ phân loại tuyến tính chỉ có thể thay đổi ranh giới trên biểu diễn đã học từ ImageNet. Partial fine-tuning đạt 73,96\%, còn full fine-tuning đạt 78,97\%. Kết quả cho thấy backbone ImageNet đóng băng chưa phải biểu diễn tốt nhất cho CIFAR-100 trong thiết lập này: cho phép stage cuối thích nghi đã cải thiện rõ so với chỉ học một bộ phân loại tuyến tính. Tuy vậy, bản scratch và các bản pretrained dùng learning rate khác nhau, nên chênh lệch giữa chúng không tách riêng tác động của pretraining.
+Ở cả hai kiến trúc, accuracy tăng khi cho phép nhiều tầng pretrained được cập nhật hơn. Với ResNet18, head-only đạt 60,89\%, còn full fine-tuning đạt 78,93\%. Với Swin-T, hai mức tương ứng là 71,75\% và 86,54\%. Partial fine-tuning nằm giữa hai chế độ này.
 
-Swin-T head-only đạt 71,67\%, partial fine-tuning đạt 78,25\% và full fine-tuning đạt 86,63\%. Bản khởi tạo ngẫu nhiên ở lịch 20 epoch chỉ đạt 2,76\%. Hai trong ba seed kết thúc ở 1\% trên tập validation, với cross-entropy huấn luyện gần $\ln(100)$. Điểm thấp xuất hiện trên cả hai tập, phù hợp với việc tối ưu chưa học được biểu diễn hữu ích. Macro-F1 của bản scratch chỉ đạt 0,0093, thấp hơn nhiều so với accuracy 0,0276 trên cùng thang 0--1. Confusion matrix tại checkpoint được chọn cho thấy mô hình chỉ dự đoán 54, 36 và 14 trong số 100 lớp, tương ứng seed 42, 43 và 44. Vì mỗi lớp test có cùng số ảnh, đây là dấu hiệu dự đoán tập trung vào một số lớp, không phải ảnh hưởng của mất cân bằng nhãn. Lịch 40 epoch ở chương sau dùng chung learning rate và cách cập nhật cho hai cách khởi tạo Swin-T.
+Head-only giữ nguyên cách backbone mô tả ảnh và chỉ học bộ phân loại trên các đặc trưng đó. Khi chuyển sang partial hoặc full fine-tuning, mô hình còn được thay đổi các đặc trưng để phù hợp với CIFAR-100. Kết quả cho thấy bước thích nghi này có ích ở cả CNN và Transformer. Đặc biệt, Swin-T tăng thêm 8,20 điểm phần trăm khi chuyển từ partial sang full: cập nhật các stage trước cũng đem lại lợi ích, dù stage cuối đã được học ở chế độ partial.
 
-\subsection{Chi phí và lỗi phân loại}
+ResNet18 scratch đạt 64,53\%, cao hơn head-only nhưng thấp hơn partial và full. Như vậy, dùng trọng số pretrained không tự bảo đảm kết quả tốt hơn nếu backbone bị giữ nguyên. Mức lợi ích phụ thuộc vào cả biểu diễn ban đầu và cách cho phép mô hình thích nghi với dữ liệu mới.
 
-Với full fine-tuning, Swin-T cao hơn ResNet18 7,66 điểm phần trăm độ chính xác trên tập test. Tính theo trung bình ba seed, Swin-T cần thời gian huấn luyện gấp 2,64 lần và bộ nhớ cấp phát cực đại gấp 4,73 lần. Với Swin-T, head-only hoặc partial fine-tuning giảm thời gian và bộ nhớ so với cập nhật toàn bộ, nhưng độ chính xác cũng thấp hơn. Với ResNet18, thời gian của ba chế độ pretrained gần nhau trong lần đo này, trong khi bộ nhớ giảm rõ khi đóng băng nhiều tầng hơn. Do training time còn gồm tải dữ liệu và forward qua toàn bộ backbone, giảm số tham số trainable không nhất thiết làm tổng thời gian giảm theo cùng tỷ lệ.
+\subsection{Swin-T scratch trong lịch 20 epoch}
 
-Partial fine-tuning cũng không đồng nghĩa với chỉ cập nhật một phần nhỏ tham số: stage cuối và head của ResNet18 chiếm 8,445 trên tổng 11,228 triệu tham số; với Swin-T, phần được cập nhật là 14,262 trên 27,596 triệu. Ở Swin-T, chuyển từ partial sang full tăng accuracy từ 78,25\% lên 86,63\%, nhưng thời gian tăng từ 106,9 lên 212,5 giây và peak allocated memory từ 667,7 lên 2451,9 MiB. Đây là sự đánh đổi cụ thể giữa mức thích nghi của backbone và chi phí trong lịch 20 epoch.
+Swin-T scratch chỉ đạt accuracy test trung bình 2,19\% trong lịch 20 epoch. Điểm thấp không chỉ xuất hiện trên test: ở cuối lịch, hai seed có accuracy train dưới 1\% và cross-entropy gần $\ln(100)\approx4{,}61$. Đây là mức loss của dự đoán gần đều trên 100 lớp. Mô hình chưa học tốt ngay cả dữ liệu dùng để cập nhật trọng số, nên vấn đề chính ở các lượt này là quá trình học chưa hiệu quả.
 
-Ở epoch 20, ResNet18 full fine-tuning đạt khoảng 99,1\% trên tập train và 79,2\% trên tập validation; Swin-T tương ứng đạt 98,7\% và 86,7\%. Khoảng cách train/validation lớn phù hợp với hiện tượng overfitting. Tuy nhiên, chỉ số train được tích lũy trong lúc cập nhật trọng số trên ảnh augmentation, còn validation được tính ở eval với trọng số cuối epoch; hiệu hai số không phải phép đo trên cùng điều kiện. Checkpoint dùng để đánh giá được chọn theo độ chính xác trên tập validation. Trong cả hai confusion matrix của seed 42, lớp cây sồi thường bị gán thành cây phong. Các ví dụ sai có hình dáng và kết cấu tương tự ở độ phân giải gốc $32\times32$. Chúng gợi ý một giới hạn về thông tin thị giác, nhưng chưa đủ để quy mọi lỗi cho độ phân giải hoặc một thành phần kiến trúc cụ thể.
+Confusion matrix giúp thấy rõ hành vi đó. Ở checkpoint của seed 42, mô hình dự đoán mọi ảnh test vào cùng một lớp. Vì test có 100 ảnh cho mỗi lớp, accuracy vẫn bằng 1\%, nhưng F1 của phần lớn lớp bằng 0. Điều này giải thích vì sao macro-F1 trung bình của cấu hình chỉ đạt 0,0067, thấp hơn accuracy 0,0219 khi cùng viết trên thang 0--1.
+
+ResNet18 dùng convolution để kết hợp thông tin cục bộ ngay từ những tầng đầu. Swin-T học cách kết hợp các patch bằng attention, còn bản pretrained đã có các trọng số học từ ImageNet. Trong lịch 20 epoch đang xét, hai cách khởi tạo Swin-T vì vậy bắt đầu ở mức biểu diễn rất khác nhau. Đối chứng 40 epoch kiểm tra lợi ích của pretraining trong điều kiện bản scratch đã học được, thay vì chỉ dựa vào khoảng cách với một cấu hình gần mức đoán ngẫu nhiên.
+
+\subsection{Độ chính xác và chi phí tính toán}
+
+Ở chế độ full fine-tuning, Swin-T cao hơn ResNet18 trung bình $7{,}61 \pm 0{,}17$ điểm phần trăm khi so sánh các cặp cùng seed. Swin-T tốt hơn ở cả ba cặp. Đổi lại, thời gian train dài gấp 3,21 lần và bộ nhớ tensor cấp phát cực đại lớn gấp 4,70 lần. Vì vậy, Swin-T full là lựa chọn tốt hơn về accuracy trong thí nghiệm này, còn ResNet18 full tiết kiệm tài nguyên hơn.
+
+Đóng băng các tầng giúp giảm chi phí backward và lưu gradient, nhưng mô hình vẫn phải forward qua backbone để tạo đặc trưng. Điều này giải thích vì sao số tham số trainable giảm mạnh mà thời gian có thể giảm ít. Với ResNet18, ba chế độ pretrained đều mất khoảng 64--67 giây train. Với Swin-T, partial chỉ mất khoảng một nửa thời gian của full, nhưng accuracy thấp hơn 8,20 điểm phần trăm.
+
+Stage cuối chứa nhiều kênh đặc trưng, nên partial vẫn cập nhật một tỷ lệ đáng kể tham số: khoảng ba phần tư mô hình ResNet18 và hơn một nửa Swin-T. Bảng chi phí cho thấy rõ sự khác nhau giữa số tham số tổng và số tham số được học. Vì vậy, số tham số trainable chỉ phản ánh một phần chi phí; accuracy, thời gian và bộ nhớ bổ sung những mặt khác nhau của phép so sánh.
+
+\subsection{Khoảng cách train/validation và lỗi theo lớp}
+
+Cuối lịch 20 epoch, cả hai bản full đều đạt accuracy train gần 99\%, trong khi validation thấp hơn rõ rệt. ResNet18 có khoảng cách lớn hơn Swin-T. Đường cong cho thấy mô hình tiếp tục khớp dữ liệu train nhưng khả năng phân loại ảnh validation tăng ít hơn, phù hợp với overfitting. Chỉ số train được đo trên ảnh augmentation trong lúc cập nhật, còn validation được đo sau epoch ở chế độ eval; vì vậy, khoảng cách này dùng để đọc xu hướng học. Việc chọn checkpoint theo validation giúp lấy mô hình ở thời điểm phân loại tốt nhất trên tập này, thay vì mặc nhiên lấy epoch cuối.
+
+Lỗi còn tập trung ở các lớp gần nhau về ngoại hình. Khi gộp ba seed, các lớp có recall thấp nhất của ResNet18 full gồm \code{boy}, \code{girl} và \code{otter}; với Swin-T full là \code{girl}, \code{boy} và \code{oak_tree}. Bảng sau trình bày các giá trị này. Mỗi lớp có 300 dự đoán, gồm 100 ảnh test được đánh giá bởi từng seed.
+
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrlr}\toprule
+\multicolumn{2}{c}{ResNet18 full} & \multicolumn{2}{c}{Swin-T full}\\
+Lớp & Recall (\%) & Lớp & Recall (\%)\\\midrule
+\code{boy} & 50,0 & \code{girl} & 61,7\\
+\code{girl} & 53,0 & \code{boy} & 63,3\\
+\code{otter} & 57,0 & \code{oak_tree} & 67,3\\\bottomrule
+\end{tabular}
+\caption{Ba lớp có recall thấp nhất của mỗi bản full fine-tuning, tính từ confusion matrix test gộp seed 42, 43 và 44; support 300 dự đoán mỗi lớp.}
+\end{table}
+
+Ở cả hai mô hình, cặp nhầm phổ biến nhất là \code{oak_tree} thành \code{maple_tree}. Swin-T mắc 71 lỗi loại này, nhiều hơn 56 lỗi của ResNet18, dù accuracy toàn bộ cao hơn. Kết quả cho thấy một mô hình tốt hơn về điểm tổng thể vẫn có thể yếu hơn trên một cặp lớp cụ thể. Các ảnh sai có confidence cao trong gallery minh họa sự giống nhau về hình dáng và kết cấu ở độ phân giải $32\times32$; chúng được chọn để xem lỗi khó, không phải để ước lượng tỷ lệ từng loại lỗi.

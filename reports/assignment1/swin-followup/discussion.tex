@@ -1,4 +1,11 @@
-Swin-T khởi tạo ngẫu nhiên đạt 60,30\% trên tập test. Checkpoint được chọn ở các epoch 40, 38 và 38, tương ứng với seed 42, 43 và 44. Đường cong trên tập validation tăng trong phần lớn lịch học, cho thấy cấu hình khởi tạo ngẫu nhiên đã học được biểu diễn phân lớp.
-Ở cuối lịch, độ chính xác huấn luyện nằm trong khoảng 89,7--90,0\%, trong khi độ chính xác trên tập validation đạt 59,4--60,2\%, cho thấy khoảng cách khái quát hóa còn lớn.
+Với lịch 40 epoch, Swin-T scratch đạt accuracy test $60{,}00 \pm 0{,}47$\%, cao hơn rõ rệt so với 2,19\% của lịch 20 epoch. Đường cong train và validation đều cải thiện, cho thấy mô hình đã học được cách phân biệt các lớp. Tuy vậy, accuracy cuối lịch trên train gần 90\%, còn validation khoảng 60\%: khớp dữ liệu train vẫn dễ hơn phân loại ảnh mới. Các checkpoint scratch tốt nhất được chọn trong khoảng epoch 36--37.
 
-Bản khởi tạo ImageNet đạt 86,39\%. Chênh lệch theo cặp cùng seed là $26{,}08 \pm 0{,}30$ điểm phần trăm. Hai cấu hình dùng cùng lịch và cập nhật cùng số tham số, nên khoảng cách này mô tả lợi ích của khởi tạo từ trọng số ImageNet trong điều kiện đã khảo sát. Checkpoint của bản ngẫu nhiên thường được chọn muộn trong lịch, vì vậy cần thận trọng khi suy rộng kết quả sang ngân sách huấn luyện dài hơn.
+Swin-T pretrained đạt $86{,}45 \pm 0{,}19$\% dưới cùng lịch. Để so sánh, lấy accuracy của bản pretrained trừ bản scratch ở từng seed, rồi tính trung bình ba chênh lệch. Kết quả là $26{,}45 \pm 0{,}40$ điểm phần trăm; bản pretrained cao hơn ở cả ba cặp. Như vậy, ngay khi bản scratch đã học được, khởi tạo từ ImageNet vẫn đem lại lợi ích lớn. Hai bản có cùng kiến trúc, cập nhật toàn bộ tham số và dùng cùng lịch, nên phép so sánh này rõ hơn về vai trò của khởi tạo so với lịch 20 epoch.
+
+\begin{table}[htbp]\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{swin-followup/cost_table.tex}
+\caption{Chi phí lịch 40 epoch; thời gian train và peak allocated memory là trung bình và SD mẫu qua ba seed.}
+\end{table}
+
+Chi phí hai bản gần nhau: thời gian train đều khoảng 429 giây và bộ nhớ cấp phát cực đại khoảng 2455 MiB. Khác biệt chính trong đối chứng này nằm ở chất lượng phân loại, không phải số tham số hoặc ngân sách tính toán.

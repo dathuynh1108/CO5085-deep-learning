@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>A2 · Phân đoạn ảnh với phép trộn đặc trưng theo biên · CO5085</title>
-  <meta name="description" content="Phân tích PIDNet (CVPR 2023) và so sánh hai cách trộn đặc trưng trên Oxford-IIIT Pet.">
+  <title>A2 · Phân đoạn ảnh đường phố bằng PIDNet-S · CO5085</title>
+  <meta name="description" content="Phân tích PIDNet (CVPR 2023) và thực nghiệm về giám sát phân đoạn theo biên trên CamVid.">
   <meta name="theme-color" content="#263e35">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -30,15 +30,15 @@
   <section class="detail-hero">
     <div>
       <span class="tag elective">Bài tập lớn A2</span>
-      <h1>Phân đoạn ảnh với phép trộn đặc trưng theo biên</h1>
-      <p>Nghiên cứu vai trò của bản đồ biên trong việc kết hợp chi tiết và ngữ cảnh, dựa trên PIDNet (CVPR 2023) và thực nghiệm trên Oxford-IIIT Pet.</p>
+      <h1>Phân đoạn ảnh đường phố bằng PIDNet-S</h1>
+      <p>Nghiên cứu kiến trúc ba nhánh của PIDNet (CVPR 2023) và đóng góp của giám sát phân đoạn theo biên trên CamVid ở độ phân giải gốc 960×720.</p>
       <div class="hero-actions">
         <a class="button" href="#notebook">Notebook thực nghiệm A2</a>
       </div>
     </div>
     <div class="detail-meta">
       <span class="mono">Phạm vi thực nghiệm</span>
-      <strong>Hai biến thể trên cùng bộ mã hóa ResNet18</strong>
+      <strong>PIDNet-S · Đối chứng BAS-Loss</strong>
       <p><!--A2_STATUS--><!--/A2_STATUS--></p>
     </div>
   </section>
@@ -58,47 +58,55 @@
         <p class="source-note">Jiacong Xu, Zixiang Xiong và Shankar P. Bhattacharyya. <cite>PIDNet: A Real-Time Semantic Segmentation Network Inspired by PID Controllers.</cite> Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, tr. 19529–19539.</p>
         <p><a class="text-link" href="https://doi.org/10.1109/CVPR52729.2023.01871">DOI 10.1109/CVPR52729.2023.01871</a> · <a class="text-link" href="https://arxiv.org/abs/2206.02066">Bản toàn văn trên arXiv</a></p>
         <p>BiSeNet và DDRNet duy trì một luồng giữ chi tiết và một luồng học ngữ cảnh. Khi trộn các đặc trưng này, ngữ cảnh từ vùng lân cận có thể lấn át tín hiệu ở đường viền. PIDNet thêm nhánh D để dự đoán nơi nhãn chuyển nhanh, bên cạnh nhánh P giữ chi tiết và nhánh I tổng hợp ngữ cảnh.</p>
-        <p>Mô-đun Bag dùng tín hiệu D để tăng trọng số của P gần biên và ưu tiên I ở vùng đồng nhất. Tác giả báo cáo PIDNet-S đạt 78,6% mIoU trên Cityscapes test ở 93,2 FPS theo giao thức đo trên RTX 3090. Báo cáo A2 trình bày công thức PID, phép tương tự với CNN, kiến trúc ba nhánh, Pag, PAPPM, Bag/Light-Bag và các loss. Phần ablation phân tích đóng góp của từng nhóm thay đổi và giới hạn khi áp dụng sang ảnh thú cưng.</p>
+        <p>Pag kết hợp thông tin ngữ cảnh với nhánh P dựa trên độ tương đồng đặc trưng; PAPPM tổng hợp ngữ cảnh ở nhiều tỷ lệ. Bag điều tiết sự kết hợp giữa chi tiết và ngữ cảnh bằng tín hiệu từ D. PIDNet-S sử dụng Light-Bag để giảm chi phí tính toán. Phép tương tự với bộ điều khiển PID giải thích vai trò bổ sung của ba nhánh, không đồng nhất mạng với một hệ điều khiển vật lý.</p>
+        <p>Trên CamVid, bài báo công bố PIDNet-S đạt 80,1% mIoU và 153,7 FPS trên RTX 3090. Kết quả đó dùng 468 ảnh train+validation để huấn luyện, trong khi thực nghiệm A2 giữ riêng validation để chọn checkpoint. Vì vậy, đối chiếu cần xét cả dữ liệu huấn luyện và quy trình đo tốc độ.</p>
       </section>
       <section class="detail-section" id="data">
-        <h2>Oxford-IIIT Pet và nhãn trimap</h2>
-        <p>Bộ dữ liệu có 7.349 ảnh thuộc 37 giống chó và mèo. Mỗi ảnh có mặt nạ gồm vật thể, nền và dải chuyển tiếp. Dải chuyển tiếp dùng nhãn chưa phân loại trong dữ liệu gốc làm tín hiệu gần đúng cho biên.</p>
+        <h2>CamVid và nhãn phân đoạn đường phố</h2>
+        <p>CamVid gồm các khung hình đường phố với nhãn phân đoạn theo pixel. Thực nghiệm sử dụng 701 ảnh ở kích thước gốc 960×720 và 11 lớp ngữ nghĩa, với các phần train, validation và test theo danh sách của tác giả PIDNet.</p>
         <div class="specs">
-          <div class="spec"><strong>3.310</strong><span>ảnh train</span></div>
-          <div class="spec"><strong>370</strong><span>ảnh validation</span></div>
-          <div class="spec"><strong>3.669</strong><span>ảnh test</span></div>
+          <div class="spec"><strong>367</strong><span>ảnh train</span></div>
+          <div class="spec"><strong>101</strong><span>ảnh validation</span></div>
+          <div class="spec"><strong>233</strong><span>ảnh test</span></div>
         </div>
-        <p>Tập validation lấy 10 ảnh mỗi giống từ tập train chính thức. Ảnh giữ tỷ lệ khung hình khi đổi cạnh dài về 192 pixel. Pixel padding được bỏ qua trong hàm mất mát và phép đo. DataLoader chỉ áp dụng random horizontal flip đồng bộ ảnh và mặt nạ trong lúc huấn luyện.</p>
+        <p>Mặt nạ màu được chuyển thành chỉ số lớp; pixel ngoài các lớp được đánh giá được bỏ qua trong loss và phép đo. Phân bố số pixel và số ảnh chứa từng lớp được khảo sát trên tập train để mô tả mất cân bằng dữ liệu. Các biến đổi hình học được áp dụng đồng bộ cho ảnh và mặt nạ khi huấn luyện.</p>
         <figure class="a2-figure">
-          <img src="a2-media/dataset.png" alt="Tỷ lệ điểm ảnh theo ba nhãn và số ảnh theo giống trên train và validation" loading="lazy">
-          <figcaption>Phân bố nhãn pixel và số ảnh theo giống trên train và validation.</figcaption>
+          <img src="a2-media/dataset.png" alt="Phân bố pixel và số ảnh có mặt từng lớp trên tập train CamVid" loading="lazy">
+          <figcaption>Phân bố nhãn trên tập train CamVid.</figcaption>
         </figure>
-        <p><a class="text-link" href="https://www.robots.ox.ac.uk/~vgg/data/pets/">Nguồn Oxford-IIIT Pet</a></p>
+        <p><a class="text-link" href="http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/">Nguồn CamVid</a> · <a class="text-link" href="https://github.com/XuJiacong/PIDNet">Cài đặt và danh sách chia tập của tác giả PIDNet</a></p>
       </section>
       <section class="detail-section" id="method">
-        <h2>Đối chứng phép trộn đặc trưng</h2>
-        <p>Cả hai biến thể dùng các đặc trưng ở stride 4 và 32 của ResNet18 pretrained ImageNet, cùng đầu phân đoạn và cùng hàm mất mát phụ cho nhánh biên. Biến thể cố định gán trọng số 0,5 cho hai nguồn. Biến thể theo biên lấy trọng số từ sigmoid của logit biên tại từng vị trí.</p>
-        <p>Mỗi biến thể chạy 12 epoch với ba seed trên RTX 5090. Checkpoint được chọn theo mIoU trên tập validation. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập test.</p>
+        <h2>Đối chứng giám sát phân đoạn theo biên</h2>
+        <p>Cả hai biến thể giữ nguyên PIDNet-S với ba nhánh P/I/D, Pag, PAPPM và Light-Bag. Trọng số pretrained trên Cityscapes được dùng để khởi tạo các lớp tương thích; các đầu phân đoạn được điều chỉnh từ 19 sang 11 lớp. Bản PIDNet-S đủ loss (FULL) sử dụng đầy đủ hàm mất mát, gồm phân đoạn chính, phân đoạn phụ, dự đoán biên và phân đoạn được giám sát theo biên (BAS). Bản PIDNet-S bỏ BAS-Loss (NO_BAS) chỉ bỏ thành phần BAS; kiến trúc và số tham số được giữ nguyên.</p>
+        <p>Mỗi biến thể được huấn luyện 200 epoch với ba seed 42, 43 và 44. Cả hai dùng SGD, batch 12 và FP32 ở độ phân giải 960×720. Checkpoint được chọn bằng mIoU trên validation. Sau khi hoàn tất train và chọn checkpoint, các mô hình được đánh giá trên cùng 233 ảnh test bằng mIoU, macro-Dice và IoU theo lớp.</p>
+        <p>Checkpoint CamVid do tác giả phát hành được đánh giá lại trên cùng tập test để cung cấp một mốc tham chiếu riêng. Checkpoint này được train trên 468 ảnh, nên bảng đối chiếu ghi riêng số ảnh dùng để train.</p>
       </section>
       <section class="detail-section" id="results">
         <h2>Kết quả và trường hợp sai</h2>
         <div class="table-wrap a2-results-table">
           <table>
             <caption>Kết quả trên tập test, trung bình ± độ lệch chuẩn mẫu qua ba seed</caption>
-            <thead><tr><th scope="col">Biến thể</th><th scope="col">mIoU</th><th scope="col">Macro-Dice</th><th scope="col">IoU dải chuyển tiếp</th></tr></thead>
+            <thead><tr><th scope="col">Biến thể</th><th scope="col">mIoU</th><th scope="col">Macro-Dice</th><th scope="col">Thời gian train</th></tr></thead>
             <tbody><!--A2_RESULTS--><!--/A2_RESULTS--></tbody>
           </table>
         </div>
         <p><!--A2_FINDING--><!--/A2_FINDING--></p>
         <figure class="a2-figure">
-          <img src="a2-media/examples.png" alt="Bốn ảnh test cạnh trimap và dự đoán của hai biến thể" loading="lazy">
-          <figcaption>Bốn ví dụ ở seed 42. Vật thể màu xanh lá, nền màu xanh đậm, dải chuyển tiếp màu vàng. Ảnh và trimap từ Oxford-IIIT Pet.</figcaption>
+          <img src="a2-media/examples.png" alt="Ảnh CamVid, ground truth và dự đoán của bản đủ loss và bản bỏ BAS-Loss" loading="lazy">
+          <figcaption>Các ví dụ cố định trên tập test; hai biến thể A2 sử dụng checkpoint seed 42.</figcaption>
         </figure>
-        <p>IoU của lớp chuyển tiếp đo độ khớp với dải trimap trên lưới 192×192. Kết quả chịu ảnh hưởng của độ dày trimap, phép đổi kích thước và đặc điểm của ảnh thú cưng.</p>
+        <h3>Đối chiếu với bài báo và checkpoint tác giả</h3>
+        <div class="table-wrap"><table>
+          <caption>Mốc công bố và các phép đo trên CamVid</caption>
+          <thead><tr><th scope="col">Mô hình</th><th scope="col">Ảnh huấn luyện</th><th scope="col">mIoU</th><th scope="col">GPU</th><th scope="col">FPS</th></tr></thead>
+          <tbody><!--A2_COMPARISON--><!--/A2_COMPARISON--></tbody>
+        </table></div>
+        <p>FPS được đo cho forward của mô hình với batch 1, FP32 và đầu vào 960×720. Tốc độ của video còn bao gồm đọc khung hình, tiền xử lý, tạo mặt nạ và mã hóa video nên được báo cáo riêng.</p>
       </section>
       <section class="detail-section" id="notebook">
         <h2>Notebook tái lập thực nghiệm</h2>
-        <p>Notebook khảo sát phân bố nhãn và trimap, huấn luyện trực tiếp hai biến thể qua ba seed, rồi chọn checkpoint theo mIoU trên tập validation. Các ô kết quả tổng hợp mIoU, macro-Dice, IoU dải chuyển tiếp, đường cong học, confusion matrix theo pixel và ảnh dự đoán.</p>
+        <p>Notebook chứa đầy đủ mã tải CamVid, khảo sát dữ liệu, xây dựng PIDNet-S, huấn luyện và đánh giá. Các ô kết quả trình bày đường cong học, mIoU, macro-Dice, IoU theo lớp, confusion matrix theo pixel và ảnh dự đoán.</p>
 
         <div class="hero-actions">
           <a class="button" href="https://colab.research.google.com/github/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb">Chạy trên Colab</a>
@@ -111,7 +119,8 @@
           <a class="button" href="reports/assignment2.pdf">Báo cáo A2 (PDF)</a>
           <a class="text-link" href="a2-media/demo.mp4">Video minh họa <span aria-hidden="true">↗</span></a>
         </div>
-        <video class="a2-video" controls preload="metadata" aria-label="Minh họa phép trộn đặc trưng và kết quả A2" src="a2-media/demo.mp4"></video>
+        <video class="a2-video" controls preload="metadata" aria-label="Inference PIDNet-S trên video gốc CamVid 0005VD" src="a2-media/demo.mp4"></video>
+        <p class="figure-note">Video gốc CamVid 0005VD dài khoảng 29 giây, gồm 869 frame ở 29,97 FPS. Bên trái là ảnh đầu vào, bên phải là segmentation overlay của PIDNet-S đủ loss, seed 42. Độ trễ từ ảnh đến mask trung bình là 19,39 ms (51,56 FPS); toàn bộ quá trình xử lý và ghi video đạt 21,45 FPS trên RTX 5090.</p>
       </section>
     </div>
   </div>
