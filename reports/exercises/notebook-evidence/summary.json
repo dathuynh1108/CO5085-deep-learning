@@ -1,0 +1,327 @@
+[
+  {
+    "id": "e1_softmax",
+    "label": "Softmax",
+    "exercise": "E1",
+    "group": "required",
+    "parameters": 7850,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8597777777777778,
+    "test_accuracy_mean": 0.8451,
+    "test_accuracy_std": 0.0014933184523068107,
+    "test_macro_f1_mean": 0.8436284026823173,
+    "median_train_seconds_mean": 0.2881681006013726,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e1_mlp",
+    "label": "MLP",
+    "exercise": "E1",
+    "group": "required",
+    "parameters": 235146,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.9102222222222223,
+    "test_accuracy_mean": 0.8988,
+    "test_accuracy_std": 0.0014422205101856061,
+    "test_macro_f1_mean": 0.8985010598930356,
+    "median_train_seconds_mean": 0.37614190101157874,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e1_cnn",
+    "label": "CNN",
+    "exercise": "E1",
+    "group": "required",
+    "parameters": 421738,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.9301666666666667,
+    "test_accuracy_mean": 0.9262,
+    "test_accuracy_std": 0.0006082762530298188,
+    "test_macro_f1_mean": 0.9260625629894391,
+    "median_train_seconds_mean": 0.47776914096903056,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_patches_manual",
+    "label": "patches / manual",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 71946,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8702777777777778,
+    "test_accuracy_mean": 0.8592666666666666,
+    "test_accuracy_std": 0.00595343038368078,
+    "test_macro_f1_mean": 0.8590012694974996,
+    "median_train_seconds_mean": 1.0510424740302067,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_patches_torch",
+    "label": "patches / torch",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 71946,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8709444444444444,
+    "test_accuracy_mean": 0.8602333333333334,
+    "test_accuracy_std": 0.003663786747797043,
+    "test_macro_f1_mean": 0.8600941890200995,
+    "median_train_seconds_mean": 0.9755880606826395,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_rows_manual",
+    "label": "rows / manual",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 71370,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8861111111111111,
+    "test_accuracy_mean": 0.8792,
+    "test_accuracy_std": 0.00026457513110642993,
+    "test_macro_f1_mean": 0.8787235490883579,
+    "median_train_seconds_mean": 0.9532101239698628,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_rows_torch",
+    "label": "rows / torch",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 71370,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8860555555555555,
+    "test_accuracy_mean": 0.8786333333333334,
+    "test_accuracy_std": 0.0001527525231652263,
+    "test_macro_f1_mean": 0.8781424629865938,
+    "median_train_seconds_mean": 0.9060281802279254,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_cnn_manual",
+    "label": "cnn / manual",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 89770,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8932222222222223,
+    "test_accuracy_mean": 0.8854666666666666,
+    "test_accuracy_std": 0.003394603560555061,
+    "test_macro_f1_mean": 0.8855330109743285,
+    "median_train_seconds_mean": 1.0259236767111968,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e2_cnn_torch",
+    "label": "cnn / torch",
+    "exercise": "E2",
+    "group": "required",
+    "parameters": 89770,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8937222222222222,
+    "test_accuracy_mean": 0.8859333333333334,
+    "test_accuracy_std": 0.004437717130838051,
+    "test_macro_f1_mean": 0.8859009680793523,
+    "median_train_seconds_mean": 0.9732144172691429,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e3_lstm_rows",
+    "label": "LSTM / rows",
+    "exercise": "E3",
+    "group": "required",
+    "parameters": 82186,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.9031666666666667,
+    "test_accuracy_mean": 0.8957666666666667,
+    "test_accuracy_std": 0.0004509249752822972,
+    "test_macro_f1_mean": 0.8956046845949841,
+    "median_train_seconds_mean": 0.38012946664821357,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e3_gru_rows",
+    "label": "GRU / rows",
+    "exercise": "E3",
+    "group": "required",
+    "parameters": 61962,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.9105,
+    "test_accuracy_mean": 0.9006666666666666,
+    "test_accuracy_std": 0.0016862186493255451,
+    "test_macro_f1_mean": 0.9005594826644544,
+    "median_train_seconds_mean": 0.3744686246694376,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e3_lstm_patches",
+    "label": "LSTM / patches",
+    "exercise": "E3",
+    "group": "required",
+    "parameters": 76042,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8882777777777778,
+    "test_accuracy_mean": 0.8765,
+    "test_accuracy_std": 0.003758989225842476,
+    "test_macro_f1_mean": 0.8761899701996979,
+    "median_train_seconds_mean": 0.5812755586424222,
+    "mixed_timing_environments": false
+  },
+  {
+    "id": "e3_gru_patches",
+    "label": "GRU / patches",
+    "exercise": "E3",
+    "group": "required",
+    "parameters": 57354,
+    "n_train_runs": 3,
+    "n_test_runs": 3,
+    "train_seeds": [
+      42,
+      43,
+      44
+    ],
+    "test_seeds": [
+      42,
+      43,
+      44
+    ],
+    "validation_accuracy_mean": 0.8897222222222222,
+    "test_accuracy_mean": 0.8799666666666667,
+    "test_accuracy_std": 0.0023437861108329618,
+    "test_macro_f1_mean": 0.8794401656454658,
+    "median_train_seconds_mean": 0.5596912130713463,
+    "mixed_timing_environments": false
+  }
+]

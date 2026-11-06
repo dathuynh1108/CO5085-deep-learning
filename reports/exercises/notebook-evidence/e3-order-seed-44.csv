@@ -1,0 +1,5 @@
+experiment,seed,n_samples,original,reversed,permuted
+e3_lstm_rows,44,256,0.89453125,0.23046875,0.421875
+e3_gru_rows,44,256,0.90234375,0.22265625,0.515625
+e3_lstm_patches,44,256,0.890625,0.15234375,0.14453125
+e3_gru_patches,44,256,0.88671875,0.1484375,0.1875

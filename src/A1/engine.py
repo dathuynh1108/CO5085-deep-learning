@@ -27,12 +27,12 @@ def source_identity():
     return {str(path.relative_to(ROOT)): file_hash(path) for path in files}
 
 
-def make_signature(protocol, experiment, seed, data, environment, workers, deterministic):
+def make_signature(protocol, experiment, seed, data, environment, workers, deterministic, config=CONFIG):
     # Git metadata is recorded as provenance but unrelated checkout edits do not
     # invalidate A1. Relevant source content is hashed independently.
     stable_environment = {k: v for k, v in environment.items() if k not in {'git_commit', 'git_dirty'}}
     return {'protocol': protocol, 'experiment': experiment, 'seed': seed,
-            'config_sha256': file_hash(CONFIG), 'source': source_identity(), 'data': data,
+            'config_sha256': file_hash(config), 'source': source_identity(), 'data': data,
             'environment': stable_environment, 'num_workers': workers, 'deterministic': deterministic}
 
 
@@ -160,7 +160,17 @@ def write_train_evidence(run, state, signature, counts, environment):
     return metadata
 
 
-def train_run(run, protocol, experiment, seed, data_root, device, workers, resume=False, deterministic=False):
+def learning_rate_schedule(optimizer, protocol):
+    warmup = protocol.get('warmup_epochs', 0)
+    cosine = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=protocol['epochs'] - warmup)
+    if not warmup:
+        return cosine
+    linear = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=0.1, total_iters=warmup)
+    return torch.optim.lr_scheduler.SequentialLR(optimizer, [linear, cosine], milestones=[warmup])
+
+
+def train_run(run, protocol, experiment, seed, data_root, device, workers, resume=False, deterministic=False,
+              config=CONFIG):
     with run_lock(run):
         if any(run.iterdir()) and not resume:
             if any(p.name != '.a1.lock' for p in run.iterdir()):
@@ -175,7 +185,7 @@ def train_run(run, protocol, experiment, seed, data_root, device, workers, resum
         env['torchvision'] = torchvision.__version__
         env['visible_cuda_devices'] = os.environ.get('CUDA_VISIBLE_DEVICES')
         env['cuda_device_count'] = torch.cuda.device_count() if device.type == 'cuda' else 0
-        signature = make_signature(protocol, experiment, seed, identity, env, workers, deterministic)
+        signature = make_signature(protocol, experiment, seed, identity, env, workers, deterministic, config)
         existing = (run / 'last.pt').exists()
         if existing:
             if (run / 'metadata.json').exists():
@@ -184,7 +194,7 @@ def train_run(run, protocol, experiment, seed, data_root, device, workers, resum
         counts = parameter_counts(model)
         optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=experiment['lr'],
                                      weight_decay=protocol['weight_decay'], betas=tuple(protocol['betas']), eps=protocol['eps'])
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=protocol['epochs'])
+        scheduler = learning_rate_schedule(optimizer, protocol)
         generators = {'train': torch.Generator().manual_seed(seed), 'val': torch.Generator().manual_seed(seed + 1)}
         train_batches = loader(train, protocol['batch_size'], workers, generators['train'], True, device)
         val_batches = loader(val, protocol['batch_size'], workers, generators['val'], False, device)
@@ -235,7 +245,7 @@ def train_run(run, protocol, experiment, seed, data_root, device, workers, resum
         return metadata
 
 
-def test_run(run, protocol, experiment, seed, data_root, device, workers, deterministic=False):
+def test_run(run, protocol, experiment, seed, data_root, device, workers, deterministic=False, config=CONFIG):
     with run_lock(run):
         if not (run / 'metadata.json').exists():
             raise RuntimeError('Train this run before evaluating test')
@@ -251,7 +261,7 @@ def test_run(run, protocol, experiment, seed, data_root, device, workers, determ
         env['torchvision'] = torchvision.__version__
         env['visible_cuda_devices'] = os.environ.get('CUDA_VISIBLE_DEVICES')
         env['cuda_device_count'] = torch.cuda.device_count() if device.type == 'cuda' else 0
-        signature = make_signature(protocol, experiment, seed, identity, env, workers, deterministic)
+        signature = make_signature(protocol, experiment, seed, identity, env, workers, deterministic, config)
         require_signature(metadata['signature'], signature)
         dataset, test_identity = heldout_data(data_root, protocol)
         best_hash = file_hash(run / 'best.pt')

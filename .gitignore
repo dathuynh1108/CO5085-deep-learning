@@ -49,3 +49,6 @@ logs/
 **/reports/**/*.out
 **/reports/**/*.toc
 **/reports/**/*.xdv
+
+reports/**/*.lof
+reports/**/*.lot

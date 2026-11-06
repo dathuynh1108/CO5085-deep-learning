@@ -10,8 +10,9 @@ def test_static_site_copies_pdf_and_reports_actual_empty_status(tmp_path):
     build_site(target)
     text = (target / 'index.html').read_text()
     assert 'Huỳnh Thành Đạt' in text and '2570161' in text
-    manifest = json.loads((Path(__file__).resolve().parents[1] / 'reports/exercises/generated/manifest.json').read_text())
-    expected = 'Báo cáo chưa có kết quả thực nghiệm' if manifest['train_runs'] == 0 else f"{manifest['train_runs']} lượt huấn luyện"
+    summary = json.loads((Path(__file__).resolve().parents[1] / 'reports/exercises/notebook-evidence/summary.json').read_text())
+    count = sum(row['n_train_runs'] for row in summary if row['group'] == 'required')
+    expected = 'Báo cáo chưa có kết quả thực nghiệm' if count == 0 else f"{count} lượt huấn luyện"
     assert expected in text
     assert (target / 'reports/exercises.pdf').is_file()
     assert 'href="a2.html"' in text
@@ -21,6 +22,7 @@ def test_static_site_copies_pdf_and_reports_actual_empty_status(tmp_path):
     assert (target / 'reports/assignment2.pdf').is_file()
     assert (target / 'a2-media/demo.mp4').is_file()
     assert (target / 'results.json').is_file()
+    assert all(row['group'] == 'required' for row in json.loads((target / 'results.json').read_text()))
     assert 'href="favicon.svg"' in text
     assert (target / 'favicon.svg').is_file()
 

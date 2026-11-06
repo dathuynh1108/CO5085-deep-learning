@@ -1,0 +1,145 @@
+{
+  "protocol": {
+    "version": 2,
+    "study": "A1 Swin-T initialization comparison with matched warmup and cosine schedule",
+    "dataset": "CIFAR100",
+    "classes": 100,
+    "split_seed": 2026,
+    "train_size": 45000,
+    "val_size": 5000,
+    "test_size": 10000,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "epochs": 40,
+    "batch_size": 128,
+    "image_size": 96,
+    "train_transform": "RandomCrop(32,padding=4),RandomHorizontalFlip(0.5),Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+    "augmentation_rng": "SHA256(A1:train_seed:epoch:official_image_index); seeded CPU torch/Python/NumPy; workers nonpersistent",
+    "eval_transform": "Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "optimizer": "AdamW",
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.01,
+    "scheduler": "LinearLR from 0.1x to peak over 5 epochs, then CosineAnnealingLR to 0 over 35 epochs",
+    "loss": "CrossEntropyLoss, no label smoothing",
+    "gradient_clip": 1.0,
+    "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",
+    "tf32": false,
+    "compile": false,
+    "selection": "maximum validation accuracy; tie minimum validation CE",
+    "experiments": [
+      {
+        "id": "swin_t_scratch",
+        "family": "swin_t",
+        "regime": "scratch",
+        "weights": null,
+        "lr": 0.0002
+      },
+      {
+        "id": "swin_t_full",
+        "family": "swin_t",
+        "regime": "full",
+        "weights": "Swin_T_Weights.IMAGENET1K_V1",
+        "lr": 0.0002
+      }
+    ],
+    "warmup_epochs": 5
+  },
+  "config_sha256": "15a899edde5fc2f726562eab4e36ce5d7831a5e2340722638a253dfcf4fec0c4",
+  "source": {
+    "src/A1/__init__.py": "318ccece5372a983986006c275ed83d851ec077140b6b721f8a3819a1a639b96",
+    "src/A1/protocol.py": "1c350d595cb8299994e8ead393ed476878f65d50228a347b9900808fb256d793",
+    "src/A1/models.py": "26421d6dfaaff8781459cac48acc3443ace1e26dbd9649a517b0f9b7fd3979c1",
+    "src/A1/data.py": "d19e4eadce86334dc33aff3733367e75e2c156e73df5c55af394de35f64fc1cf",
+    "src/A1/metrics.py": "137dd4f10f8603693156257828fe2bcc1f264a361dbff4be49f29dfd120d9bf6",
+    "src/A1/engine.py": "799e9aee1865d381cfa30297a9f5e480e6698f9b7564f6de1bb54120678736d0",
+    "src/A1/run_suite.py": "52fca0d70f6917859bb5f2008da344b2e432ba50f9aac1b0dd78070fcbbb7e57",
+    "src/A1/visuals.py": "73936428784c23691fc05cd6f68a093edce586aab24cee4954245964f4aa8442",
+    "src/common/runtime.py": "1c4ab4978d776c1c837829e433760bee29c2a0080ed0913e9dd764c6b4992e26"
+  },
+  "expected_runs": 6,
+  "trained_runs": 6,
+  "tested_runs": 6,
+  "coverage": [
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "182c9a461f0cd3f3c69c44f346f7ed216af3d1c90091c7e78fcb1a6d385bc93c",
+        "metadata.json": "05f65ba3e9209d5c35dd2b9750dd03d9ffb7cdf55fd870334f6659ccc47c89b1"
+      }
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "aaf9614002b98de48f860e7bf2bdf7fc1a0b8c2472fc7b41977b654a98fa70ec",
+        "metadata.json": "11b823c1de7a9490313120c749d7654eb228efb665ea1b808b5a42bd88f20f5b"
+      }
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "fb8a96dbd51c7a075f203a3475b58400852f126bfb575cd1d5447c9bb8b133f2",
+        "metadata.json": "fec5de785f307ac5b0010320b0346afea061ffeaa581a6ecdf3c32e647ac5e5c"
+      }
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "19856ec374af1c01af1736742c933ac1918c9a6eac84f5b04853093fd8df05ca",
+        "metadata.json": "290a02fce502a3bc0993f9a6fe022d40433f0246f0d18ca16a0cdcc7e6016a81"
+      }
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "3b198964647165fba60c8ae2cf1efc59b830283aa575d9875f9cd44d45a3b303",
+        "metadata.json": "eebc8c7f05c99329b175c412e7fda7a3af56f8143d034c2c526cc58368dbfce0"
+      }
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "4f9b98f7ead9aa382b1ef4885325ddd0354b23f84e42f07f1de7a514ce7178a8",
+        "metadata.json": "211804a43cd6d9437e3e6798d6062721c9e6bdc573a27fdbe3bacdf762b11257"
+      }
+    }
+  ],
+  "cross_configuration_timing_comparable": false,
+  "state": "complete",
+  "note": "Means use only seeds listed; SD undefined for n<2. Figures use the smallest available seed, never the best test seed.",
+  "figures": [
+    {
+      "file": "swin_t_scratch_curves.png",
+      "seed": 42,
+      "sha256": "5f94f24ce2c765a3d669a1d6589b9de58131cca84874449fabf9434e9b73b1ec"
+    }
+  ]
+}

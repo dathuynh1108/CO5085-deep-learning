@@ -32,6 +32,9 @@
       <span class="tag elective">Bài tập lớn A2</span>
       <h1>Phân đoạn ảnh với phép trộn đặc trưng theo biên</h1>
       <p>Nghiên cứu vai trò của bản đồ biên trong việc kết hợp chi tiết và ngữ cảnh, dựa trên PIDNet và thực nghiệm trên Oxford-IIIT Pet.</p>
+      <div class="hero-actions">
+        <a class="button" href="#notebook">Notebook thực nghiệm A2</a>
+      </div>
     </div>
     <div class="detail-meta">
       <span class="mono">Phạm vi thực nghiệm</span>
@@ -46,13 +49,14 @@
       <a href="#data">02 · Dữ liệu</a>
       <a href="#method">03 · Phương pháp</a>
       <a href="#results">04 · Kết quả</a>
-      <a href="#files">05 · Báo cáo và video</a>
+      <a href="#notebook">05 · Notebook tái lập</a>
+      <a href="#files">06 · Báo cáo và video</a>
     </aside>
     <div class="detail-content">
       <section class="detail-section" id="paper">
         <h2>Phân tích PIDNet</h2>
         <p class="source-note">Jiacong Xu, Zixiang Xiong và Shankar P. Bhattacharyya. <cite>PIDNet: A Real-Time Semantic Segmentation Network Inspired by PID Controllers.</cite> Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, tr. 19529–19539.</p>
-        <p><a class="text-link" href="https://doi.org/10.1109/CVPR52729.2023.01871">DOI 10.1109/CVPR52729.2023.01871</a> · <a class="text-link" href="https://openaccess.thecvf.com/content/CVPR2023/html/Xu_PIDNet_A_Real-Time_Semantic_Segmentation_Network_Inspired_by_PID_Controllers_CVPR_2023_paper.html">Bản toàn văn tại CVF</a></p>
+        <p><a class="text-link" href="https://doi.org/10.1109/CVPR52729.2023.01871">DOI 10.1109/CVPR52729.2023.01871</a> · <a class="text-link" href="https://arxiv.org/abs/2206.02066">Bản toàn văn trên arXiv</a></p>
         <p>BiSeNet và DDRNet duy trì một luồng giữ chi tiết và một luồng học ngữ cảnh. Khi trộn các đặc trưng này, ngữ cảnh từ vùng lân cận có thể lấn át tín hiệu ở đường viền. PIDNet thêm nhánh D để dự đoán nơi nhãn chuyển nhanh, bên cạnh nhánh P giữ chi tiết và nhánh I tổng hợp ngữ cảnh.</p>
         <p>Mô-đun Bag dùng tín hiệu D để tăng trọng số của P gần biên và ưu tiên I ở vùng đồng nhất. Tác giả báo cáo PIDNet-S đạt 78,6% mIoU trên Cityscapes test ở 93,2 FPS theo giao thức đo trên RTX 3090. Báo cáo A2 phân tích riêng phép đối chứng, hàm mục tiêu và giới hạn của kết quả này.</p>
       </section>
@@ -74,7 +78,7 @@
       <section class="detail-section" id="method">
         <h2>Đối chứng phép trộn đặc trưng</h2>
         <p>Cả hai biến thể dùng các đặc trưng ở stride 4 và 32 của ResNet18 tiền huấn luyện ImageNet, cùng đầu phân đoạn và cùng hàm mất mát phụ cho nhánh biên. Biến thể cố định gán trọng số 0,5 cho hai nguồn. Biến thể theo biên lấy trọng số từ sigmoid của logit biên tại từng vị trí.</p>
-        <p>Mỗi biến thể chạy 12 epoch với ba hạt giống. mIoU xác thực quyết định checkpoint. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập kiểm tra sau khi khóa sáu checkpoint.</p>
+        <p>Mỗi biến thể chạy 12 epoch với ba hạt giống. Các checkpoint tốt nhất theo mIoU xác thực nằm ở epoch 8–11. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập kiểm tra sau khi khóa sáu checkpoint.</p>
       </section>
       <section class="detail-section" id="results">
         <h2>Kết quả và trường hợp sai</h2>
@@ -92,11 +96,19 @@
         </figure>
         <p>IoU dải chuyển tiếp đo độ khớp với vùng chưa phân loại trên lưới 192×192. Kết quả chịu ảnh hưởng của độ dày trimap, phép đổi kích thước và đặc điểm của ảnh thú cưng.</p>
       </section>
+      <section class="detail-section" id="notebook">
+        <h2>Notebook tái lập thực nghiệm</h2>
+        <p>Notebook khảo sát phân bố nhãn và trimap, huấn luyện trực tiếp hai biến thể qua ba hạt giống, rồi chọn checkpoint theo mIoU xác thực. Các ô kết quả tổng hợp mIoU, macro-Dice, IoU dải chuyển tiếp, đường cong học, ma trận nhầm lẫn theo pixel và ảnh dự đoán.</p>
+        <p>Sau khi xem kết quả xác thực và khóa sáu checkpoint, nhập <code>TEST</code> để đánh giá trên tập kiểm tra. Khi chạy tự động, dùng <code>CO5085_CONFIRM_TEST=1</code> để xác nhận bước này. Chế độ <code>CO5085_SMOKE=1</code> dùng một hạt giống, một epoch và tập con để kiểm tra quy trình.</p>
+        <div class="hero-actions">
+          <a class="button" href="https://colab.research.google.com/github/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb">Chạy trên Colab</a>
+          <a class="text-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb">Notebook trên GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
       <section class="detail-section" id="files">
-        <h2>Báo cáo, mã nguồn và video minh họa</h2>
+        <h2>Báo cáo và video minh họa</h2>
         <div class="hero-actions">
           <a class="button" href="reports/assignment2.pdf">Báo cáo A2 (PDF)</a>
-          <a class="text-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/src/A2">Mã nguồn A2 <span aria-hidden="true">↗</span></a>
           <a class="text-link" href="a2-media/demo.mp4">Video minh họa <span aria-hidden="true">↗</span></a>
         </div>
         <video class="a2-video" controls preload="metadata" aria-label="Minh họa phép trộn đặc trưng và kết quả A2" src="a2-media/demo.mp4"></video>

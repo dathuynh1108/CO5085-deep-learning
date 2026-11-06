@@ -1,10 +1,10 @@
 # Cấu trúc repository
 
-Mã Python nằm trong `src/`: `common/` dùng chung, `E1/`, `E2/`, `E3/` cho bài tập, `A1/`, `A2/` cho hai bài tập lớn. Cài `python -m pip install --no-deps -e .` để dùng các module từ checkout. Config vẫn nằm trong `configs/`.
+Năm notebook trong `notebooks/` trình bày quy trình thực nghiệm của E1, E2, E3, A1 và A2. Mã mô hình, dữ liệu và các phép đo dùng chung nằm trong `src/`. Cấu hình nằm trong `configs/`.
 
 E1–E3 dùng chung `reports/exercises/`. A1 và A2 có thư mục báo cáo riêng `reports/assignment1/` và `reports/assignment2/`. Mỗi thư mục có LaTeX, PDF, hình và số liệu theo lượt. Video A2 nằm cạnh PDF. Lệnh `python scripts/build_site.py` dựng `build/site/` từ `site/` với các URL PDF `reports/exercises.pdf`, `reports/assignment1.pdf` và `reports/assignment2.pdf`.
 
-Artifact cục bộ: `runs/exercises/`, `runs/assignment1/`, `runs/assignment2/`, `data/`, `artifacts/logs/`. Không đưa checkpoint và raw data vào Git. `scripts/` giữ các CLI, `tests/` kiểm tra mô hình/protocol/delivery, `docs/training-evidence/` giữ provenance.
+Notebook mặc định ghi kết quả trong `runs/notebooks/`. Các tệp nhẹ để đối chiếu bảng và hình nằm cùng từng báo cáo. Checkpoint và dữ liệu gốc được lưu cục bộ. Các tệp hỗ trợ biên dịch và kiểm tra ở `scripts/` và `tests/`.
 
 ## Kết quả đã đo trước refactor
 
@@ -26,4 +26,4 @@ python -m scripts.build_report --report-root reports/assignment1 --jobname assig
 
 ## Dùng lại cho CO5177
 
-Phần Image phù hợp với CIFAR-100 của A1; E1–E3 không phù hợp làm dataset chính vì CO5177 loại Fashion-MNIST. Code/data protocol và kết quả A1 được chuyển có manifest nguồn sang repository `CO5177-PFDAV`. Đó là cùng các lượt chạy, không phải một phép lặp độc lập. Báo cáo Image có phạm vi và yêu cầu riêng, gồm giải thích ảnh gốc 32px và input 96px thấp hơn mức 128px được khuyến nghị.
+Kho CO5177-PFDAV giữ hồ sơ tái sử dụng kết quả A1 trước đây. Notebook Image hiện tại của CO5177 huấn luyện riêng sau khi loại ảnh CIFAR-100 trùng pixel. Hai bộ kết quả có cách chia tập và hồ sơ thực nghiệm riêng.

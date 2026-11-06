@@ -1,11 +1,14 @@
 # A1 — CNN vs Transformer trên CIFAR-100
 
-A1 độc lập với E1–E3. Đề `assignment1-vne.pdf` cho phép model zoo/pretrained;
-chọn torchvision ResNet18 và Swin-T. Đã hoàn tất **24/24 lượt train và test**,
-mỗi lượt 20 epoch, ba seed 42/43/44 trên RTX 5090. Swin-T full đạt
-86,63% ±0,22% test accuracy; ResNet18 full đạt 78,97% ±0,04%.
-Swin-T scratch chỉ đạt 2,76% ±1,26%; giới hạn hội tụ được phân tích trong báo cáo.
-A2 chờ chọn paper. Các số ± là SD mẫu qua ba seed.
+A1 so sánh ResNet18 và Swin-T trên CIFAR-100. Thiết lập 20 epoch có 24 lượt
+huấn luyện và đánh giá, với ba hạt giống 42, 43 và 44. Swin-T tinh chỉnh
+toàn bộ đạt độ chính xác kiểm tra 86,63% ± 0,22 điểm phần trăm, so với
+78,97% ± 0,04 của ResNet18 cùng chế độ.
+
+Ở lịch 20 epoch, Swin-T từ đầu chỉ đạt 2,76% ± 1,26 điểm phần trăm. Thí
+nghiệm bổ sung so sánh hai cách khởi tạo Swin-T dưới cùng lịch 40 epoch,
+có năm epoch tăng dần tốc độ học và sau đó giảm theo cosine. Hai thiết lập
+dùng chung cách chia CIFAR-100 và được trình bày riêng trong [báo cáo A1](../../reports/assignment1/assignment1.pdf).
 
 ## Dữ liệu và nguồn
 
@@ -31,7 +34,7 @@ Không sao chép pretrained weights vào mỗi run. Cặp torch/torchvision và 
 phải tương thích; phiên bản thực được lưu trong metadata. Môi trường E1–E3
 đã dùng torch 2.10.0+cu130 / torchvision 0.25.0+cu130 trên CUDA 13.
 
-## Protocol cố định
+## Thiết lập 20 epoch
 
 | Thuộc tính | Giá trị |
 |---|---|
@@ -62,30 +65,11 @@ BN buffers và stochastic depth của module frozen luôn eval khi train;
 trainable subtrees mới bật train. Fingerprint frozen parameters/buffers được
 kiểm tra sau mỗi epoch và khi resume. Full/scratch dùng train toàn bộ backbone.
 
-## Chạy từ root repo
+## Notebook
 
-```bash
-python -m A1.run_suite --list
-python -m A1.run_suite --phase train --device cuda --num-workers 8
-# Tiếp tục cùng protocol/runtime; suite cũng bắt đầu các run còn thiếu:
-python -m A1.run_suite --phase train --device cuda --num-workers 8 --resume
-# Một preset chính thức:
-python -m A1.run_suite --experiments resnet18_scratch --seeds 42 --device cuda --num-workers 8 --resume
-# Đánh giá held-out test sau khi cố định thiết kế:
-python -m A1.run_suite --phase test --confirm-test --device cuda --num-workers 8
-python -m A1.export_report
-python -m scripts.write_findings --study a1
-python -m scripts.build_report --report-root reports/assignment1 --jobname assignment1
-python -m pytest -q tests/test_a1.py
-```
+Mở [A1.ipynb](../../notebooks/A1.ipynb) bằng kernel Python đã cài PyTorch và torchvision. Notebook mặc định thực hiện cả tám cấu hình 20 epoch và đối chứng khởi tạo Swin-T 40 epoch. Các ô đầu trình bày cách chia dữ liệu, cấu hình và ba hạt giống. Các ô sau huấn luyện, chọn checkpoint trên tập xác thực và vẽ đường cong cùng ma trận nhầm lẫn.
 
-Có `--data-root`, `--output-root`, `--seeds`, `--experiments`, `--deterministic`.
-Default runs ở `runs/assignment1/<id>/seed_<seed>`. Export mặc định chỉ tổng hợp seeds
-42/43/44; seed khác vẫn chạy nhưng không trộn vào bảng chuẩn. Giữ cùng worker,
-thiết bị, phần mềm và deterministic flag khi resume/test. Tất cả 24 run chạy
-tuần tự, không giữ nhiều backbone/optimizer đồng thời. Không có train→test tự
-động; `--confirm-test` chỉ có hiệu lực với phase test. Existing test được dùng
-lại khi fingerprint còn khớp; mismatch báo lỗi, không ghi đè.
+Có thể chạy từng hạt giống với `CO5085_A1_SEEDS`. Đặt `CO5085_A1_PROTOCOLS=assignment1` cho thiết lập 20 epoch hoặc `a1_swin_followup` cho đối chứng 40 epoch. Mặc định notebook xuất kết quả xác thực. Sau khi chốt giao thức, `CO5085_A1_CONFIRM_TEST=1` bật bước đánh giá trên tập kiểm tra. Kết quả lưu dưới `runs/notebooks/`.
 
 ## Artifact và resume
 
@@ -144,4 +128,4 @@ E1–E3. Exporter kiểm tra và tổng hợp kết quả; `scripts.write_findin
 so sánh theo cặp seed, tách bảng chất lượng/chi phí và ghi phân tích từ kết quả.
 XeLaTeX hoặc Tectonic build PDF từ `reports/assignment1/`; logo nằm tại
 `reports/assignment1/assets/hcmut-logo.png`. Bảng đã commit đủ để build lại PDF độc lập.
-Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](../AI_USE_REPORT.md).
+Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](../../AI_USE_REPORT.md).

@@ -1,0 +1,383 @@
+{
+  "protocol": {
+    "version": 1,
+    "study": "A1 fixed-budget empirical comparison; not a scratch convergence benchmark",
+    "dataset": "CIFAR100",
+    "classes": 100,
+    "split_seed": 2026,
+    "train_size": 45000,
+    "val_size": 5000,
+    "test_size": 10000,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "epochs": 20,
+    "batch_size": 128,
+    "image_size": 96,
+    "train_transform": "RandomCrop(32,padding=4),RandomHorizontalFlip(0.5),Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+    "augmentation_rng": "SHA256(A1:train_seed:epoch:official_image_index); seeded CPU torch/Python/NumPy; workers nonpersistent",
+    "eval_transform": "Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "optimizer": "AdamW",
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.0001,
+    "scheduler": "CosineAnnealingLR per completed epoch; T_max=20; eta_min=0",
+    "loss": "CrossEntropyLoss, no label smoothing",
+    "gradient_clip": 1.0,
+    "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",
+    "tf32": false,
+    "compile": false,
+    "selection": "maximum validation accuracy; tie minimum validation CE",
+    "experiments": [
+      {
+        "id": "resnet18_scratch",
+        "family": "resnet18",
+        "regime": "scratch",
+        "weights": null,
+        "lr": 0.001
+      },
+      {
+        "id": "resnet18_head",
+        "family": "resnet18",
+        "regime": "head",
+        "weights": "ResNet18_Weights.IMAGENET1K_V1",
+        "lr": 0.001
+      },
+      {
+        "id": "resnet18_partial",
+        "family": "resnet18",
+        "regime": "partial",
+        "weights": "ResNet18_Weights.IMAGENET1K_V1",
+        "lr": 0.0001
+      },
+      {
+        "id": "resnet18_full",
+        "family": "resnet18",
+        "regime": "full",
+        "weights": "ResNet18_Weights.IMAGENET1K_V1",
+        "lr": 0.0001
+      },
+      {
+        "id": "swin_t_scratch",
+        "family": "swin_t",
+        "regime": "scratch",
+        "weights": null,
+        "lr": 0.001
+      },
+      {
+        "id": "swin_t_head",
+        "family": "swin_t",
+        "regime": "head",
+        "weights": "Swin_T_Weights.IMAGENET1K_V1",
+        "lr": 0.001
+      },
+      {
+        "id": "swin_t_partial",
+        "family": "swin_t",
+        "regime": "partial",
+        "weights": "Swin_T_Weights.IMAGENET1K_V1",
+        "lr": 0.0001
+      },
+      {
+        "id": "swin_t_full",
+        "family": "swin_t",
+        "regime": "full",
+        "weights": "Swin_T_Weights.IMAGENET1K_V1",
+        "lr": 0.0001
+      }
+    ]
+  },
+  "config_sha256": "a478e2149309e99978b98f25e459759c6adfdf55b48db6c646c24c391c0426be",
+  "source": {
+    "src/A1/__init__.py": "318ccece5372a983986006c275ed83d851ec077140b6b721f8a3819a1a639b96",
+    "src/A1/protocol.py": "1c350d595cb8299994e8ead393ed476878f65d50228a347b9900808fb256d793",
+    "src/A1/models.py": "26421d6dfaaff8781459cac48acc3443ace1e26dbd9649a517b0f9b7fd3979c1",
+    "src/A1/data.py": "d19e4eadce86334dc33aff3733367e75e2c156e73df5c55af394de35f64fc1cf",
+    "src/A1/metrics.py": "137dd4f10f8603693156257828fe2bcc1f264a361dbff4be49f29dfd120d9bf6",
+    "src/A1/engine.py": "799e9aee1865d381cfa30297a9f5e480e6698f9b7564f6de1bb54120678736d0",
+    "src/A1/run_suite.py": "52fca0d70f6917859bb5f2008da344b2e432ba50f9aac1b0dd78070fcbbb7e57",
+    "src/A1/visuals.py": "73936428784c23691fc05cd6f68a093edce586aab24cee4954245964f4aa8442",
+    "src/common/runtime.py": "1c4ab4978d776c1c837829e433760bee29c2a0080ed0913e9dd764c6b4992e26"
+  },
+  "expected_runs": 24,
+  "trained_runs": 24,
+  "tested_runs": 24,
+  "coverage": [
+    {
+      "experiment": "resnet18_scratch",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "26393d971f31cce543cc316290e02051dcdc15e72e33a29467c5e8e396437d6f",
+        "metadata.json": "9038d1dba585f138a96913209613f021cc1b04d91f4c2a8057cf193ef351242a"
+      }
+    },
+    {
+      "experiment": "resnet18_scratch",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "ed026ac46e4347696186e660ad0891dc53d6106f0401809cd95f1d99b2d9bb25",
+        "metadata.json": "990d4babab7c477f22fb30292a0733371de17eaf3c904dd43e65f4905155399f"
+      }
+    },
+    {
+      "experiment": "resnet18_scratch",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "d2cc209632ed4d3e4c3bc9652e757c94d6dbaea76a2fb0a72db681f1aacb0374",
+        "metadata.json": "e0e3046fd3f6dda8241fa007af81db3bdf5f3e90c84e2749044943750248a03d"
+      }
+    },
+    {
+      "experiment": "resnet18_head",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "55fa6858e854a6e73dbe3fc49c469ce56b33d2855a27af323e93c21480432286",
+        "metadata.json": "29b3f6edba8cfb7886495b00ee40aef054056fe6fa539fe98f930dd024bc1cba"
+      }
+    },
+    {
+      "experiment": "resnet18_head",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "c5ac41c4a62c9ad0a63dd5afa862c652403238461a9df6d87e7167bfc5791bbf",
+        "metadata.json": "1bc47413c94e73d8f6f11e2bbe2dd2d8603002b898dc02914365fe10037cbbf1"
+      }
+    },
+    {
+      "experiment": "resnet18_head",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "e214628222d6b95ab65efae0f61e4bc0b1e0d945c653bc7a326e3f3623a1e0a1",
+        "metadata.json": "83d5f3c26b4ad1c5434c3ae2359b490b2e5fd26dd96f873e305ed6e50b9e6e88"
+      }
+    },
+    {
+      "experiment": "resnet18_partial",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "0a4c510516655f65bc3f88ad1fd38a7a47463c166f0cb992edab89f04f103eaa",
+        "metadata.json": "2e04341011516277506f5e0cb5ec9244b532f3ea53e262873515832162fc6ef2"
+      }
+    },
+    {
+      "experiment": "resnet18_partial",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "1dc8a593360fe629c530f4593868ce3b507287efdcad22c211f3915b8f275caf",
+        "metadata.json": "52b70164c19683d3f7a3942a8a6223396773752b00dd4fd16a07482f50cef8f0"
+      }
+    },
+    {
+      "experiment": "resnet18_partial",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "967e3ffba48423e15c5ee8337a88f4ac577d6bb6ba1235029e6340e55b458f2d",
+        "metadata.json": "46ed55c4b3bffac1f0cddf02d6cd4fa25e7aea8f16b375ae59b36f06470bd283"
+      }
+    },
+    {
+      "experiment": "resnet18_full",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "35fcba9eb4b9ccf3a2d5d48045fbba03961f26f13c19d3377b6960e247e27d1b",
+        "metadata.json": "c7e3fbb1b8ad848264b160b7de02d9fcff49d1205af9d31ff9a57dc10f886e8b"
+      }
+    },
+    {
+      "experiment": "resnet18_full",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "a01e80dd69f17acdb8dff7911a476297cd66ba33ccd1c164a2780155da580940",
+        "metadata.json": "2fee87b593f3021f163aa8fa1dcd4b1dede64544a40489d4f011ec39973eb92b"
+      }
+    },
+    {
+      "experiment": "resnet18_full",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "f084b37f184ed80709df961d1fbbc55e7813fc517d73c5a5916b145ed10bbf3b",
+        "metadata.json": "0103f666d4bc4a2222df79aedd086192f1b2c0ef41b05914b8c9d12a80925741"
+      }
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "08a5fbe2ef53c3f8557463e2f8019000e3d7fd37bb87c82648ba1063b809883a",
+        "metadata.json": "bca4e65c5ea72cb92522177665a893a127e3269e573b654c2217d3383292ce48"
+      }
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "37f8d605ccc9ed11f9f0b43933ce0e93f8047eb51daf45013ac466aff7087f1f",
+        "metadata.json": "b40b434341c44509f4179c6e595fcbb64798df26fcedd2139d3b24b816f14616"
+      }
+    },
+    {
+      "experiment": "swin_t_scratch",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "e4fd3f366f96edc77803c18a1078f4cb903143fe16f0bfe4d1011f0c1b6b6b56",
+        "metadata.json": "caa6af17adb7040ebc7140aed5819315d25ae2b0ec7bac242da28e50a1838821"
+      }
+    },
+    {
+      "experiment": "swin_t_head",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "eb1ef87861ddd7aacc438596286701bf1ae6d32f6516507557a922591a58e723",
+        "metadata.json": "7f243ebdb8144e64f795645b82408f58088f9ab2bdb14ec467b38e23f82b780a"
+      }
+    },
+    {
+      "experiment": "swin_t_head",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "881c9775a00aa82ac83cc19659a29784f2c94dd25c6cb8f3ba050c5a08baba5b",
+        "metadata.json": "e945c30244bf090c604b9979baac35f9fbb2c2ecfadcbe425c43359e64a88834"
+      }
+    },
+    {
+      "experiment": "swin_t_head",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "2a8ecfe191157c59325f1851c4d2b26ee48f05a69b4ad542b49b8da2504157d0",
+        "metadata.json": "eb5fb99397dd1166104b75206ded69023b9e4750d98c51a67621d586692fe74a"
+      }
+    },
+    {
+      "experiment": "swin_t_partial",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "e5c6f5093d95c202a1fdde0f51051e7470c12c298fa856a9c54f720723648901",
+        "metadata.json": "6e1cf839364c9860bb20e426c1dd685d2835bb0be379170244c220fb71ff26a2"
+      }
+    },
+    {
+      "experiment": "swin_t_partial",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "8966d8c9af06f079194b0e384532818a052782f036c5a9d5ba069c74196bf799",
+        "metadata.json": "17ae12f4c4824c139987599a6f62ac26f985e4cb1ab7491ecab2c9ae02136efb"
+      }
+    },
+    {
+      "experiment": "swin_t_partial",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "4177af88c402d1d10ce26e5b344f7ce7f2c4d7e049789cbfacac18164d231427",
+        "metadata.json": "0e63a4adb9efb71ed0f4a975ff1b4adb6c5ec7cce3b1a97fd29b3d1fd4d53957"
+      }
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 42,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "8f2279fca3ccc5f21668236c2b70a0448585969fbfe0b2d05bf71728710a7921",
+        "metadata.json": "b362ad8f42e499573b03c9cb2d3019403346b4d744e14fca7e8389316436adbf"
+      }
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 43,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "db393fb9cd9d7ce3356e8500d6e909a579661087ee79569cb391c0f9b429a170",
+        "metadata.json": "b5ef39e8cc351accf1d8495e94b51db14ef2b08102ad92d0d3f9ebf075b70d0c"
+      }
+    },
+    {
+      "experiment": "swin_t_full",
+      "seed": 44,
+      "status": "complete",
+      "evidence_files": {
+        "history.csv": "8d21204caae2922d9e8109d151bd0b6c16dd3e809e11414f26610d12e6683006",
+        "metadata.json": "8347a6c2e69b2d3eea8b9597aa80d72366658d8e22f0e187fb075a8bb62095b9"
+      }
+    }
+  ],
+  "cross_configuration_timing_comparable": true,
+  "state": "complete",
+  "note": "Means use only seeds listed; SD undefined for n<2. Figures use the smallest available seed, never the best test seed.",
+  "figures": [
+    {
+      "file": "resnet18_scratch_curves.png",
+      "seed": 42,
+      "sha256": "d69f88a2855463b4d708dcf9da2a9301b09f6784d654c2edfa66ba2a1fdc4f76"
+    },
+    {
+      "file": "resnet18_full_curves.png",
+      "seed": 42,
+      "sha256": "016cda8fb3952ea3a84ed98374edc73cd681a78d99ea56809092c18943dc8602"
+    },
+    {
+      "file": "resnet18_full_confusion_test.png",
+      "seed": 42,
+      "sha256": "346990c752c91ad0fd51f0582552afc53a0e40ad2c16fd017c6c47ec8487f0a9"
+    },
+    {
+      "file": "resnet18_full_errors_test.png",
+      "seed": 42,
+      "sha256": "a876530334caab7cf44878dc99688f95108163f475bbd334c2844b57f7cf20ea"
+    },
+    {
+      "file": "swin_t_scratch_curves.png",
+      "seed": 42,
+      "sha256": "b23a58bfd1aa3a61b67bb70f4e2a765ff3c4e830fa0d83dded4a5b39a04f7311"
+    },
+    {
+      "file": "swin_t_full_curves.png",
+      "seed": 42,
+      "sha256": "a658ffed51d12bced4f4b4409fd0e8ed47202d7f36dd774fa1c417e15ad3789b"
+    },
+    {
+      "file": "swin_t_full_confusion_test.png",
+      "seed": 42,
+      "sha256": "39ae9ad22d6ffc3f8d780ed5150ab8ff016c918acd9283931b5b038349a0d0eb"
+    },
+    {
+      "file": "swin_t_full_errors_test.png",
+      "seed": 42,
+      "sha256": "146d00658c6ac432a9e0496cd5e7a407122e1dad42c74a3702510b54b8662698"
+    }
+  ]
+}

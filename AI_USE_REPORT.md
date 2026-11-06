@@ -8,9 +8,9 @@ AI được sử dụng để tra cứu tài liệu và API của PyTorch, torch
 | Phần | Nội dung có hỗ trợ |
 | --- | --- |
 | E1–E3 | Tra cứu API mô hình, hàm mất mát và checkpoint. Hỗ trợ hiện thực và rà soát vòng lặp huấn luyện, đối chiếu attention tự viết với PyTorch và thiết kế các đối chứng cho LSTM. Kiểm tra cách diễn giải các phép đo thứ tự quét và gradient. |
-| A1 | Hỗ trợ xây dựng giao thức so sánh ResNet18 và Swin-T, sử dụng API trọng số tiền huấn luyện và kiểm tra các chế độ đóng băng. Đối chiếu bảng với kết quả đã lưu và kiểm tra độ nhạy khi loại ảnh trùng. |
+| A1 | Hỗ trợ tra cứu API trọng số tiền huấn luyện, đóng băng tầng và lập lịch tốc độ học của PyTorch. Rà soát kết quả của thiết lập 20 epoch, hỗ trợ thiết kế và chạy đối chứng Swin-T có warmup, kiểm tra số liệu theo hạt giống và biên tập phần thảo luận. |
 | A2 | Tra cứu bài PIDNet và tài liệu Oxford-IIIT Pet, đề xuất đối chứng trộn đặc trưng theo biên, hỗ trợ viết pipeline PyTorch, vận hành thực nghiệm GPU và kiểm tra kết quả. Hỗ trợ soạn bản thảo phân tích paper, phân tích lỗi và trình bày bảng, hình, video. |
-| Tổ chức bài nộp | Hỗ trợ tách thư mục theo bài, biên dịch LaTeX, kiểm tra PDF và cập nhật nội dung GitHub Pages. |
+| Tổ chức bài nộp | Hỗ trợ chuyển quy trình thực nghiệm sang Jupyter, kiểm tra việc lưu cấu hình, hạt giống và log, biên dịch LaTeX và cập nhật GitHub Pages. |
 
 Các chỉ số được tính từ log, checkpoint và dự đoán của các lượt chạy. Thông tin về tập dữ liệu, cấu hình, hạt giống và mã nguồn được lưu cùng kết quả để đối chiếu. Các số liệu trích từ PIDNet được ghi nguồn riêng trong báo cáo A2.
 

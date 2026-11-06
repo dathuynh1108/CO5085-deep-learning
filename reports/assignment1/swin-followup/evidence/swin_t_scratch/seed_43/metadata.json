@@ -1,0 +1,147 @@
+{
+  "signature": {
+    "protocol": {
+      "version": 2,
+      "study": "A1 Swin-T initialization comparison with matched warmup and cosine schedule",
+      "dataset": "CIFAR100",
+      "classes": 100,
+      "split_seed": 2026,
+      "train_size": 45000,
+      "val_size": 5000,
+      "test_size": 10000,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "epochs": 40,
+      "batch_size": 128,
+      "image_size": 96,
+      "train_transform": "RandomCrop(32,padding=4),RandomHorizontalFlip(0.5),Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+      "augmentation_rng": "SHA256(A1:train_seed:epoch:official_image_index); seeded CPU torch/Python/NumPy; workers nonpersistent",
+      "eval_transform": "Resize(96,bilinear,antialias=True),ToTensor,Normalize",
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ],
+      "optimizer": "AdamW",
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.01,
+      "scheduler": "LinearLR from 0.1x to peak over 5 epochs, then CosineAnnealingLR to 0 over 35 epochs",
+      "loss": "CrossEntropyLoss, no label smoothing",
+      "gradient_clip": 1.0,
+      "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",
+      "tf32": false,
+      "compile": false,
+      "selection": "maximum validation accuracy; tie minimum validation CE",
+      "experiments": [
+        {
+          "id": "swin_t_scratch",
+          "family": "swin_t",
+          "regime": "scratch",
+          "weights": null,
+          "lr": 0.0002
+        },
+        {
+          "id": "swin_t_full",
+          "family": "swin_t",
+          "regime": "full",
+          "weights": "Swin_T_Weights.IMAGENET1K_V1",
+          "lr": 0.0002
+        }
+      ],
+      "warmup_epochs": 5
+    },
+    "experiment": {
+      "id": "swin_t_scratch",
+      "family": "swin_t",
+      "regime": "scratch",
+      "weights": null,
+      "lr": 0.0002
+    },
+    "seed": 43,
+    "config_sha256": "15a899edde5fc2f726562eab4e36ce5d7831a5e2340722638a253dfcf4fec0c4",
+    "source": {
+      "src/A1/__init__.py": "318ccece5372a983986006c275ed83d851ec077140b6b721f8a3819a1a639b96",
+      "src/A1/protocol.py": "1c350d595cb8299994e8ead393ed476878f65d50228a347b9900808fb256d793",
+      "src/A1/models.py": "26421d6dfaaff8781459cac48acc3443ace1e26dbd9649a517b0f9b7fd3979c1",
+      "src/A1/data.py": "d19e4eadce86334dc33aff3733367e75e2c156e73df5c55af394de35f64fc1cf",
+      "src/A1/metrics.py": "137dd4f10f8603693156257828fe2bcc1f264a361dbff4be49f29dfd120d9bf6",
+      "src/A1/engine.py": "799e9aee1865d381cfa30297a9f5e480e6698f9b7564f6de1bb54120678736d0",
+      "src/A1/run_suite.py": "52fca0d70f6917859bb5f2008da344b2e432ba50f9aac1b0dd78070fcbbb7e57",
+      "src/A1/visuals.py": "73936428784c23691fc05cd6f68a093edce586aab24cee4954245964f4aa8442",
+      "src/common/runtime.py": "1c4ab4978d776c1c837829e433760bee29c2a0080ed0913e9dd764c6b4992e26"
+    },
+    "data": {
+      "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
+      "labels_sha256": "8bf4935e7c77a3096270043c6f3b221b6ecb9c63d1a08608e9af66cff17e977a",
+      "split_sha256": "36b6d6338a0eb0dd12cb977efb544774f80787be52804ed4d2cec1647eeb3f7f",
+      "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
+    },
+    "environment": {
+      "python": "3.12.3",
+      "platform": "Linux-5.15.0-174-generic-x86_64-with-glibc2.39",
+      "torch": "2.10.0+cu130",
+      "cuda_runtime": "13.0",
+      "cudnn": 91501,
+      "device": "cuda",
+      "device_name": "NVIDIA GeForce RTX 5090",
+      "torch_num_threads": 4,
+      "tf32_matmul": false,
+      "tf32_cudnn": false,
+      "torchvision": "0.25.0+cu130",
+      "visible_cuda_devices": null,
+      "cuda_device_count": 1
+    },
+    "num_workers": 8,
+    "deterministic": false
+  },
+  "signature_sha256": "ffbac0cb0a3103a4d55acca8dc030c2f74a673df715441382aa555d51d8c0211",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-5.15.0-174-generic-x86_64-with-glibc2.39",
+    "torch": "2.10.0+cu130",
+    "cuda_runtime": "13.0",
+    "cudnn": 91501,
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "git_commit": null,
+    "git_dirty": null,
+    "torch_num_threads": 4,
+    "tf32_matmul": false,
+    "tf32_cudnn": false,
+    "torchvision": "0.25.0+cu130",
+    "visible_cuda_devices": null,
+    "cuda_device_count": 1
+  },
+  "initial_state_sha256": "4c721792a21df004e1c5199ff19c0ed1ad0859a3e64e291c7c32b05c85316d53",
+  "frozen_state_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "total_params": 27596254,
+  "trainable_params": 27596254,
+  "completed_epochs": 40,
+  "expected_epochs": 40,
+  "status": "trained",
+  "best_validation": {
+    "epoch": 38,
+    "accuracy": 0.6038,
+    "ce": 1.6461886199951172,
+    "macro_f1": 0.603050210169973,
+    "state_sha256": "ca591fec91e9382b90b933ff749bf74a1e21cb3cf7c0d38fbd919bba352e4b64"
+  },
+  "train_seconds": 1327.114174036833,
+  "epoch_seconds": 1403.7507401331095,
+  "peak_gpu_memory_bytes": 2579877888,
+  "timing_scope": "train_seconds: synchronized train pass including data loading; epoch_seconds: train + validation; excludes construction/checkpoint/export",
+  "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",
+  "test_evaluated": true
+}

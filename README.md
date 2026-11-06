@@ -5,30 +5,29 @@ Bài làm cá nhân. Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh.
 
 Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/MLP/CNN, attention với nhiều cách chia token, và LSTM/GRU khi biểu diễn ảnh thành chuỗi. Tất cả mô hình được khởi tạo mới; không tải trọng số pretrained.
 
-**Kết quả ngày 15/10/2026:** E1–E3 hoàn tất 60/60 lượt train và test; A1 hoàn tất 24/24 lượt train và test trên RTX 5090. CNN E1 đạt 92,69% ±0,15%; Swin-T full A1 đạt 86,63% ±0,22% test accuracy (trung bình ±SD mẫu, ba seed). Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).
+**Kết quả E1–E3.** Ba notebook đã huấn luyện và đánh giá 39 lượt trên RTX 5090. CNN đạt độ chính xác kiểm tra trung bình 92,62% ± 0,06 điểm phần trăm qua ba hạt giống. Phạm vi hỗ trợ của AI được ghi trong [AI_USE_REPORT.md](AI_USE_REPORT.md).
 
-A1 có tám cấu hình ResNet18/Swin-T × scratch/head/partial/full, ba seed, 20 epoch; dùng toàn bộ CIFAR-100 với split45.000/5.000/10.000. Code ở [A1](src/A1/README.md), báo cáo tách riêng [A1 LaTeX](reports/assignment1/report.tex) và [A1 PDF](reports/assignment1/assignment1.pdf). E1–E3 dùng một báo cáo chung.
+Thiết lập A1 gồm tám cấu hình ResNet18/Swin-T, ba hạt giống và 20 epoch trên CIFAR-100 với phân hoạch 45.000/5.000/10.000 ảnh. Đối chứng bổ sung dùng chung lịch 40 epoch cho hai bản Swin-T. Bản khởi tạo ngẫu nhiên đạt 60,30% và bản ImageNet đạt 86,39%. Xem [notebook A1](notebooks/A1.ipynb) và [báo cáo A1](reports/assignment1/assignment1.pdf).
 
 [Báo cáo PDF](reports/exercises/exercises.pdf) · [LaTeX](reports/exercises/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
 
-A2 khảo sát phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, đối chiếu trộn cố định với trộn theo biên dựa trên [PIDNet, CVPR 2023](https://doi.org/10.1109/CVPR52729.2023.01871). Sáu lượt huấn luyện và đánh giá cho mIoU trung bình lần lượt 77,88% và 77,78%. Xem [mã nguồn và cách chạy A2](src/A2/README.md), [báo cáo A2](reports/assignment2/assignment2.pdf) và [video minh họa](reports/assignment2/demo.mp4).
+A2 khảo sát phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, đối chiếu trộn cố định với trộn theo biên dựa trên [PIDNet, CVPR 2023](https://doi.org/10.1109/CVPR52729.2023.01871). Sáu lượt huấn luyện và đánh giá cho mIoU trung bình lần lượt 77,88% và 77,78%. Xem [notebook A2](notebooks/A2.ipynb), [báo cáo A2](reports/assignment2/assignment2.pdf) và [video minh họa](reports/assignment2/demo.mp4).
 
 ## Nội dung
 
-| Phần | Thí nghiệm |
+| Notebook | Thí nghiệm |
 |---|---|
-| E1 | Softmax, MLP, CNN; cùng split và quy trình đánh giá |
-| E2 | MSA tự viết và `nn.MultiheadAttention`; token theo hàng, patch 4×4, CNN-stem |
-| E3 | LSTM và GRU; chuỗi hàng hoặc patch; đối chiếu lại MLP/CNN của E1 |
-| Mở rộng E3 | Khởi tạo trực giao, phạt sai lệch trực giao, bias cổng nhớ theo độ dài chuỗi, mean pooling và ablation |
+| [E1](notebooks/E1.ipynb) | Softmax, MLP và CNN trên cùng tập ảnh và quy trình đánh giá |
+| [E2](notebooks/E2.ipynb) | MSA tự viết và `nn.MultiheadAttention` với token theo hàng, patch 4×4 và đặc trưng CNN |
+| [E3](notebooks/E3.ipynb) | LSTM và GRU trên chuỗi hàng hoặc patch, đối chiếu với MLP/CNN của E1 và khảo sát độ nhạy với thứ tự quét |
+| [A1](notebooks/A1.ipynb) | ResNet18 và Swin-T trên CIFAR-100 với các chế độ tinh chỉnh và phép so sánh Swin-T ở lịch học 40 epoch |
+| [A2](notebooks/A2.ipynb) | Đối chiếu trộn cố định và trộn theo biên cho phân đoạn trimap Oxford-IIIT Pet |
 
-Có 13 cấu hình bắt buộc và 7 cấu hình mở rộng, mỗi cấu hình chạy đủ ba seed 42,43,44 và 30 epoch, không early stopping. Bảng thời gian thực đo, môi trường và phạm vi phép đo nằm trong báo cáo.
-
-Phần mở rộng kiểm tra ảnh hưởng của khởi tạo và đường đọc trạng thái đối với LSTM trên chuỗi ảnh ngắn. Cả bảy biến thể có test accuracy trung bình thấp hơn baseline LSTM rows trong thiết lập đã đo. Báo cáo phân tích các ablation và phân biệt regularization trực giao mềm với tối ưu có ràng buộc trên đa tạp.
+E1–E3 gồm 13 cấu hình theo yêu cầu của đề. Mỗi cấu hình dùng ba hạt giống 42, 43 và 44, với 30 epoch cố định. Báo cáo trình bày chỉ số, môi trường và cách đo thời gian.
 
 ## Môi trường
 
-Dùng Python 3.11–3.13 và môi trường ảo riêng. Lệnh dưới đây dành cho Linux/WSL; trên PowerShell thay lệnh kích hoạt bằng `.venv\Scripts\Activate.ps1`.
+Dùng Python 3.12 và môi trường ảo riêng. Lệnh dưới đây dành cho Linux/WSL. Trên PowerShell, lệnh kích hoạt là `.venv\Scripts\Activate.ps1`.
 
 ```bash
 git clone https://github.com/dathuynh1108/CO5085-deep-learning.git
@@ -39,44 +38,54 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements/torch-cuda.txt
 python -m pip install --no-deps -e .
 python -m pip install -r requirements.txt -r requirements/dev.txt
+python -m pip install jupyterlab ipykernel nbconvert pandas
+python -m ipykernel install --user --name co5085 --display-name "Python (CO5085)"
 ```
 
 File CUDA ghim `torch==2.10.0`, `torchvision==0.25.0`, wheel CUDA 13.0. Đây là cặp phiên bản từ [hướng dẫn PyTorch](https://pytorch.org/get-started/previous-versions/), không phải yêu cầu dùng bản mới nhất. Driver NVIDIA phải hỗ trợ wheel đã chọn. Với CUDA 12.8, cài cùng cặp phiên bản từ index `https://download.pytorch.org/whl/cu128`; không trộn wheel CPU và CUDA. Chạy CPU thì thay file torch bằng `requirements/torch-cpu.txt`.
 
-E1–E3 sử dụng FP32, tắt TF32, AMP và compile; A1 sử dụng BF16 autocast với tham số/optimizer FP32. Cả 84 lượt train và test đã chạy trên PyTorch 2.10.0+cu130, torchvision 0.25.0+cu130, CUDA 13, RTX 5090, workers 8 và 4 CPU threads. Có 56 kiểm thử số học/protocol đã pass trên GPU trước lượt train; lịch sử vận hành và checksum ở [TRAINING_EXECUTION.md](docs/TRAINING_EXECUTION.md).
+E1–E3 sử dụng FP32 với TF32, AMP và compile tắt. A1 sử dụng BF16 autocast với tham số và trạng thái optimizer FP32. Các lượt notebook E1–E3 và A1 dùng PyTorch 2.10.0+cu130, torchvision 0.25.0+cu130, CUDA 13 và RTX 5090. E1–E3 dùng bốn worker, A1 dùng tám. Lịch sử vận hành và checksum được ghi trong [TRAINING_EXECUTION.md](docs/TRAINING_EXECUTION.md).
 
-## Chạy thí nghiệm
+## Chạy thí nghiệm bằng notebook
 
-Chạy từ thư mục gốc repo. Lệnh liệt kê không đọc dữ liệu:
+Mỗi notebook thực hiện lần lượt khảo sát và tiền xử lý dữ liệu, thiết lập đối chứng, huấn luyện, chọn checkpoint theo tập xác thực, đánh giá và tạo biểu đồ. Thư mục kết quả lưu cấu hình, hạt giống, lịch sử huấn luyện, checkpoint, chỉ số và ma trận nhầm lẫn. Notebook là điểm bắt đầu của thí nghiệm. Các module Python và lệnh CLI tiếp tục cung cấp mã dùng chung và quy trình xuất báo cáo.
 
-```bash
-python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --list
-python -m scripts.prepare_data --data-root data
-python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --device cuda --num-workers 8
-```
-
-Dữ liệu được lấy bằng loader torchvision, ưu tiên HTTPS từ repo chính thức của Fashion-MNIST và giữ kiểm tra checksum. Train/validation có 54.000/6.000 ảnh; test giữ nguyên 10.000 ảnh. Mean/std chỉ tính trên phần train. Split seed cố định là 2026, độc lập với seed khởi tạo mô hình.
-
-Một cấu hình riêng:
+Từ thư mục gốc, mở JupyterLab, chọn notebook trong bảng trên, chọn kernel **Python (CO5085)** rồi chạy các ô từ đầu theo thứ tự.
 
 ```bash
-python -m E2.train --experiment e2_patches_manual --seed 42 --device cuda
-python -m E3.train --experiment e3_lstm_rows_combined --seed 42 --device cuda
+jupyter lab
 ```
 
-Để tiếp tục sau gián đoạn, dùng lại lệnh suite với `--resume`. Checkpoint lưu trạng thái model, optimizer, scheduler và các bộ sinh số ngẫu nhiên. Resume yêu cầu cùng code/config/split/môi trường đã ghi. Không xóa `.train.lock` khi tiến trình cũ vẫn chạy. Thay batch size hoặc số epoch thì dùng thư mục output mới; kết quả thử cấu hình không trộn vào báo cáo chính.
+E1–E3 dùng cùng phân hoạch Fashion-MNIST với 54.000 ảnh huấn luyện, 6.000 ảnh xác thực và 10.000 ảnh kiểm tra. Các thống kê chuẩn hóa được tính trên tập huấn luyện. Chạy E1 trước E3 với cùng thư mục đầu ra để E3 có thể kiểm tra và dùng lại hai đối chứng MLP/CNN. A1 và A2 có thể chạy độc lập. Chế độ GPU dùng BF16 của A1 và A2 cần phần cứng hỗ trợ BF16.
+
+Ví dụ chạy E1 trên CUDA với hạt giống 42 và lưu bản notebook đã thực thi.
+
+```bash
+mkdir -p artifacts/notebooks
+CO5085_EXERCISES_SEEDS=42 CO5085_EXERCISES_DEVICE=cuda CO5085_EXERCISES_WORKERS=8 \
+  python -m nbconvert --to notebook --execute notebooks/E1.ipynb \
+  --ExecutePreprocessor.kernel_name=co5085 --ExecutePreprocessor.timeout=-1 \
+  --output E1-seed42.ipynb --output-dir artifacts/notebooks
+```
+
+| Phần | Thư mục kết quả mặc định | Đánh giá trên tập kiểm tra sau khi chốt giao thức |
+|---|---|---|
+| E1–E3 | `runs/notebooks/exercises/` | Đặt `CO5085_EXERCISES_CONFIRM_TEST=1` hoặc bật `CONFIRM_TEST` trong ô cấu hình |
+| A1 | `runs/notebooks/assignment1/` và `runs/notebooks/a1_swin_followup/` | Đặt `CO5085_A1_CONFIRM_TEST=1` |
+| A2 | `runs/notebooks/a2/` | Nhập `TEST` tại ô xác nhận hoặc đặt `CO5085_CONFIRM_TEST=1` khi chạy tự động |
+
+E1–E3 và A1 hỗ trợ chạy theo hạt giống và tiếp tục lượt bị gián đoạn với cấu hình và môi trường ban đầu. Các thiết lập nằm trong ô đầu của từng notebook. Lượt kiểm tra nhanh hoặc thay đổi giao thức sử dụng thư mục đầu ra riêng. Lệnh CLI và quy trình tái lập các lượt đã lưu được mô tả trong [hướng dẫn GPU](docs/GPU_RUNBOOK.md).
 
 ## Đánh giá và cập nhật báo cáo
 
-Checkpoint được chọn bằng validation accuracy, hòa thì xét validation cross-entropy. **Không dùng test để chọn mô hình hoặc chỉnh siêu tham số.** Sau khi chốt thiết kế và hoàn tất train:
+E1–E3 chọn checkpoint theo độ chính xác xác thực, rồi xét cross-entropy xác thực khi hai checkpoint có cùng độ chính xác. Tập kiểm tra dành cho phép đo cuối cùng sau khi chốt thiết kế. Các lệnh dưới đây thuộc quy trình CLI để đánh giá và cập nhật báo cáo từ các thư mục lượt chạy đã lưu.
 
 ```bash
-python -m scripts.run_exercises_isolated --group all --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
+python -m scripts.run_exercises_isolated --group required --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
 python -m E3.diagnose --run runs/exercises/e3_lstm_rows/seed_42 --device cuda
-python -m E3.diagnose --run runs/exercises/e3_lstm_rows_combined/seed_42 --device cuda
 python -m scripts.export_report
-python -m A1.export_report
-python -m scripts.write_findings
+python -m A1.export_report --archive
+python -m scripts.write_findings --archive
 python -m scripts.build_report
 python -m scripts.build_report --report-root reports/assignment1 --jobname assignment1
 ```
@@ -85,11 +94,12 @@ python -m scripts.build_report --report-root reports/assignment1 --jobname assig
 
 Bước build PDF dùng XeLaTeX hoặc Tectonic với font TeX Gyre Termes (hoặc Liberation Serif/Sans), các gói `fontspec`, `geometry`, `titlesec`, `fancyhdr`, `booktabs`, `tabularx`, `longtable`, `amsmath`, `hyperref`. Trên Ubuntu có thể cài `texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-liberation fonts-dejavu-core`. Các bảng đã commit đủ để build PDF mà không tải dữ liệu hoặc checkpoint.
 
-Bảng và hình được xuất từ log đã kiểm tra provenance. `scripts.write_findings` tính chênh lệch theo cặp seed và ghi phân tích từ đủ 60+24 lượt train/test, sau đó báo cáo được rà soát cùng đường cong và ma trận lỗi. SD là độ lệch chuẩn mẫu qua ba seed. Các kết quả thấp, bao gồm Swin-T scratch, được giữ trong bảng và thảo luận giới hạn.
+Bảng và hình được xuất từ log đã đối chiếu nguồn gốc. Chênh lệch giữa các cấu hình được tính theo cặp cùng hạt giống. SD là độ lệch chuẩn mẫu qua ba hạt giống. Các kết quả thấp, bao gồm Swin-T huấn luyện từ đầu, được giữ trong bảng để phân tích giới hạn của thiết lập.
 
 ## Cấu trúc và kiểm tra
 
 ```text
+notebooks/           Điểm chạy E1, E2, E3, A1 và A2 trong Jupyter
 src/                 Mã Python: common, E1, E2, E3, A1, A2
 configs/             Protocol và cấu hình thí nghiệm
 reports/exercises/   PDF, LaTeX, hình và evidence E1–E3
@@ -101,7 +111,7 @@ scripts/             Lệnh train, export, build và kiểm tra
 tests/              Unit và protocol tests
 docs/               Quy trình, yêu cầu và provenance
 data/               Dữ liệu cục bộ (không đưa vào Git)
-runs/               exercises/, assignment1/ và assignment2/ (không đưa vào Git)
+runs/               Kết quả notebook và các lượt trước (không đưa vào Git)
 artifacts/          Log và trạng thái vận hành (không đưa vào Git)
 build/site/         Bản build Pages (không đưa vào Git)
 ```

@@ -1,85 +1,44 @@
 \documentclass[12pt,a4paper]{report}
-\usepackage{fontspec}
-\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
-\IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Liberation Sans}}
-\setmonofont[Scale=0.84]{DejaVu Sans Mono}
-\usepackage[vietnamese]{babel}
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage{amsmath,amssymb,mathtools,bm}
-\usepackage{booktabs,tabularx,array,longtable}
-\usepackage{graphicx,float}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr,setspace,titlesec,caption,microtype,needspace}
-\usepackage{enumitem}
-\setstretch{1.15}
-\setlength{\parskip}{0.3em}
-\setlength{\parindent}{0pt}
-\setlength{\headheight}{16pt}
-\setcounter{tocdepth}{1}
-\setcounter{secnumdepth}{2}
-\captionsetup{font=small,labelfont=bf}
-\numberwithin{equation}{chapter}
-\titleformat{\chapter}[display]{\normalfont\bfseries}{\filleft\Large Chương \thechapter}{0.3em}{\filright\huge}[\vspace{0.4em}\titlerule]
-\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\small CO5085 · Bài tập A1}
-\rhead{\small Huỳnh Thành Đạt · 2570161}
-\cfoot{\thepage}
-\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5085 · Bài tập A1}\rhead{\small Huỳnh Thành Đạt · 2570161}\cfoot{\thepage}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
-\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\newcommand{\resultfigure}[3]{\IfFileExists{generated/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}{}}
+\input{../course-report.tex}
+\CourseReportHeader{CO5085 · A1}
+\newcommand{\resultfigure}[3]{\IfFileExists{notebook-evidence/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{notebook-evidence/figures/#1.png}\caption{#2}\end{figure}}{}}
 \hypersetup{pdftitle={CO5085 - Bao cao A1},pdfauthor={Huynh Thanh Dat - 2570161}}
-\emergencystretch=2em
+
 \begin{document}
-\hypersetup{pageanchor=false}
-\begin{titlepage}
-\centering
-{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
-{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
-\vspace{1.2cm}
-\includegraphics[width=3cm]{assets/hcmut-logo.png}\par
-\vspace{0.8cm}
-{\large\bfseries HỌC SÂU VÀ ỨNG DỤNG\par}
-{\large\bfseries TRONG THỊ GIÁC MÁY TÍNH\par}
-{\large Mã môn học: CO5085\par}
-\vspace{0.9cm}
-\rule{\textwidth}{0.6pt}\par\vspace{0.35cm}
-{\Huge\bfseries BÁO CÁO BÀI TẬP A1\par}
-\vspace{0.45cm}
-{\Large So sánh CNN và Transformer trên CIFAR-100\par}
-{\Large ResNet18 và Swin-T\par}
-\vspace{0.35cm}\rule{\textwidth}{0.6pt}\par
-\vspace{0.7cm}
-{\large Học kỳ 261 · Năm học 2026–2027\par}
-\vspace{0.7cm}
-\begin{tabular}{@{}ll@{}}
-Giảng viên: & Lê Thành Sách\\
-& Nguyễn Quốc Minh\\[0.5em]
-Sinh viên: & Huỳnh Thành Đạt\\
-Mã số sinh viên: & 2570161\\
-Hình thức: & Cá nhân
-\end{tabular}
-\vfill
-{\small Thành phố Hồ Chí Minh, tháng 10 năm 2026\par}
-\end{titlepage}
-\hypersetup{pageanchor=true}
-\pagenumbering{roman}
-{\setstretch{1.0}\small\tableofcontents}
-\clearpage
-\pagenumbering{arabic}
+\CourseCover{assets/hcmut-logo.png}
+  {BÁO CÁO BÀI TẬP LỚN A1}
+  {CO5085 · Học sâu và ứng dụng trong thị giác máy tính}
+  {So sánh ResNet18 và Swin-T trên CIFAR-100}
+  {Sinh viên}
+  {Huỳnh Thành Đạt & 2570161\\[0.5em]
+   Giảng viên & Lê Thành Sách\\
+              & Nguyễn Quốc Minh}
+  {tháng 11 năm 2026}
+
+\CourseAbstract{
+Thực nghiệm so sánh ResNet18 và Swin-T trên CIFAR-100 để khảo sát ảnh hưởng của tiền huấn luyện và số tầng được cập nhật. Thiết lập 20 epoch gồm tám cấu hình với ba hạt giống. Mỗi kiến trúc được huấn luyện từ đầu và thử ba chế độ với trọng số ImageNet, gồm chỉ học bộ phân loại, tinh chỉnh một phần và tinh chỉnh toàn bộ.
+
+Trong thiết lập 20 epoch, Swin-T tinh chỉnh toàn bộ đạt độ chính xác cao hơn ResNet18 và cần nhiều thời gian, bộ nhớ hơn. Hai bản Swin-T chạy dưới cùng lịch 40 epoch đạt lần lượt 60,30\% khi khởi tạo ngẫu nhiên và 86,39\% khi dùng trọng số ImageNet. Độ chính xác của bản ngẫu nhiên tăng rõ so với cấu hình 20 epoch, trong đó quá trình học dừng gần mức đoán ngẫu nhiên ở một số lượt.
+}
+
+\CourseOverview{
+Bài toán & Phân loại 100 lớp ảnh CIFAR-100.\\
+Kiến trúc & ResNet18 và Swin-T. Các bản tiền huấn luyện dùng trọng số ImageNet.\\
+Đối chứng & Huấn luyện từ đầu, chỉ học đầu ra, tinh chỉnh một phần và tinh chỉnh toàn bộ.\\
+Phép đo & Độ chính xác, macro-F1, thời gian và bộ nhớ trong hai thiết lập với tổng cộng 30 lượt.\\
+Kết quả chính & Swin-T từ đầu đạt 60,30\% trong lịch 40 epoch. Bản ImageNet cùng lịch đạt 86,39\%.\\
+Giới hạn & Cách chia có một số ảnh trùng pixel. Phép đối chứng 40 epoch dành riêng cho Swin-T.\\
+}
+
+\CourseContents
 
 \chapter{Bài toán và dữ liệu}
 \section{Mục tiêu và phạm vi}
 A1 so sánh CNN và Transformer trên CIFAR-100, tập trung vào ảnh hưởng của
 khởi tạo pretrained và mức độ đóng băng backbone. Hai kiến trúc được chọn là
-ResNet18 và Swin-T của torchvision. Mỗi kiến trúc có bốn chế độ huấn luyện,
-chạy với ba seed 42, 43 và 44, tổng cộng 24 lượt chạy.
+ResNet18 và Swin-T của torchvision. Thí nghiệm chính gồm 24 lượt, với bốn chế độ
+huấn luyện cho mỗi kiến trúc và ba hạt giống 42, 43, 44. Thí nghiệm bổ sung
+khảo sát riêng cách khởi tạo Swin-T dưới cùng lịch huấn luyện 40 epoch.
 
 Các so sánh chính gồm huấn luyện từ đầu với pretrained, và head-only với
 partial/full fine-tuning. Accuracy, macro-F1, thời gian và bộ nhớ được dùng
@@ -96,23 +55,26 @@ Nguồn chính là trang CIFAR của Toronto, của Alex Krizhevsky, Vinod Nair 
 Geoffrey Hinton. Trang này không nêu license tường minh; thẻ dataset chính
 thức \code{uoft-cs/cifar100} trên Hugging Face ghi \emph{license: unknown}
 \cite{cifar,hf}. Vì vậy, tình trạng license của dữ liệu được ghi là chưa rõ.
-Ảnh gốc được tải từ Toronto để thực hiện thí nghiệm và lưu ngoài repository.
+Bản lưu CIFAR-100 dùng cho thực nghiệm được đối chiếu mã băm với bản gốc của Toronto. Dữ liệu ảnh được lưu riêng.
 
-\section{Split và tiền xử lý}
-Từ 50.000 ảnh train gốc, shuffle indices riêng từng lớp bằng NumPy
-\code{default_rng(2026)}. Lấy 50 ảnh/lớp làm validation, 450 ảnh/lớp làm train:
-45.000 train và 5.000 validation. Indices được sắp tăng sau khi chọn và lưu
-cùng hash. Official test 10.000 ảnh nằm riêng, không dùng cập nhật tham số
-hoặc chọn checkpoint. Train seed 42/43/44 không thay split seed 2026.
+\section{Phân bố dữ liệu và cách chia tập}
+Trong 50.000 ảnh phát triển, chỉ số được xáo theo từng lớp bằng hạt giống
+2026. Mỗi lớp đóng góp 450 ảnh cho tập huấn luyện và 50 ảnh cho tập xác thực.
+Tập kiểm tra chính thức gồm 100 ảnh mỗi lớp. Ba tập lần lượt có 45.000,
+5.000 và 10.000 ảnh, nên sai khác về số ảnh giữa các lớp không chi phối
+độ chính xác chung. Trung bình RGB của tập huấn luyện trên thang $[0,1]$
+là $(0{,}507,0{,}487,0{,}441)$. Phép đối chiếu theo pixel phát hiện một số
+ảnh lặp, được phân tích riêng ở phần giới hạn.
 
-Train dùng RandomCrop $32\times32$ với padding 4, horizontal flip xác suất 0,5,
-sau đó bilinear resize $96\times96$ có antialias. Val/test chỉ resize, không
-crop ngẫu nhiên hoặc flip. Cả hai họ và mọi chế độ dùng ImageNet mean
-$(0{,}485,0{,}456,0{,}406)$, std $(0{,}229,0{,}224,0{,}225)$ sau ToTensor.
-Không dùng trực tiếp recipe \code{weights.transforms()} của pretrained.
-
-Augmentation dùng seed theo train seed, epoch và chỉ số ảnh để giữ phép
-biến đổi nhất quán khi resume.
+\section{Tiền xử lý và tải dữ liệu}
+Ảnh huấn luyện được đệm bốn pixel, cắt ngẫu nhiên về $32\times32$ và lật
+ngang với xác suất 0,5. Sau đó ảnh được nội suy song tuyến tính lên
+$96\times96$. Tập xác thực và tập kiểm tra chỉ dùng bước nội suy.
+Cả hai kiến trúc chuẩn hóa ảnh với trung bình ImageNet
+$(0{,}485,0{,}456,0{,}406)$ và độ lệch chuẩn $(0{,}229,0{,}224,0{,}225)$.
+DataLoader xáo thứ tự ảnh huấn luyện. Phép biến đổi của từng ảnh được
+xác định theo hạt giống, epoch và chỉ số ảnh, để một lượt tiếp tục từ
+checkpoint nhận lại đúng chuỗi biến đổi.
 
 \chapter{Kiến trúc và chế độ huấn luyện}
 \section{ResNet18: đối chứng CNN}
@@ -171,8 +133,8 @@ ResNet18 và Swin-T khác nhau về kiến trúc, capacity và recipe pretrained
 các kết quả phản ánh tổng thể những khác biệt này trong cùng thiết lập.
 
 \chapter{Thiết lập thực nghiệm và phép đo}
-\section{Thiết lập huấn luyện}
-Mỗi lượt huấn luyện có 20 epoch, batch 128 (giữ batch cuối), vòng lặp huấn luyện trực tiếp,
+\section{Thiết lập 20 epoch}
+Mỗi lượt của thí nghiệm chính có 20 epoch, batch 128 (giữ batch cuối), vòng lặp huấn luyện trực tiếp,
 AdamW với weight decay $10^{-4}$, $\beta=(0{,}9,0{,}999)$, epsilon $10^{-8}$.
 Learning rate ban đầu là $10^{-3}$ cho scratch/head và $10^{-4}$ cho
 pretrained partial/full. Cosine scheduler bước một lần sau epoch:
@@ -187,12 +149,31 @@ với $e=0$ trước epoch đầu. Loss cross-entropy không label smoothing:
 Clip global gradient norm ở 1 trước optimizer.step. BF16 autocast áp dụng
 cho tất cả chế độ; tham số và Adam moments giữ FP32, không GradScaler,
 TF32 tắt và không dùng compile. Các phép đo được thiết lập trên RTX 5090 với
-8 workers và 4 CPU threads.
+tám worker tải dữ liệu và bốn luồng CPU.
 
 Ngân sách 20 epoch được giữ cố định giữa các chế độ. Learning rate của
 head/scratch và partial/full được đặt khác nhau để phù hợp với mức độ cập
 nhật backbone. Kết quả vì vậy được phân tích theo từng thiết lập đầy đủ;
 mức hội tụ còn được đối chiếu qua đường cong train/validation.
+
+\section{Thiết lập 40 epoch cho Swin-T}
+
+Trong lịch 20 epoch, hai lượt Swin-T khởi tạo ngẫu nhiên có độ chính xác xác thực
+1\% ở epoch cuối và cross-entropy huấn luyện gần $\ln(100)$. Vì sai số cao
+ngay trên tập huấn luyện, điểm thấp cho thấy quá trình tối ưu chưa học được
+biểu diễn phân lớp trong thiết lập đó. So sánh trực tiếp với bản ImageNet
+trong điều kiện này sẽ phóng đại chênh lệch giữa hai cách khởi tạo.
+
+Thí nghiệm bổ sung giữ kiến trúc, cách chia tập, tiền xử lý, batch 128 và
+ba hạt giống. Hai bản cập nhật toàn bộ tham số và chỉ khác nguồn trọng số
+backbone. Cả hai dùng AdamW với hệ số suy giảm trọng số $10^{-2}$, tốc độ học
+tăng tuyến tính từ $2\times10^{-5}$ đến $2\times10^{-4}$ qua năm epoch
+làm nóng, rồi giảm theo cosine đến cuối lịch 40 epoch. Lịch tăng dần
+và giảm cosine dựa trên cách huấn luyện Swin trong bài báo gốc \cite{swin},
+với ngân sách và tốc độ học điều chỉnh cho CIFAR-100. Thay đổi đồng thời
+lịch, ngân sách và hệ số suy giảm trọng số giúp kiểm tra cấu hình có học
+ổn định hơn hay không. Phép so sánh giữa hai lịch không tách riêng đóng góp
+của từng thay đổi.
 
 \section{Chọn checkpoint và mở test}
 Best chọn bằng val accuracy lớn nhất; hòa accuracy thì lấy CE nhỏ nhất,
@@ -220,33 +201,18 @@ Metadata lưu GPU, torch/torchvision, CUDA/cuDNN, workers, CPU threads và
 chế độ deterministic. Các phép đo thời gian của cùng cấu hình được gộp khi
 những thông số môi trường này thống nhất.
 
-\section{Checkpoint và thông tin tái lập}
-Run lưu \code{last.pt} với model, optimizer, scheduler, RNG Python/NumPy/
-PyTorch/CUDA, loader generators và history; \code{best.pt} chỉ lưu model và
-selection. Không giữ best optimizer hay checkpoint mỗi epoch. Atomic writes
-và khóa run bảo vệ các tệp kết quả. Resume từ epoch hoàn tất gần nhất, không giữa
-batch; best write bị ngắt có thể khôi phục từ last khi last là best epoch.
+\section{Thông tin tái lập}
+Mỗi lượt lưu trạng thái huấn luyện ở cuối epoch để có thể tiếp tục từ mốc hoàn tất gần nhất. Checkpoint có kết quả xác thực tốt nhất giữ trọng số và chỉ số dùng để chọn mô hình. Dữ liệu, cách chia tập, mã nguồn và môi trường thực nghiệm được ghi nhận cùng từng lượt. Sai khác phần cứng hoặc thư viện có thể ảnh hưởng khả năng tái lập từng bit.
 
-Config/source/data/split/environment hashes bảo vệ resume và test. Frozen
-parameters/buffers được fingerprint kiểm tra sau epoch. Git commit/dirty
-được ghi riêng để đối chiếu phiên bản mã nguồn. Checkpoint được lưu ngoài
-Git; JSON/CSV và checksums được giữ trong generated/evidence. Sai khác
-GPU hoặc kernel có thể ảnh hưởng khả năng tái lập từng bit.
+\href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A1.ipynb}{Notebook A1}
+trình bày từ khảo sát dữ liệu đến huấn luyện và đánh giá. Các tệp cấu hình và kết quả theo hạt giống
+cho phép đối chiếu bảng với checkpoint đã chọn.
 
-\section{Mã nguồn và kiểm thử}
-Mã A1 nằm trong thư mục \code{src/A1/}, cấu hình ở \code{configs/a1_experiments.json}.
-Thí nghiệm được chạy bằng \code{A1.run_suite} trên CUDA với 8 workers;
-\code{--resume} khôi phục lượt chạy bị gián đoạn. \code{A1.export_report}
-tổng hợp bảng và hình; \code{scripts.build_report} biên dịch LaTeX thành PDF.
-Các lệnh đầy đủ được ghi trong \code{src/A1/README.md}.
-
-Các kiểm thử số học và protocol không tải dữ liệu hoặc trọng số pretrained. Phạm vi gồm split theo chỉ số, accuracy/F1, đóng băng tham số và buffers, augmentation theo epoch/worker, khôi phục checkpoint/RNG và kiểm tra signature.
-
-\chapter{Kết quả thực nghiệm và thảo luận}
+\chapter{Kết quả trong thiết lập 20 epoch}
 \section{So sánh các chế độ huấn luyện}
 \begin{table}[htbp]\centering\small
 \setlength{\tabcolsep}{5pt}
-\input{generated/comparison_table.tex}
+\input{notebook-evidence/comparison_table.tex}
 \caption{Accuracy và macro-F1 của tám cấu hình, trung bình và SD mẫu qua ba seed. Accuracy theo phần trăm, F1 theo thang 0--1.}
 \end{table}
 Kết quả được tổng hợp bằng trung bình và độ lệch chuẩn mẫu qua các seed.
@@ -255,14 +221,12 @@ Danh sách lượt chạy và checkpoint tương ứng được lưu trong manif
 \section{Thời gian, bộ nhớ và số tham số}
 \begin{table}[htbp]\centering\small
 \setlength{\tabcolsep}{4pt}
-\input{generated/cost_table.tex}
-\caption{Tổng tham số và tham số được học theo triệu (M); thời gian train đủ 20 epoch; peak allocated memory trung bình theo MiB. Phạm vi phép đo ở Mục 3.3.}
+\input{notebook-evidence/cost_table.tex}
+\caption{Tổng tham số và tham số được học theo triệu (M), thời gian huấn luyện đủ 20 epoch và bộ nhớ cấp phát cực đại ở hạt giống 42 trên cùng máy.}
 \end{table}
 
 \section{Thảo luận kết quả}
-\input{generated/analysis.tex}
-
-Phép kiểm tra hiệu chuẩn từ các dự đoán đã lưu chia điểm tin cậy của lớp được chọn thành 15 khoảng đều. ECE là chênh lệch tuyệt đối giữa độ chính xác và điểm tin cậy trung bình trong từng khoảng, lấy trung bình theo số ảnh. Qua ba hạt giống, các bản tinh chỉnh toàn bộ có ECE 8,21 điểm phần trăm với ResNet18 và 7,96 với Swin-T. Với Swin-T, độ tin cậy trung bình 94,58\% vượt độ chính xác 86,63\%. Phép đo này mô tả các checkpoint gốc trên tập kiểm tra chính thức và không thay đổi quy tắc chọn mô hình.
+\input{notebook-evidence/analysis.tex}
 
 \section{Đường cong và lỗi phân loại}
 Các hình dùng seed 42 đã định trước, không chọn seed theo kết quả test.
@@ -277,15 +241,33 @@ trong các tệp CSV kèm báo cáo.
 \resultfigure{resnet18_full_errors_test}{Các dự đoán sai có confidence cao của ResNet18 full ở seed 42, hiển thị ảnh gốc $32\times32$.}{0.95}
 \resultfigure{swin_t_full_errors_test}{Các dự đoán sai có confidence cao của Swin-T full ở seed 42.}{0.95}
 
+\chapter{Kết quả đối chứng khởi tạo Swin-T}
+\begin{table}[htbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{swin-followup/comparison_table.tex}
+\caption{Swin-T dưới cùng lịch 40 epoch, trung bình và độ lệch chuẩn mẫu qua ba hạt giống.}
+\label{tab:swin-followup}
+\end{table}
+
+\input{swin-followup/discussion.tex}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{swin-followup/figures/swin_t_scratch_curves.png}
+\caption{Đường cong học của Swin-T khởi tạo ngẫu nhiên trong lịch 40 epoch, hạt giống 42.}
+\end{figure}
+
 \chapter{Kết luận và giới hạn}
 \section{Kết luận}
-\input{generated/conclusion.tex}
+Trong thiết lập 20 epoch, tinh chỉnh khối cuối hoặc toàn bộ cho độ chính xác cao hơn chỉ học bộ phân loại ở cả ResNet18 và Swin-T. Khi tinh chỉnh toàn bộ, Swin-T đạt độ chính xác cao hơn ResNet18 với chi phí huấn luyện và bộ nhớ lớn hơn. Đối chứng ở Bảng~\ref{tab:swin-followup} cho thấy cấu hình Swin-T khởi tạo ngẫu nhiên học được khi dùng lịch 40 epoch. Khoảng cách với bản ImageNet cần được đọc trong cùng lịch và trên cùng cách chia dữ liệu.
 
 \section{Giới hạn}
 Ảnh gốc $32\times32$ và đầu vào $96\times96$ khác với kích thước phổ biến
-$224\times224$ của pretrained. Thực nghiệm chỉ khảo sát CIFAR-100, hai kiến
-trúc và ngân sách 20 epoch; đặc biệt, scratch có thể tiếp tục cải thiện nếu
-được huấn luyện lâu hơn. Hai họ còn khác capacity và recipe ImageNet.
+$224\times224$ của các bản tiền huấn luyện. Thực nghiệm khảo sát hai kiến
+trúc trên CIFAR-100. Đối chứng bổ sung dành riêng cho Swin-T, nên không dùng để
+xếp hạng hai kiến trúc dưới cùng lịch 40 epoch. Hai họ cũng khác số tham số
+và quá trình tiền huấn luyện ImageNet.
 Ba seed mô tả biến thiên giữa các lượt khởi tạo, với cùng phần cứng và
 thiết lập workers. Tình trạng license của dữ liệu vẫn là chưa rõ.
 
@@ -301,8 +283,8 @@ Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.co
 \bibitem{assignment} Lê Thành Sách, Nguyễn Quốc Minh. \emph{Bài tập lớn A1: CNN vs Transformer trên tập ảnh lớn}. CO5085, học kỳ 261.
 \bibitem{cifar} A. Krizhevsky. \emph{Learning Multiple Layers of Features from Tiny Images}. 2009. Trang dataset: \url{https://www.cs.toronto.edu/~kriz/cifar.html}.
 \bibitem{hf} uoft-cs. \emph{CIFAR100 dataset card}; license: unknown. \url{https://huggingface.co/datasets/uoft-cs/cifar100}.
-\bibitem{resnet} K. He và cộng sự. \emph{Deep Residual Learning for Image Recognition}. CVPR2016. \url{https://arxiv.org/abs/1512.03385}.
-\bibitem{swin} Z. Liu và cộng sự. \emph{Swin Transformer: Hierarchical Vision Transformer using Shifted Windows}. ICCV2021. \url{https://arxiv.org/abs/2103.14030}.
+\bibitem{resnet} K. He và cộng sự. \emph{Deep Residual Learning for Image Recognition}. CVPR 2016. \url{https://arxiv.org/abs/1512.03385}.
+\bibitem{swin} Z. Liu và cộng sự. \emph{Swin Transformer: Hierarchical Vision Transformer using Shifted Windows}. ICCV 2021. \url{https://arxiv.org/abs/2103.14030}.
 \bibitem{torchvision} Torchvision. ResNet18 và Swin-T model API; sử dụng weight enum IMAGENET1K\_V1. \url{https://docs.pytorch.org/vision/stable/models.html}.
 \end{thebibliography}
 \end{document}

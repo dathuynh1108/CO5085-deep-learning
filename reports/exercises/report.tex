@@ -1,90 +1,43 @@
 \documentclass[12pt,a4paper]{report}
-\usepackage{fontspec}
-\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\setmainfont{Liberation Serif}}
-\IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Liberation Sans}}
-\setmonofont[Scale=0.84]{DejaVu Sans Mono}
-\usepackage[vietnamese]{babel}
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage{amsmath,amssymb,mathtools,bm}
-\usepackage{booktabs,tabularx,array,longtable}
-\usepackage{graphicx,float}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr,setspace,titlesec,caption,microtype,needspace}
-\usepackage{enumitem}
-\setstretch{1.15}
-\setlength{\parskip}{0.3em}
-\setlength{\parindent}{0pt}
-\setlength{\headheight}{16pt}
-\setcounter{tocdepth}{1}
-\setcounter{secnumdepth}{2}
-\captionsetup{font=small,labelfont=bf}
-\numberwithin{equation}{chapter}
-\titleformat{\chapter}[display]{\normalfont\bfseries}{\filleft\Large Chương \thechapter}{0.3em}{\filright\huge}[\vspace{0.4em}\titlerule]
-\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\small CO5085 · Bài tập E1–E3}
-\rhead{\small Huỳnh Thành Đạt · 2570161}
-\cfoot{\thepage}
-\fancypagestyle{plain}{\fancyhf{}\lhead{\small CO5085 · Bài tập E1–E3}\rhead{\small Huỳnh Thành Đạt · 2570161}\cfoot{\thepage}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
-\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\newcommand{\resultfigure}[3]{\IfFileExists{generated/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{generated/figures/#1.png}\caption{#2}\end{figure}}{}}
-\newcommand{\tablenote}{\par\smallskip{\small Val/Test: accuracy (\%). Tham số đếm từ kiến trúc; $\pm$: SD qua ba seed. Các lượt chạy được liệt kê ở Chương 6; cách đo thời gian ở Chương 1.}\par}
+\input{../course-report.tex}
+\CourseReportHeader{CO5085 · E1–E3}
+\newcommand{\resultfigure}[3]{\IfFileExists{notebook-evidence/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{notebook-evidence/figures/#1.png}\caption{#2}\end{figure}}{}}
+\newcommand{\tablenote}{\par\smallskip{\small Val/Test: accuracy (\%). Tham số đếm từ kiến trúc; $\pm$: SD qua ba seed. Các lượt chạy được liệt kê ở Chương~\ref{chap:ta-lap}; cách đo thời gian ở Chương 1.}\par}
 \hypersetup{pdftitle={CO5085 - Bao cao E1-E3},pdfauthor={Huynh Thanh Dat - 2570161}}
-\emergencystretch=2em
-\begin{document}
-\hypersetup{pageanchor=false}
-\begin{titlepage}
-\centering
-{\large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH\par}
-{\large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA\par}
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
-\vspace{1.2cm}
-\includegraphics[width=3cm]{assets/hcmut-logo.png}
-\vspace{0.8cm}
 
-{\large\bfseries HỌC SÂU VÀ ỨNG DỤNG\par}
-{\large\bfseries TRONG THỊ GIÁC MÁY TÍNH\par}
-{\large Mã môn học: CO5085\par}
-\vspace{0.9cm}
-\rule{\textwidth}{0.6pt}\par
-\vspace{0.35cm}
-{\Huge\bfseries BÁO CÁO BÀI TẬP E1–E3\par}
-\vspace{0.45cm}
-{\Large Phân loại ảnh với CNN, attention\par}
-{\Large và mạng hồi tiếp\par}
-\vspace{0.35cm}
-\rule{\textwidth}{0.6pt}\par
-\vspace{0.7cm}
-{\large Học kỳ 261 · Năm học 2026–2027\par}
-\vspace{0.7cm}
-\begin{tabular}{@{}ll@{}}
-Giảng viên: & Lê Thành Sách\\
-& Nguyễn Quốc Minh\\[0.5em]
-Sinh viên: & Huỳnh Thành Đạt\\
-Mã số sinh viên: & 2570161\\
-Hình thức: & Cá nhân
-\end{tabular}
-\vfill
-{\normalsize TP. Hồ Chí Minh, tháng 10 năm 2026\par}
-\end{titlepage}
-\hypersetup{pageanchor=true}
-\pagenumbering{roman}
-{\setstretch{1.0}\small\tableofcontents}
-\clearpage
-\pagenumbering{arabic}
+\begin{document}
+\CourseCover{assets/hcmut-logo.png}
+  {BÁO CÁO BÀI TẬP E1–E3}
+  {CO5085 · Học sâu và ứng dụng trong thị giác máy tính}
+  {Phân loại ảnh với CNN, attention và mạng hồi tiếp}
+  {Sinh viên}
+  {Huỳnh Thành Đạt & 2570161\\[0.5em]
+   Giảng viên & Lê Thành Sách\\
+              & Nguyễn Quốc Minh}
+  {tháng 11 năm 2026}
+
+\CourseAbstract{
+Ba bài tập khảo sát cách biểu diễn ảnh trong bài toán phân loại Fashion-MNIST. E1 so sánh bộ phân loại softmax, MLP và CNN. E2 đối chiếu multi-head self-attention tự viết với mô-đun PyTorch trên ba cách tạo token. E3 so sánh LSTM và GRU khi ảnh được đọc theo hàng hoặc theo ô, đồng thời khảo sát độ nhạy với thứ tự quét.
+
+Mỗi cấu hình được huấn luyện từ đầu với ba hạt giống. CNN đạt độ chính xác kiểm tra trung bình cao nhất, 92,62\%. Trong nhóm attention, bản PyTorch dùng CNN-stem đạt 88,59\%. GRU đọc ảnh theo hàng đạt 90,07\%. Phân tích gradient và phép thay đổi thứ tự quét mô tả độ nhạy của mô hình đối với biểu diễn chuỗi.
+}
+
+\CourseOverview{
+Dữ liệu & Fashion-MNIST, 10 lớp. Ba bài dùng cùng các tập huấn luyện, xác thực và kiểm tra.\\
+E1 & So sánh softmax, MLP và CNN về độ chính xác, số tham số và lỗi phân loại.\\
+E2 & Đối chiếu hai hiện thực attention trên token theo hàng, theo ô và theo đặc trưng CNN-stem.\\
+E3 & So sánh LSTM, GRU với MLP và CNN. Khảo sát độ nhạy với thứ tự quét và gradient theo bước.\\
+Phép đo & 13 cấu hình, ba hạt giống mỗi cấu hình. Checkpoint được chọn trên tập xác thực.\\
+Kết quả chính & CNN đạt 92,62\% độ chính xác kiểm tra trung bình. GRU đọc theo hàng đạt 90,07\% trong E3.\\
+}
+
+\CourseContents
 
 \chapter{Dữ liệu và quy trình chung}
 \section{Phạm vi bài làm}
 Báo cáo so sánh các mô hình phân loại ảnh trên cùng tập Fashion-MNIST. E1 gồm softmax, MLP và CNN. E2 trình bày hiện thực multi-head self-attention (MSA), đối chiếu với thư viện và khảo sát ba cách tạo token. E3 biểu diễn ảnh thành chuỗi để phân loại bằng LSTM/GRU, với MLP và CNN của E1 làm đối chứng. Chỉ số bước của mạng hồi tiếp tương ứng với thứ tự quét các vùng trên ảnh.
 
-Phần mở rộng khảo sát bốn thay đổi trên LSTM: khởi tạo ma trận hồi quy trực giao, regularization trực giao mềm, khởi tạo bias cổng theo độ dài chuỗi và mean pooling. Mỗi thành phần được đánh giá riêng, sau đó kết hợp và thực hiện ablation. Tất cả mô hình trong E1–E3 đều được huấn luyện từ đầu.
-
-Thực nghiệm gồm 20 cấu hình, mỗi cấu hình chạy với ba seed 42, 43 và 44, tương ứng 60 lượt huấn luyện. Các mô hình dùng chung cách chia dữ liệu và quy tắc chọn checkpoint để so sánh kết quả.
+Báo cáo tổng hợp 13 cấu hình, gồm ba cấu hình E1, sáu cấu hình E2 và bốn cấu hình hồi tiếp E3. Mỗi cấu hình được huấn luyện từ đầu với ba hạt giống 42, 43 và 44, tương ứng 39 lượt. Các mô hình dùng chung cách chia dữ liệu và quy tắc chọn checkpoint.
 
 \section{Tập dữ liệu và cách chia}
 Fashion-MNIST gồm ảnh thời trang mức xám $28\times28$, 10 lớp, với 60.000 ảnh train và 10.000 ảnh test chính thức \cite{fashion}. Kích thước ảnh nhỏ phù hợp để khảo sát cả CNN, attention và mạng hồi tiếp trên cùng đầu vào.
@@ -142,15 +95,15 @@ Hai phép pooling đưa ảnh $28\to14\to7$, vì vậy head CNN nhận $64\times
 
 \section{Kết quả và phân tích lỗi}
 \begin{table}[htbp]\centering\small
-\input{generated/e1_table.tex}
+\input{notebook-evidence/e1_table.tex}
 \caption{Kết quả E1, tổng hợp theo các seed được công bố.}
 \end{table}
 \tablenote
 
 Train/validation CE được đối chiếu với accuracy để phân tích quá trình học. Confusion matrix và ảnh dự đoán sai bên dưới lấy từ CNN ở seed 42.
-\IfFileExists{generated/e1_analysis.tex}{\input{generated/e1_analysis.tex}}{}
+MLP tăng độ chính xác kiểm tra từ 84,51\% của softmax lên 89,88\%. CNN đạt 92,62\%, cao hơn MLP 2,74 điểm phần trăm. MLP bổ sung các lớp phi tuyến. CNN còn giữ cấu trúc hai chiều và khai thác lân cận bằng kernel dùng chung. Hai mô hình khác nhau cả về cấu trúc lẫn số tham số.
 
-Kiểm tra bổ sung dùng điểm tin cậy của lớp dự đoán trong các tệp đã lưu. ECE được tính bằng cách chia điểm tin cậy thành 15 khoảng đều, lấy chênh lệch tuyệt đối giữa độ chính xác và điểm tin cậy trung bình trong mỗi khoảng, rồi gộp theo số ảnh. ECE trung bình của softmax, MLP và CNN lần lượt là 0,96, 3,03 và 4,47 điểm phần trăm. CNN phân loại đúng nhiều nhất nhưng điểm tin cậy trung bình 97,13\% cao hơn độ chính xác 92,69\%. Kết quả trên cùng tập kiểm tra này tách hai thuộc tính: chọn đúng lớp và gán mức tin cậy phù hợp.
+Ở epoch cuối, cross-entropy của CNN là 0,0167 trên tập huấn luyện và 0,3017 trên tập xác thực. Khoảng cách này cho thấy mô hình khớp tập huấn luyện nhiều hơn. Trong ma trận nhầm lẫn của hạt giống 42, lỗi có tần suất cao nhất theo một chiều là Shirt bị gán thành T-shirt/top, gồm 92 ảnh.
 
 \resultfigure{e1_comparison_ce}{Validation CE của ba mô hình E1 ở seed 42.}{0.88}
 \resultfigure{e1_comparison_accuracy}{Validation accuracy của E1; seed dùng cho hình ghi trên biểu đồ.}{0.88}
@@ -192,7 +145,7 @@ trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Attention không 
 
 \section{So sánh attention và tokenization}
 \begin{table}[htbp]\centering\small
-\input{generated/e2_table.tex}
+\input{notebook-evidence/e2_table.tex}
 \caption{Sáu cấu hình E2. Manual và PyTorch của cùng tokenizer có cùng số tham số.}
 \end{table}
 \tablenote
@@ -200,14 +153,16 @@ trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Attention không 
 Manual và thư viện được so sánh ở từng tokenizer; ba tokenizer được so sánh khi giữ attention backend cố định. Chi phí phần score của attention tỉ lệ $N^2d$; số cặp token của patch gấp $49^2/28^2\approx3,06$ lần token hàng. Thời gian toàn mô hình còn gồm projection, FFN, stem và chi phí thực thi kernel.
 
 Các kết quả dưới đây được đo trên cùng split, với cùng thiết lập giữa hai backend của mỗi tokenizer.
-\IfFileExists{generated/e2_analysis.tex}{\input{generated/e2_analysis.tex}}{}
+Trên cùng cách lấy token, chênh lệch độ chính xác kiểm tra giữa bản PyTorch và bản tự viết lần lượt là $-0{,}06$, $+0{,}10$ và $+0{,}05$ điểm phần trăm cho token theo hàng, theo patch và theo đặc trưng CNN-stem. Các chênh lệch đều dưới 0,11 điểm phần trăm. Bản PyTorch có thời gian huấn luyện mỗi epoch ngắn hơn trong cả ba cặp.
+
+CNN-stem đạt 88,55\% với MSA tự viết và 88,59\% với MSA PyTorch, cao hơn token theo hàng và theo patch ở cùng hiện thực. Tầng tích chập đưa đặc trưng cục bộ vào chuỗi trước attention. Cách lấy token đồng thời thay đổi độ dài chuỗi, kích thước đặc trưng và số tham số, nên kết quả phản ánh cả cấu hình biểu diễn.
 
 \resultfigure{e2_comparison_ce}{Validation CE của sáu cấu hình E2 ở seed 42.}{0.9}
 \resultfigure{e2_comparison_accuracy}{Validation accuracy khi thay attention backend và tokenizer.}{0.9}
 
 \chapter{E3: LSTM/GRU trên chuỗi ảnh}
 \section{Biểu diễn ảnh và kiến trúc}
-Ảnh được biến thành chuỗi theo hai cách đã dùng trong E2, nhưng không qua embedding học được: hàng cho $T=28,D=28$; patch $4\times4$ cho $T=49,D=16$. Cả LSTM và GRU đều có một tầng, một chiều, hidden size $H=128$, trạng thái đầu bằng zero. Baseline lấy hidden state cuối, dropout 0,1 rồi Linear $128\to10$.
+Ảnh được biến thành chuỗi theo hai cách đã dùng trong E2, nhưng không qua embedding học được: hàng cho $T=28,D=28$; patch $4\times4$ cho $T=49,D=16$. Cả LSTM và GRU đều có một tầng, một chiều, hidden size $H=128$, trạng thái đầu bằng zero. Bộ phân loại lấy trạng thái ẩn cuối, áp dụng dropout 0,1 rồi chiếu tuyến tính $128\to10$.
 
 Quét hàng giữ các quan hệ ngang trong một token và để mạng hồi tiếp xử lý quan hệ giữa các hàng. Quét patch tạo nhiều bước hơn, mỗi bước mô tả một vùng nhỏ hơn. Vì vậy, so sánh này thay đổi đồng thời độ dài chuỗi và kích thước đầu vào tại mỗi bước.
 
@@ -233,129 +188,58 @@ PyTorch lưu hai vector bias cho mỗi tầng. Vì vậy, số tham số phần 
 
 \section{Kết quả và quan hệ không gian}
 \begin{table}[htbp]\centering\small
-\input{generated/e3_table.tex}
-\caption{E3 và hai baseline từ E1, trên cùng split.}
+\input{notebook-evidence/e3_table.tex}
+\caption{Kết quả E3 và hai mô hình đối chứng E1 trên cùng phân hoạch dữ liệu.}
 \end{table}
 \tablenote
 
 CNN khai thác lân cận hai chiều và chia sẻ kernel; LSTM/GRU tích lũy thông tin theo đường quét. Khi chuyển từ cuối một hàng patch sang đầu hàng kế tiếp, hai phần tử kề nhau trong chuỗi chưa chắc là hàng xóm gần nhất trên ảnh. Đường quét vì vậy giữ thứ tự một chiều và chỉ bảo toàn một phần quan hệ lân cận hai chiều.
 
-Ảnh hưởng của cách quét được khảo sát bằng cách đánh giá checkpoint trên cùng ảnh validation với thứ tự gốc, đảo ngược và một hoán vị cố định. Mô hình giữ nguyên trọng số trong ba phép đo. Gradient theo vị trí chuỗi được đo đồng thời để mô tả đường truyền loss.
-\IfFileExists{generated/e3_analysis.tex}{\input{generated/e3_analysis.tex}}{}
+Quét theo hàng tăng độ chính xác kiểm tra trung bình so với quét theo ô ở cả LSTM và GRU. Chênh lệch ghép theo hạt giống là $1{,}93\pm0{,}42$ điểm phần trăm với LSTM và $2{,}07\pm0{,}22$ điểm phần trăm với GRU. Trên cùng biểu diễn theo hàng, GRU cao hơn LSTM $0{,}49\pm0{,}21$ điểm phần trăm.
 
-\resultfigure{e3_comparison_ce}{Validation CE của các mạng hồi tiếp và baseline E1 ở cùng seed.}{0.9}
-\resultfigure{e3_comparison_accuracy}{So sánh accuracy của E3 với MLP/CNN.}{0.9}
+GRU theo hàng đạt 90,07\%, gần với MLP (89,88\%) và thấp hơn CNN (92,62\%). GRU theo hàng có 61.962 tham số, so với 235.146 của MLP và 421.738 của CNN. Hai cách quét thay đổi đồng thời số bước và kích thước của mỗi token, nên chênh lệch quan sát được phản ánh tác động kết hợp của chúng.
 
-\chapter{Mở rộng E3: Điều kiện truyền gradient}
-\section{Vấn đề và giả thuyết}
-Phần này khảo sát ảnh hưởng của khởi tạo, regularization và cách tổng hợp trạng thái lên LSTM. Chuỗi hàng và patch có độ dài lần lượt 28 và 49 bước, phù hợp để kiểm tra các thay đổi này trên bài toán ảnh nhỏ. Phân tích bắt đầu từ tích Jacobian của mạng hồi tiếp, sau đó đối chiếu với gradient và kết quả thực nghiệm.
+\resultfigure{e3_comparison_ce}{Cross-entropy xác thực của các mạng hồi tiếp và mô hình đối chứng E1 ở cùng seed.}{0.9}
+\resultfigure{e3_comparison_accuracy}{Độ chính xác xác thực của E3 và hai mô hình đối chứng MLP, CNN.}{0.9}
 
-Với trạng thái hồi quy tổng quát $s_t=F_\theta(s_{t-1},x_t)$ và $J_t=\partial s_t/\partial s_{t-1}$, đóng góp từ loss cuối chuỗi thỏa
-\begin{equation}
-\frac{\partial\ell_T}{\partial s_t}
-=J_{t+1}^{\top}J_{t+2}^{\top}\cdots J_T^{\top}
-\frac{\partial\ell_T}{\partial s_T},\qquad
-\norm{\frac{\partial\ell_T}{\partial s_t}}
-\leq\prod_{k=t+1}^{T}\norm{J_k}_2\,
-\norm{\frac{\partial\ell_T}{\partial s_T}}.
-\end{equation}
-Tích nhiều phép co có thể làm gradient nhỏ; tích nhiều phép khuếch đại có thể làm nó lớn. Cận theo norm là một cách phân tích, không mô tả chính xác mọi hướng gradient. Với LSTM, $s_t$ cần gồm cả $h_t,c_t$, không chỉ một biến hidden \cite{pascanu}.
+\clearpage
+\section{Độ nhạy với thứ tự quét}
+Phép đo dùng checkpoint LSTM đọc theo hàng của mỗi hạt giống và cùng 256 ảnh xác thực có chỉ số gốc nhỏ nhất. Ba lần đánh giá lần lượt dùng thứ tự gốc, đảo ngược chuỗi và một hoán vị cố định. Trọng số của mô hình giữ nguyên trong cả ba phép đo. Độ chính xác trung bình lần lượt là 89,71\%, 20,96\% và 44,53\%.
 
-\section{Khởi tạo và regularization trực giao}
-Với từng gate, ma trận hồi quy vuông $W_g\in\R^{H\times H}$ được khởi tạo trực giao ở các cấu hình tương ứng. Nếu $W_g^\top W_g=I$ thì $\norm{W_gv}_2=\norm{v}_2$: riêng phép biến đổi tuyến tính đó không làm thay đổi norm. Điều này không loại bỏ tác động của sigmoid, tanh, các gate và tích Jacobian toàn cell.
+Để khảo sát đường truyền gradient, phép khai triển dùng cùng trọng số với mô-đun hồi tiếp và giữ lại đạo hàm của các trạng thái trung gian. Cross-entropy được cộng theo mẫu để tránh hệ số chia theo kích thước batch. Chuẩn gradient được tính cho từng mẫu trước khi lấy trung bình. Hình dưới trình bày gradient theo trạng thái ẩn, trạng thái ô nhớ và token đầu vào của LSTM theo hàng ở seed 42.
 
-Tập các ma trận trực giao là trường hợp vuông của Stiefel manifold. Thay vì dùng optimizer có ràng buộc trên đa tạp, code dùng một penalty mềm trong không gian tham số thông thường:
-\begin{equation}
-\mathcal{R}_{orth}=\frac{1}{GH}\sum_{g=1}^{G}\norm{W_g^\top W_g-I}_F^2,
-\qquad \mathcal{L}=\mathcal{L}_{CE}+\lambda\mathcal{R}_{orth},
-\end{equation}
-trong đó $G=4$ cho LSTM, $H=128$ và $\lambda=10^{-3}$ ở các cấu hình có regularization. Penalty được tính riêng cho bốn ma trận gate $H\times H$, rồi lấy trung bình.
+\resultfigure{e3_lstm_rows_gradients}{Chuẩn gradient theo bước của LSTM đọc ảnh theo hàng trên tập xác thực ở seed 42.}{0.88}
 
-Đặt $A=W^\top W-I=A^\top$. Vi phân cho một gate là
-\begin{align}
-d\,\norm{A}_F^2
-&=2\operatorname{tr}(A\,dA)
- =2\operatorname{tr}\!\left[A(dW^\top W+W^\top dW)\right]\\
-&=4\operatorname{tr}\!\left[(WA)^\top dW\right],
-\end{align}
-do đó
-\begin{equation}
-\nabla_{W_g}\mathcal{R}_{orth}=\frac{4}{GH}W_g(W_g^\top W_g-I).
-\end{equation}
-Công thức được kiểm tra với autograd. Penalty tạo chi phí tính toán thêm và có thể làm giảm mức linh hoạt của nghiệm. AdamW vẫn có weight decay cố định trên mọi tham số, nên nó đồng thời kéo trọng số về zero; không được mô tả quá trình train như duy trì trực giao chính xác.
-
-Đây là penalty mềm trong không gian Euclid, không dùng diffusion maps, đồ thị dữ liệu hoặc optimizer manifold.
-
-\section{Bias cổng nhớ theo độ dài chuỗi}
-Ở cấu hình chrono, đặt $b_f=\log(T-1)$, $b_i=-\log(T-1)$; bias các gate khác bằng zero. Chỉ thay \code{bias_ih}; giữ \code{bias_hh=0} để tổng bias đúng giá trị dự định. Biến thể này dùng \emph{một timescale cố định}, thay cho cách lấy timescale ngẫu nhiên trong công trình chrono initialization gốc \cite{chrono}.
-
-Khi bỏ qua đóng góp từ input/hidden tại lúc khởi tạo,
-\begin{equation}
-f_t\approx\sigma(\log(T-1))=1-\frac1T,
-\qquad i_t\approx\frac1T.
-\end{equation}
-Giữ các gate cố định để chỉ xét đường trực tiếp $c_{t-1}\to c_t$, ta có
-\begin{equation}
-\left.\frac{\partial c_T}{\partial c_t}\right|_{\text{đường trực tiếp}}
-=\prod_{k=t+1}^{T}\operatorname{diag}(f_k).
-\end{equation}
-Nếu mỗi $f_k\approx1-1/T$ thì độ suy giảm trên khoảng $T$ bước gần $(1-1/T)^T\approx e^{-1}$, thay vì $2^{-T}$ khi $f_k\approx0,5$. Đây chỉ là xấp xỉ để giải thích khởi tạo. Đạo hàm tổng còn có các đường qua hidden và đạo hàm của gate; không thể đồng nhất nó với tích trên.
-
-Cổng quên gần 1 đi kèm cổng nhập nhỏ có thể khiến mô hình cập nhật thông tin mới chậm; bias lớn cũng có thể đưa sigmoid vào vùng bão hòa. Các bias tiếp tục được cập nhật trong quá trình huấn luyện; chrono được đánh giá như một cấu hình riêng.
-
-\section{Mean pooling và clipping}
-Baseline dự đoán từ $h_T$. Biến thể mean pooling dùng $\bar h=T^{-1}\sum_t h_t$ trước head. Bỏ qua dropout trong biểu thức minh họa, nếu $z=W_o\bar h+b$ và $y$ là vector one-hot thì đường gradient trực tiếp tới mỗi trạng thái là
-\begin{equation}
-\left.\frac{\partial\ell}{\partial h_t}\right|_{\text{head}}
-=\frac1T W_o^\top(p-y).
-\end{equation}
-Đạo hàm tổng còn gồm các đường hồi quy về sau. Lợi ích tiềm năng là một trạng thái sớm không chỉ phụ thuộc vào việc tín hiệu đi qua toàn bộ chuỗi để tới head. Đổi lại, trung bình có thể làm mờ vị trí và trộn vùng nền vào biểu diễn. Learned position không được thêm cho E3; mạng hồi tiếp tự phụ thuộc thứ tự quét.
-
-Clipping global norm được dùng cho tất cả baseline lẫn cải tiến:
-\begin{equation}
-g\leftarrow g\min\!\left(1,\frac{\tau}{\norm{g}_2}\right),\qquad \tau=1.
-\end{equation}
-Clipping giới hạn norm của gradient trước bước cập nhật, giúp kiểm soát exploding gradient. Cơ chế này không khuếch đại các gradient đang suy giảm \cite{pascanu}.
-
-\section{Ablation và cách kiểm tra}
-Các cấu hình dưới đây dùng LSTM theo hàng, giữ $H=128$, cách chia dữ liệu và ngân sách huấn luyện. ``Orth init'' thay khởi tạo. ``Orth reg'' thêm penalty vào bản orth init. ``Combined'' dùng trực giao ban đầu, penalty, chrono và mean pooling. Hai bản ``no reg'' và ``no mean'' bỏ riêng một thành phần từ combined; các thành phần khác giữ nguyên.
-
-\begin{table}[htbp]\centering\small
-\input{generated/improvement_table.tex}
-\caption{Baseline và bảy cấu hình mở rộng. Tất cả có cùng số tham số trainable.}
-\end{table}
-\tablenote
-
-Chênh lệch orth init--baseline khảo sát khởi tạo; orth reg--orth init khảo sát penalty. Chrono và mean pooling được so riêng với baseline. Hai ablation no reg và no mean đánh giá đóng góp của từng thành phần trong tổ hợp. Chênh lệch trung bình và độ lệch chuẩn được tính từ các kết quả ghép theo cùng seed.
-
-Phép đo unroll dùng trọng số của checkpoint native và công thức cell tương ứng, giữ gradient tại từng trạng thái trung gian. Loss dùng tổng theo batch để gradient từng mẫu không bị chia bởi batch size; sau đó lấy trung bình norm qua mẫu. Cách tính này cho phép khảo sát trực tiếp các trạng thái trong đồ thị BPTT.
-
-Trên cùng 256 ảnh validation theo quy tắc định trước, diagnostic ghi $\norm{\partial\ell/\partial h_t}$, $\norm{\partial\ell/\partial c_t}$, gradient theo input token, giá trị gate trung bình và singular values của từng $W_g$. Các norm mô tả đường truyền loss của checkpoint đã học. Gradient nhỏ ở pixel nền cần được đọc cùng accuracy, CE và vị trí không gian của ảnh.
-\IfFileExists{generated/improvement_analysis.tex}{\input{generated/improvement_analysis.tex}}{}
-
-\resultfigure{improvement_comparison_accuracy}{Validation accuracy của các thay đổi chính ở cùng seed.}{0.9}
-\resultfigure{e3_lstm_rows_gradients}{Gradient theo vị trí của LSTM baseline trên validation.}{0.88}
-\resultfigure{e3_lstm_rows_combined_gradients}{Gradient của tổ hợp cải tiến, cùng cách chọn validation subset.}{0.88}
+Mức giảm độ chính xác khi thay đổi thứ tự cho thấy checkpoint nhạy với cách quét đã học. Đảo và hoán vị tạo đầu vào khác phân bố huấn luyện. Do đó, mức giảm chỉ mô tả độ nhạy trong phép thử này. CNN và MLP xử lý trực tiếp lưới pixel hoặc vector cố định, nên đối chiếu với hai mô hình này dựa trên độ chính xác và số tham số. Chuỗi 28 hoặc 49 bước giới hạn phạm vi kết luận về phụ thuộc dài hạn.
 
 \chapter{Tái lập và giới hạn}
+\label{chap:ta-lap}
 \section{Mã nguồn và tệp kết quả}
-Repo tách mô hình thành \code{src/E1/}, \code{src/E2/}, \code{src/E3/}; phần dùng chung nằm trong \code{src/common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Hyperparameter được khai báo trong một file JSON gồm 20 preset.
+Quy trình thực nghiệm được trình bày trong \code{notebooks/E1.ipynb}, \code{notebooks/E2.ipynb} và \code{notebooks/E3.ipynb}. Các notebook sử dụng mã mô hình theo từng bài và vòng lặp PyTorch trong \code{src/common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Siêu tham số được khai báo trong \code{configs/experiments.json}.
 
 Checkpoint cuối epoch lưu model, AdamW, cosine scheduler, lịch sử và trạng thái RNG của Python, NumPy, PyTorch, CUDA, shuffle generator. Resume từ epoch hoàn tất gần nhất, không từ batch đang dở. Fingerprint kiểm tra code, config, seed, dữ liệu và normalization; môi trường torch/CUDA cũng được đối chiếu. Khóa thư mục ngăn hai tiến trình ghi cùng run. Cơ chế này không hứa khả năng tái lập bitwise giữa các phần cứng khác nhau.
 
 \code{scripts/export_report.py} tổng hợp kết quả thành bảng LaTeX, CSV/JSON và hình vẽ. Chương trình đối chiếu cấu hình, seed, split và checkpoint trước khi gộp các lượt chạy.
 
 \section{Cấu hình và các lượt chạy}
-Thực nghiệm hoàn tất 60 lượt huấn luyện và 60 lượt đánh giá test. Bảng dưới liệt kê các seed của từng cấu hình.
+Ba notebook đã thực thi 39 lượt huấn luyện và 39 lượt đánh giá trên tập kiểm tra với RTX 5090, PyTorch 2.10.0 và CUDA 13.0. Bảng và đường cong trong báo cáo lấy từ các lượt này. Bảng dưới mô tả phạm vi kết quả theo từng bài. Hai mô hình đối chứng E1 được dùng lại trong E3.
 
-{\small\input{generated/coverage.tex}}
+\begin{table}[htbp]\centering
+\begin{tabularx}{\textwidth}{@{}lXrr@{}}\toprule
+Bài & Cấu hình & Số cấu hình & Số lượt\\\midrule
+E1 & Softmax, MLP, CNN & 3 & 9\\
+E2 & Hai hiện thực MSA với ba cách tạo token & 6 & 18\\
+E3 & LSTM, GRU với hai cách biểu diễn ảnh & 4 & 12\\\bottomrule
+\end{tabularx}
+\caption{Phạm vi kết quả. Mỗi cấu hình được huấn luyện và đánh giá với các hạt giống 42, 43 và 44.}
+\end{table}
 
-Các kiểm thử bao gồm forward/gradient của MSA, thứ tự token, unroll LSTM/GRU, đạo hàm regularizer, bias chrono, split và khôi phục trạng thái khi resume. Môi trường chạy, log và checksum được ghi trong \code{docs/TRAINING_EXECUTION.md} cùng thư mục kết quả.
+Các kiểm thử bao gồm đầu ra và gradient của MSA, thứ tự token, phép khai triển LSTM/GRU, phân hoạch dữ liệu và khôi phục trạng thái huấn luyện. Môi trường chạy, log và checksum được ghi trong \code{docs/TRAINING_EXECUTION.md} cùng thư mục kết quả.
 
 Ba seed cho phép quan sát biến thiên giữa các lượt khởi tạo. Phạm vi so sánh giới hạn ở một tập dữ liệu, ngân sách 30 epoch và các siêu tham số đã chọn. Các chuỗi 28/49 bước cũng ngắn hơn nhiều so với những bài toán phụ thuộc dài hạn.
 
 \section{Kết luận}
-\IfFileExists{generated/conclusion.tex}{\input{generated/conclusion.tex}}{}
+CNN đạt độ chính xác kiểm tra trung bình cao nhất trong 13 cấu hình, 92,62\%. Trong E2, cả hai hiện thực MSA đạt độ chính xác cao nhất với token từ CNN-stem. Trong E3, cả LSTM và GRU đạt kết quả tốt hơn khi đọc ảnh theo hàng. GRU theo hàng đạt 90,07\% với số tham số thấp hơn MLP và CNN. Phép thay đổi thứ tự quét trên tập xác thực cho thấy LSTM theo hàng phụ thuộc vào cách sắp xếp token đã dùng khi huấn luyện.
 
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 
@@ -364,8 +248,6 @@ Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.co
 \bibitem{assignment} Lê Thành Sách, Nguyễn Quốc Minh. \emph{Bài tập E1–E3: Học sâu và ứng dụng trong thị giác máy tính, CO5085}. Đề học kỳ 261 (2026–2027).
 \bibitem{fashion} H. Xiao, K. Rasul, R. Vollgraf. \emph{Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms}. arXiv:1708.07747, 2017. \url{https://arxiv.org/abs/1708.07747}. Dữ liệu: \url{https://github.com/zalandoresearch/fashion-mnist}.
 \bibitem{attention} A. Vaswani và cộng sự. \emph{Attention Is All You Need}. NeurIPS, 2017. \url{https://arxiv.org/abs/1706.03762}.
-\bibitem{pascanu} R. Pascanu, T. Mikolov, Y. Bengio. \emph{On the difficulty of training recurrent neural networks}. ICML, 2013; arXiv:1211.5063. \url{https://arxiv.org/abs/1211.5063}.
-\bibitem{chrono} C. Tallec, Y. Ollivier. \emph{Can recurrent neural networks warp time?} ICLR, 2018. \url{https://arxiv.org/abs/1804.11188}.
 \bibitem{pytorch-lstm} PyTorch. \emph{LSTM: API and equations}. \url{https://docs.pytorch.org/docs/2.9/generated/torch.nn.LSTM.html}.
 \bibitem{pytorch-gru} PyTorch. \emph{GRU: API and implementation notes}. \url{https://docs.pytorch.org/docs/2.9/generated/torch.nn.GRU.html}.
 \bibitem{pytorch-versions} PyTorch. \emph{Previous versions: torch 2.10.0 / torchvision 0.25.0}. \url{https://pytorch.org/get-started/previous-versions/}.

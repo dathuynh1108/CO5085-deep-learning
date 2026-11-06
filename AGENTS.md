@@ -13,10 +13,12 @@ Read `docs/REQUIREMENTS.md` and `docs/GPU_RUNBOOK.md` before changes.
 - A1/A2 source PDFs are now in `assignments/`. Use their actual requirements; do not invent A2's selected paper.
 - The initial handoff intentionally did not download/train a data batch. A later GPU task may perform full training; do not add a mandatory one-batch preflight.
 - Run numerical/protocol unit tests for code changes. Do not claim GPU/end-to-end verification from CPU tensor tests.
-- Keep the report practical and moderate in length. Explain mathematics used by the implementation, especially the E3 ablation; don't add unrelated theory.
+- Keep the report practical and moderate in length. Explain the mathematics used in the submitted experiments. E3 covers LSTM and GRU, the E1 baselines and sensitivity to sequence order.
 - Write all reports in neutral Vietnamese academic prose, with minimal personal pronouns (no repeated "tôi"). Present methods and measured findings directly; avoid handoff instructions, third-person advice to the student, integrity lectures, or discussion of supplied templates. In each main report, keep AI disclosure to one sentence linking `AI_USE_REPORT.md`; retain the substantive, accurate disclosure in that separate file. Apply this style to generated analysis as well as LaTeX source.
 - Keep `AI_USE_REPORT.md` accurate about assistance, student-supplied decisions and actual checks; do not claim student implementation or measurements without evidence.
 
 - Current layout: Python packages in `src/`, E1–E3 reports in `reports/exercises/`, A1 and A2 reports in `reports/assignment1/` and `reports/assignment2/`; see `docs/REPOSITORY_LAYOUT.md`. Install `pip install --no-deps -e .` before module commands. Historical measurements and source snapshots keep original bytes and signatures; use explicit `--archive` only to read the verified published source. Never enable archive identities for training/resume.
+
+- Notebooks are the entry points linked from GitHub Pages. Keep supporting model and data code importable. Preserve completed run configurations, seeds and logs.
 
 - Website copy follows the same neutral Vietnamese academic register as reports. Use descriptive headings about methods, data, settings or findings. Avoid slogans, rhetorical fragments, isolated italic words in headings, handoff commentary, and unnecessary English in narrative text. Keep model names and established technical terms precise.

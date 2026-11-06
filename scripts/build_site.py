@@ -30,7 +30,7 @@ A1_NAMES = {
 }
 
 
-def result_markup(exercises, assignment):
+def result_markup(exercises):
     rows = []
     for key in ['e1_softmax', 'e1_mlp', 'e1_cnn', 'e3_gru_rows']:
         row = next(r for r in exercises if r['id'] == key)
@@ -38,13 +38,17 @@ def result_markup(exercises, assignment):
         value = accuracy_text(mean, sd)
         width = 0 if mean is None else mean*100
         rows.append(f'<div class="result-row"><span>{html.escape("GRU (hàng ảnh)" if key == "e3_gru_rows" else row["label"])}</span><div class="result-track"><i style="--score:{width:.3f}%"></i></div><strong>{value}</strong></div>')
+    return ''.join(rows)
+
+
+def a1_table_rows(assignment):
     a1 = []
     for row in assignment['groups']:
         mean, sd = row['test_accuracy']['mean'], row['test_accuracy']['sd']
         value = accuracy_text(mean, sd)
         f1 = row['test_macro_f1']['mean']
         a1.append(f'<tr><th scope="row">{html.escape(A1_NAMES[row["experiment"]])}</th><td>{value}</td><td>{"—" if f1 is None else f"{f1:.4f}"}</td></tr>')
-    return ''.join(rows), ''.join(a1)
+    return ''.join(a1)
 
 
 def a2_markup(report):
@@ -84,17 +88,23 @@ def build_site(output: Path) -> Path:
     ex = ROOT / 'reports/exercises'
     a1 = ROOT / 'reports/assignment1'
     a2 = ROOT / 'reports/assignment2'
-    manifest = json.loads((ex / 'generated/manifest.json').read_text())
-    am = json.loads((a1 / 'generated/manifest.json').read_text())
-    summaries = json.loads((ex / 'generated/summary.json').read_text())
-    assignment = json.loads((a1 / 'generated/summary.json').read_text())
-    result_rows, a1_rows = result_markup(summaries, assignment)
-    count = manifest['train_runs']
+    am = json.loads((a1 / 'notebook-evidence/manifest.json').read_text())
+    followup_manifest = json.loads((a1 / 'swin-followup/manifest.json').read_text())
+    if not followup_manifest['expected_runs'] == followup_manifest['tested_runs'] == 6:
+        raise ValueError('A1 requires all six held-out Swin-T follow-up evaluations.')
+    summaries = json.loads((ex / 'notebook-evidence/summary.json').read_text())
+    assignment = json.loads((a1 / 'notebook-evidence/summary.json').read_text())
+    followup = json.loads((a1 / 'swin-followup/summary.json').read_text())
+    count = sum(row['n_train_runs'] for row in summaries)
+    tested = sum(row['n_test_runs'] for row in summaries)
     status = ('Báo cáo chưa có kết quả thực nghiệm.' if not count else
-              f'Đã tổng hợp {count} lượt huấn luyện và {manifest["test_runs"]} lượt đánh giá trên tập kiểm tra Fashion-MNIST.')
-    a1_status = f'{am["trained_runs"]} lượt huấn luyện · {am["tested_runs"]} lượt đánh giá trên tập kiểm tra'
+              f'Đã tổng hợp {count} lượt huấn luyện và {tested} lượt đánh giá trên tập kiểm tra Fashion-MNIST.')
+    a1_trained = am['trained_runs'] + followup_manifest['trained_runs']
+    a1_tested = am['tested_runs'] + followup_manifest['tested_runs']
+    a1_status = f'{a1_trained} lượt huấn luyện · {a1_tested} lượt đánh giá trên tập kiểm tra'
     replacements = [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),
-                    ('RESULTS', result_rows), ('A1_RESULTS', a1_rows)] + a2_markup(a2)
+                    ('RESULTS', result_markup(summaries)), ('A1_RESULTS', a1_table_rows(assignment)),
+                    ('A1_FOLLOWUP', a1_table_rows(followup))] + a2_markup(a2)
     for name in ['index.html', 'a1.html', 'a2.html']:
         source = (ROOT / 'site' / name).read_text()
         for token, value in replacements:
@@ -110,8 +120,9 @@ def build_site(output: Path) -> Path:
     for name in ['dataset.png', 'examples.png']:
         shutil.copy2(a2 / 'generated/figures' / name, media / name)
     shutil.copy2(a2 / 'demo.mp4', media / 'demo.mp4')
-    shutil.copy2(ex / 'generated/summary.json', output / 'results.json')
-    shutil.copy2(a1 / 'generated/summary.json', output / 'a1-results.json')
+    (output / 'results.json').write_text(json.dumps(summaries, ensure_ascii=False, indent=2) + '\n')
+    shutil.copy2(a1 / 'notebook-evidence/summary.json', output / 'a1-results.json')
+    shutil.copy2(a1 / 'swin-followup/summary.json', output / 'a1-swin-followup.json')
     shutil.copy2(a2 / 'generated/summary.json', output / 'a2-results.json')
     (output / '.nojekyll').touch()
     return output

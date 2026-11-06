@@ -1,0 +1,62 @@
+{
+  "E1": [
+    {
+      "seed": 42,
+      "code_cells": 8,
+      "figures": 5,
+      "source_sha256": "33440e0c427998c8b9214402c0f6a890e51f6e6bb36ca12667fdc234ae8824aa"
+    },
+    {
+      "seed": 43,
+      "code_cells": 8,
+      "figures": 5,
+      "source_sha256": "33440e0c427998c8b9214402c0f6a890e51f6e6bb36ca12667fdc234ae8824aa"
+    },
+    {
+      "seed": 44,
+      "code_cells": 8,
+      "figures": 5,
+      "source_sha256": "33440e0c427998c8b9214402c0f6a890e51f6e6bb36ca12667fdc234ae8824aa"
+    }
+  ],
+  "E2": [
+    {
+      "seed": 42,
+      "code_cells": 9,
+      "figures": 5,
+      "source_sha256": "36014f4997701eaa026a62a7f4cae34f1b88ffcfb5a86d5990f1ba085870e438"
+    },
+    {
+      "seed": 43,
+      "code_cells": 9,
+      "figures": 5,
+      "source_sha256": "36014f4997701eaa026a62a7f4cae34f1b88ffcfb5a86d5990f1ba085870e438"
+    },
+    {
+      "seed": 44,
+      "code_cells": 9,
+      "figures": 5,
+      "source_sha256": "36014f4997701eaa026a62a7f4cae34f1b88ffcfb5a86d5990f1ba085870e438"
+    }
+  ],
+  "E3": [
+    {
+      "seed": 42,
+      "code_cells": 9,
+      "figures": 9,
+      "source_sha256": "d7d006d5c991fd2671d65bc0b6e1ba1a1d5c755a83a0d22935d0a685e22dcc2f"
+    },
+    {
+      "seed": 43,
+      "code_cells": 9,
+      "figures": 9,
+      "source_sha256": "d7d006d5c991fd2671d65bc0b6e1ba1a1d5c755a83a0d22935d0a685e22dcc2f"
+    },
+    {
+      "seed": 44,
+      "code_cells": 9,
+      "figures": 9,
+      "source_sha256": "d7d006d5c991fd2671d65bc0b6e1ba1a1d5c755a83a0d22935d0a685e22dcc2f"
+    }
+  ]
+}

@@ -55,14 +55,15 @@ def expected_source():
     return {str(path.relative_to(ROOT)): digest(path) for path in paths}
 
 
-def read_run(run, experiment, seed, protocol, *, source_files=None):
+def read_run(run, experiment, seed, protocol, *, source_files=None, config=CONFIG):
     path = run / 'metadata.json'
     if not path.exists():
         return None, 'missing metadata'
     metadata = json.loads(path.read_text())
     signature = metadata['signature']
     if (signature['protocol'] != protocol or signature['experiment'] != experiment or signature['seed'] != seed
-            or signature['source'] != (expected_source() if source_files is None else source_files) or signature['config_sha256'] != digest(CONFIG)):
+            or signature['source'] != (expected_source() if source_files is None else source_files)
+            or signature['config_sha256'] != digest(config)):
         raise ValueError('Protocol/source/config/seed mismatch')
     from hashlib import sha256
     signature_hash = sha256(json.dumps(signature, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
@@ -130,14 +131,15 @@ def aggregate(rows, experiment):
     return result
 
 
-def export(output_root, destination, *, source_files=None):
-    protocol = load_protocol()
+def export(output_root, destination, *, source_files=None, config=CONFIG):
+    protocol = load_protocol(config)
+    expected_runs = len(protocol['experiments']) * len(protocol['seeds'])
     rows, coverage = [], []
     for experiment in protocol['experiments']:
         for seed in protocol['seeds']:
             run = output_root / experiment['id'] / f'seed_{seed}'
             try:
-                row, status = read_run(run, experiment, seed, protocol, source_files=source_files)
+                row, status = read_run(run, experiment, seed, protocol, source_files=source_files, config=config)
             except (KeyError, ValueError, OSError, IndexError, TypeError) as exc:
                 row, status = None, f'rejected: {exc}'
             if row:
@@ -178,11 +180,12 @@ def export(output_root, destination, *, source_files=None):
         if len(group_env) > 1:
             group['train_seconds'] = {'mean': None, 'sd': None, 'n': 0}
             group['peak_gpu_memory_bytes'] = {'mean': None, 'sd': None, 'n': 0}
-    manifest = {'protocol': protocol, 'config_sha256': digest(CONFIG), 'source': expected_source(),
-                'expected_runs': 24, 'trained_runs': len(rows),
+    manifest = {'protocol': protocol, 'config_sha256': digest(config),
+                'source': expected_source() if source_files is None else source_files,
+                'expected_runs': expected_runs, 'trained_runs': len(rows),
                 'tested_runs': sum(r['test_accuracy'] is not None for r in rows),
                 'coverage': coverage, 'cross_configuration_timing_comparable': len(environments) <= 1,
-                'state': 'no measurements' if not rows else 'partial' if len(rows) < 24 or any(r['test_accuracy'] is None for r in rows) else 'complete',
+                'state': 'no measurements' if not rows else 'partial' if len(rows) < expected_runs or any(r['test_accuracy'] is None for r in rows) else 'complete',
                 'note': 'Means use only seeds listed; SD undefined for n<2. Figures use the smallest available seed, never the best test seed.'}
     write_json(destination / 'manifest.json', manifest)
     write_json(destination / 'summary.json', {'groups': summary, 'runs': rows})
@@ -198,21 +201,28 @@ def export(output_root, destination, *, source_files=None):
                           for part in ['mean', 'sd', 'n']})
         writer.writerow(flattened)
     atomic_text(destination / 'summary.csv', buffer.getvalue())
-    def formatted(metric, percent=False):
+    def formatted(metric, scale=1, digits=2):
         if metric['mean'] is None:
             return '--'
-        scale = 100 if percent else 1
-        value = f"{metric['mean'] * scale:.2f}"
-        return value + (f" $\\pm$ {metric['sd'] * scale:.2f}" if metric['sd'] is not None else '')
+        value = f"{metric['mean'] * scale:.{digits}f}"
+        if metric['sd'] is not None:
+            value += f" $\\pm$ {metric['sd'] * scale:.{digits}f}"
+        return value.replace('.', '{,}')
+    families = {'resnet18': 'ResNet18', 'swin_t': 'Swin-T'}
+    regimes = {'scratch': 'Từ đầu', 'head': 'Chỉ đầu ra', 'partial': 'Một phần', 'full': 'Toàn bộ'}
+    presets = {experiment['id']: experiment for experiment in protocol['experiments']}
     lines = ['\\begin{tabular}{lrrrrr}', '\\toprule',
-             'Cấu hình & Val (\\%) & Test (\\%) & F1 test & Train (s) & Trainable \\\\', '\\midrule']
+             'Cấu hình & Xác thực (\\%) & Kiểm tra (\\%) & Macro-F1 & Thời gian (s) & Tham số (M) \\\\', '\\midrule']
     for group in summary:
-        lines.append(group['experiment'].replace('_', r'\_') + ' & ' + ' & '.join([
-            formatted(group['val_accuracy'], True), formatted(group['test_accuracy'], True),
-            formatted(group['test_macro_f1']), formatted(group['train_seconds']),
-            '--' if group['trainable_params']['mean'] is None else f"{group['trainable_params']['mean']:,.0f}"]) + r' \\')
+        preset = presets[group['experiment']]
+        name = f"{families[preset['family']]}: {regimes[preset['regime']]}"
+        parameters = group['trainable_params']['mean']
+        lines.append(' & '.join([
+            name, formatted(group['val_accuracy'], scale=100), formatted(group['test_accuracy'], scale=100),
+            formatted(group['test_macro_f1'], digits=4), formatted(group['train_seconds'], digits=1),
+            '--' if parameters is None else f"{parameters / 1e6:.3f}".replace('.', '{,}')]) + r' \\')
     lines += ['\\bottomrule', '\\end{tabular}',
-              f'\\par\\smallskip{{\\small {manifest["trained_runs"]}/24 run train hoàn tất; {manifest["tested_runs"]}/24 run test. --: chưa đo. SD chỉ khi ít nhất hai seed.}}']
+              f'\\par\\smallskip{{\\small {manifest["trained_runs"]}/{expected_runs} lượt huấn luyện hoàn tất; {manifest["tested_runs"]}/{expected_runs} lượt đã đánh giá.}}']
     atomic_text(destination / 'comparison_table.tex', '\n'.join(lines) + '\n')
     figure_records = []
     for experiment in protocol['experiments']:
@@ -242,21 +252,26 @@ def export(output_root, destination, *, source_files=None):
     for path in (destination / 'evidence').glob('*/seed_*'):
         if (path.parent.name, path.name) not in accepted:
             shutil.rmtree(path)
-    print(f'Exported {len(rows)}/24 trained, {manifest["tested_runs"]}/24 tested to {destination}')
+    print(f'Exported {len(rows)}/{expected_runs} trained, {manifest["tested_runs"]}/{expected_runs} tested to {destination}')
     return manifest
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output-root', type=Path, default=ROOT / 'runs/assignment1')
-    parser.add_argument('--destination', type=Path, default=ROOT / 'reports/assignment1/generated')
+    parser.add_argument('--protocol', type=Path, default=CONFIG, help='JSON protocol')
+    parser.add_argument('--output-root', type=Path)
+    parser.add_argument('--destination', type=Path)
     parser.add_argument('--archive', action='store_true', help='Read the verified 1250e56 training source; never enables resume')
     args = parser.parse_args()
-    destination = args.destination.resolve()
-    if destination != ROOT / 'reports/assignment1/generated' and ROOT / 'reports/assignment1' not in destination.parents:
+    published = ROOT / 'reports/assignment1/generated'
+    destination = (args.destination or published).resolve()
+    if destination != published and ROOT / 'reports/assignment1' not in destination.parents:
         parser.error('A1 export destination must remain under reports/assignment1/')
+    if args.protocol.resolve() != CONFIG and (args.archive or args.output_root is None or destination == published):
+        parser.error('A separate protocol requires a separate --output-root and --destination')
     from common.archive import a1_source
-    export(args.output_root, destination, source_files=a1_source() if args.archive else None)
+    export(args.output_root or ROOT / 'runs/assignment1', destination,
+           source_files=a1_source() if args.archive else None, config=args.protocol)
 
 
 if __name__ == '__main__':

@@ -22,7 +22,7 @@ Nguồn: `exercise-vne.pdf`, 6 trang, học kỳ 261. Số trang dưới đây t
 | Trang 6: phụ thuộc chuỗi | Phân tích thứ tự không gian; diagnostic validation | Gradient, đảo/tráo thứ tự, giới hạn diễn giải |
 | Trang 6: tái lập | Config, seed, source hash, dataset hash, checkpoint RNG | Lưu toàn bộ artifact của từng seed |
 
-Phần mở rộng E3 là thí nghiệm thêm, không thay thế các mục bắt buộc. Có baseline, thay đổi từng thành phần và hai ablation của tổ hợp. Hiệu quả chỉ được kết luận sau khi chạy.
+E3 đối chiếu bốn cấu hình hồi tiếp, gồm LSTM và GRU trên chuỗi hàng và chuỗi ô ảnh 4×4. Hai đối chứng MLP và CNN được dùng lại từ E1. Phép đảo chuỗi và hoán vị cố định trên tập xác thực khảo sát độ nhạy của checkpoint với thứ tự quét.
 
 ## Đề A1/A2 được bổ sung ngày 14/10/2026
 
@@ -38,7 +38,7 @@ Nguồn A1: `assignments/assignment1-vne.pdf` (5 trang cả bìa), được ngư
 | Accuracy/F1, thời gian, trainable params, lỗi | Checkpoint theo validation, test độc lập sau khóa protocol; BF16 cùng chế độ A1, ảnh resize 96×96 | Summary, curves, confusion, per-class metrics, prediction/errors |
 | A1.1 và A1.2 | A1.1: dataset + protocol; A1.2: đủ so sánh và phân tích thật | Report riêng và trang A1 riêng trong bản build Pages |
 
-Giới hạn đã công bố trước chạy: ảnh gốc CIFAR-100 chỉ 32×32, resize không tạo thêm thông tin; 96×96 khác kích thước 224×224 phổ biến của pretrained; ngân sách 20 epoch không chứng minh scratch đã hội tụ. Báo cáo so sánh dưới setting này, không khái quát thành kiến trúc luôn tốt hơn.
+Ảnh gốc CIFAR-100 có kích thước 32×32. Nội suy lên 96×96 giữ giới hạn chi tiết của ảnh gốc. Lịch 20 epoch cho thấy Swin-T khởi tạo ngẫu nhiên học kém. Đối chứng bổ sung cho hai bản Swin-T dùng chung lịch 40 epoch và cùng siêu tham số, nhằm đo ảnh hưởng của cách khởi tạo khi bản học từ đầu đã cải thiện.
 
 ## Đối chiếu đề A2
 
@@ -50,13 +50,13 @@ Nguồn là `assignments/assignment2-vne.pdf`. Chủ đề là phân đoạn ng�
 | Tập công khai, EDA và thiết lập | Oxford-IIIT Pet, CC BY-SA 4.0. Chia 3.310/370/3.669 ảnh. Phân tích tỷ lệ nhãn và phân bố dải chuyển tiếp. |
 | Hai biến thể huấn luyện và đánh giá | Trộn cố định 50/50 và trộn theo biên, giữ bộ mã hóa ResNet18 và giám sát biên. Ba hạt giống mỗi biến thể, 12 epoch, mIoU, macro-Dice và IoU theo vùng. |
 | Phân tích paper và đối chiếu cài đặt | Báo cáo A2 phân tích mạng hai nhánh, phép tương tự PID, ba nhánh, các mô-đun, hàm mục tiêu và thí nghiệm. Bảng đối chiếu mức thay đổi mIoU với các phép ablation công bố. |
-| Mã, PDF, trang A2 và video | `src/A2/`, `reports/assignment2/` và `site/a2.html`. Báo cáo có trích dẫn, DOI và liên kết toàn văn. |
+| Notebook, PDF, trang A2 và video | `notebooks/A2.ipynb`, `reports/assignment2/` và `site/a2.html`. Báo cáo có trích dẫn, DOI và liên kết toàn văn. |
 
 Mốc trong đề là 23:59 GMT+7 ngày 02/11/2026 cho A2.1 và ngày 16/11/2026 cho A2.2.
 
 ## Trạng thái thực nghiệm
 
-Đã hoàn tất 60 lượt E1–E3, 24 lượt A1 và 6 lượt A2, với ngân sách tương ứng 30, 20 và 12 epoch mỗi lượt. Mỗi phần chọn checkpoint bằng tập xác thực trước khi đánh giá tập kiểm tra. Manifest, source/data/checkpoint hashes và lịch sử sao lưu được ghi trong `docs/TRAINING_EXECUTION.md`, `reports/exercises/generated/` và `reports/assignment1/generated/`.
+Báo cáo E1–E3 trình bày 39 lượt từ 13 cấu hình theo đề. A1 có 24 lượt trong lịch 20 epoch và sáu lượt đối chứng Swin-T trong lịch 40 epoch. A2 có sáu lượt chính và sáu lượt chạy lại bằng notebook với cùng lịch 12 epoch. Các lượt chọn checkpoint bằng tập xác thực trước khi đánh giá tập kiểm tra. Cấu hình, hạt giống và lịch sử huấn luyện được lưu cùng từng báo cáo.
 
 ## Mốc trong đề
 

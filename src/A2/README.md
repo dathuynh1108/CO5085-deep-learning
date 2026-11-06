@@ -2,14 +2,23 @@
 
 Hai biến thể dùng bộ mã hóa ResNet18 và cùng một hàm mất mát phụ cho đầu dự đoán biên. Bản cố định trộn đặc trưng chi tiết và ngữ cảnh theo tỷ lệ 50/50. Bản theo biên lấy trọng số trộn từ sigmoid của logit biên. Phép đối chứng khảo sát cơ chế Bag trong PIDNet trên trimap của Oxford-IIIT Pet.
 
+- [Notebook thực nghiệm A2](../../notebooks/A2.ipynb) và [mở trên Colab](https://colab.research.google.com/github/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb)
 - [PIDNet, IEEE/CVF CVPR 2023, tr. 19529–19539](https://doi.org/10.1109/CVPR52729.2023.01871)
 - [Oxford-IIIT Pet, CC BY-SA 4.0](https://www.robots.ox.ac.uk/~vgg/data/pets/)
 - [Báo cáo A2](../../reports/assignment2/assignment2.pdf) và [video minh họa](../../reports/assignment2/demo.mp4)
 - [Cấu hình thí nghiệm](../../configs/a2_experiments.json) và [kết quả tổng hợp](../../reports/assignment2/generated/summary.json)
 
-## Tái lập thực nghiệm
+## Tái lập bằng notebook
 
-Lượt đo dùng Python 3.12.15, PyTorch 2.14.1+cu132, torchvision 0.29.1+cu132, NumPy 2.5.4, Pillow 13.0.0, CUDA 13.2 và RTX 3090. Hai biến thể dùng BF16 autocast trên GPU. Số liệu từng hạt giống và thông tin môi trường nằm trong `reports/assignment2/generated/evidence/`.
+Notebook nạp Oxford-IIIT Pet, khảo sát phân bố nhãn và trimap, thực thi vòng lặp huấn luyện và xác thực, rồi đánh giá trên tập kiểm tra sau khi khóa checkpoint. Kết quả gồm mIoU, macro-Dice, IoU dải chuyển tiếp, đường cong học, ma trận nhầm lẫn theo pixel và ảnh dự đoán.
+
+Trên máy cục bộ, mở notebook trong kernel Python 3.12 có PyTorch, torchvision và các gói trong `requirements.txt`. Trên Colab, chọn GPU hỗ trợ BF16 như L4 hoặc A100. Chế độ mặc định huấn luyện hai biến thể, mỗi biến thể 12 epoch với ba hạt giống, và lưu bằng chứng tại `runs/notebooks/a2/`. Có thể đặt `CO5085_DEVICE=cpu` để chạy FP32. Chế độ `CO5085_SMOKE=1` kiểm tra luồng thực thi với một hạt giống, một epoch và tập con, lưu riêng tại `runs/notebooks/a2-smoke/`.
+
+Sau khi xem kết quả xác thực và khóa checkpoint, nhập `TEST` ở ô xác nhận để đánh giá tập kiểm tra. Với phiên chạy tự động, đặt `CO5085_CONFIRM_TEST=1` trước khi khởi chạy kernel. Notebook kiểm tra biến này sau khi tạo và xác minh `frozen.json`. Có thể đặt `CO5085_OUTPUT_ROOT` để lưu một lượt mới vào thư mục riêng.
+
+## Tái lập bằng dòng lệnh
+
+Lượt đo trong báo cáo dùng Python 3.12.15, PyTorch 2.14.1+cu132, torchvision 0.29.1+cu132, NumPy 2.5.4, Pillow 13.0.0, CUDA 13.2 và RTX 3090. Hai biến thể dùng BF16 autocast trên GPU. Số liệu từng hạt giống và thông tin môi trường nằm trong `reports/assignment2/generated/evidence/`.
 
 Chạy từ thư mục gốc, trong môi trường đã cài PyTorch/torchvision khớp phiên bản CUDA, cùng các gói trong `requirements.txt`:
 

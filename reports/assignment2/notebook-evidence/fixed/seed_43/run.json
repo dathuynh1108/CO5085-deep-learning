@@ -1,0 +1,70 @@
+{
+  "config_sha256": "01ca59d62c5de55382b4d8ee96103e76668ec3ef06107c4343f9b4a58dbde95a",
+  "data_manifest_sha256": "e4b3d893615ed5224f312afebd571e29c69e633573306034135489ae6027196a",
+  "source_sha256": {
+    "src/A2/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/A2/data.py": "9a59892a6ff7fc89ff98683743f0f443863dd6e143b23b48f143f42c59362799",
+    "src/A2/models.py": "ddeee5130677d06f8b6b428205f4ee91aae9524fae856a41692fc63e21a5310d",
+    "src/A2/run.py": "56e98404f75c1bfa74df53a5fd063fc9de063bcaeb6c6b67a63b73ffe97b5e21",
+    "src/common/runtime.py": "1c4ab4978d776c1c837829e433760bee29c2a0080ed0913e9dd764c6b4992e26"
+  },
+  "notebook_config_sha256": "cbda483ff1b6aa58f11e2fb150b509fc5626eecfdd2bfd6517c46ac5b6649a04",
+  "smoke": false,
+  "train_loop_sha256": "07f51dfb56aa993445d36456585ad744cb1545c7e63c50ca7ca0144c479168c2",
+  "sample_indices_sha256": "1b05eb2e0b4fda7bae935b6da92fd1a882e817574bd12c511a465a4be538478b",
+  "runtime": {
+    "python": "3.12.3",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "torch": "2.10.0+cu130",
+    "cuda_runtime": "13.0",
+    "cudnn": 91501,
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "git_commit": null,
+    "git_dirty": null,
+    "torch_num_threads": 2,
+    "tf32_matmul": false,
+    "tf32_cudnn": false,
+    "torchvision": "0.25.0+cu130",
+    "numpy": "2.4.1",
+    "pillow": "12.0.0",
+    "precision": "bfloat16 autocast",
+    "workers": 6
+  },
+  "config": {
+    "dataset": "Oxford-IIIT Pet",
+    "weights": "ResNet18_Weights.IMAGENET1K_V1",
+    "variants": [
+      "fixed",
+      "guided"
+    ],
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "split_seed": 2026,
+    "validation_per_breed": 10,
+    "size": 192,
+    "batch_size": 32,
+    "epochs": 12,
+    "encoder_lr": 0.0002,
+    "head_lr": 0.001,
+    "weight_decay": 0.0001,
+    "boundary_weight": 0.25,
+    "precision_cuda": "bfloat16",
+    "checkpoint_metric": "validation_miou"
+  },
+  "variant": "fixed",
+  "seed": 43,
+  "workers": 6,
+  "initial_state_sha256": "0e629ae37aa22b06f0bf7e6da037bfc3bd5e7097e3f0e8330d4cd0f420613a01",
+  "params": 11302116,
+  "epochs": 12,
+  "best_epoch": 11,
+  "best_val_miou": 0.774594815717332,
+  "total_train_seconds": 8.597766905557364,
+  "peak_allocated_mib": 558.96875,
+  "checkpoint_sha256": "ef838c569714c647425e6ec424e757de3cd5408a360cd851c5458a62240f3c4e",
+  "history_sha256": "179f38bcf3c38166dd777cfe17373bb10b5abfcc90468e45f72116a433f12477"
+}
