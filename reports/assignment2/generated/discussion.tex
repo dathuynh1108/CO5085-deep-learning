@@ -1,0 +1,17 @@
+\subsection{Độ chính xác theo vùng}
+
+Hai mô hình cùng có 11.302.116 tham số được huấn luyện. So với phép trộn cố định, phép trộn theo biên thay đổi mIoU $-0{,}11\pm0{,}07$ điểm phần trăm và macro-Dice $-0{,}07\pm0{,}06$ điểm phần trăm, tính theo cặp cùng hạt giống. mIoU giảm nhẹ ở cả ba cặp. IoU dải chuyển tiếp giảm trung bình $0{,}16$ điểm phần trăm, nhưng tăng $0{,}09$ điểm ở hạt giống 44. Dải chuyển tiếp là vùng khó nhất ở cả hai biến thể, với IoU xấp xỉ 55\%, so với hơn 86\% ở phần vật thể và hơn 92\% ở nền.
+
+Khi chia hậu nghiệm tập kiểm tra thành ba nhóm bằng nhau theo tỷ lệ vật thể trong ảnh, chênh lệch IoU chuyển tiếp lần lượt là $+0{,}10$, $-0{,}11$ và $-0{,}40$ điểm phần trăm, từ nhóm tỷ lệ thấp đến cao. Mức giảm tập trung hơn ở nhóm vật thể chiếm diện tích lớn. Tỷ lệ vật thể có thể đi cùng độ dày viền, kiểu nền hoặc góc chụp, nên phép phân nhóm chỉ mô tả dữ liệu hiện có.
+
+\subsection{Bản đồ hệ số và trường hợp sai}
+
+Ở biến thể theo biên, điểm sigmoid của đầu biên sau nội suy đạt trung bình 0,760 trên dải chuyển tiếp, 0,294 trên vật thể và 0,170 trên nền. Đầu biên của biến thể cố định, vốn chỉ học bằng loss phụ, cũng có sự phân tách tương tự, với các giá trị tương ứng 0,787, 0,290 và 0,178. BCE cân bằng đặt trọng số khác nhau cho các nhóm điểm ảnh. Vì vậy, giá trị sigmoid được dùng để mô tả mức đáp ứng của đầu biên. Đáp ứng cao trên dải chuyển tiếp cho thấy đầu biên đã học tín hiệu phân biệt vùng, trong khi kết quả IoU cho thấy tín hiệu đó chưa đem lại lợi ích khi trực tiếp điều tiết phép trộn.
+
+Hình~\ref{fig:examples} lấy ba ảnh ở hạt giống 42 theo chênh lệch IoU dải chuyển tiếp lớn nhất, trung vị và thấp nhất, giới hạn ở ảnh có dải chuyển tiếp chiếm ít nhất 2\% điểm ảnh có nhãn. Với \code{beagle_54}, bản theo biên giữ được phần đuôi mảnh rõ hơn, nâng IoU vùng này từ 35,9\% lên 53,8\%. Với \code{great_pyrenees_72}, hai dự đoán có IoU gần bằng nhau và cùng xuất hiện nhãn chuyển tiếp thừa phía trên lưng. Ở \code{american_pit_bull_terrier_91}, bản đồ hệ số sáng ở cả đường viền nền phía trên. Bản theo biên bỏ sót nhiều đoạn dải chuyển tiếp quanh đầu và thân, với IoU giảm từ 36,5\% xuống 18,9\%.
+
+Một cách giải thích phù hợp với các quan sát là đối chứng đã nhận chi tiết ở mọi vị trí và đã dùng cùng tín hiệu giám sát biên khi học đặc trưng. Cổng thích nghi chỉ có thể cải thiện trên nền đó nếu dự đoán biên đủ tin cậy và nếu P, I mang thông tin bổ sung phù hợp. Cổng sai có thể giảm đóng góp của ngữ cảnh đúng tại điểm cần ngữ cảnh để phân biệt đường viền vật thể với hoa văn nền. Với lưới stride 4 và trimap nội suy, hiệu quả của riêng độ phân giải và nguồn nhãn chưa được tách ra.
+
+\subsection{Chi phí tính toán}
+
+Trên RTX 3090, phép trộn theo biên tăng thời gian huấn luyện trung bình từ 53,8 lên 54,8 giây mỗi lượt và tăng mức bộ nhớ cấp phát cực đại từ 559,8 lên 572,6 MiB. Phép đo bổ sung dùng 50 lượt làm nóng và 200 lần đo bằng CUDA events cho mỗi checkpoint, batch 1, đầu vào đã nằm trên GPU. Trung bình của các trung vị theo hạt giống là 5,22 ms với trộn cố định và 5,28 ms với trộn theo biên. Trung bình của phân vị 95 lần lượt là 5,25 và 5,42 ms. Phép đo gồm forward của đầu phụ ở cả hai biến thể và loại thời gian tiền xử lý, truyền dữ liệu và dựng mặt nạ. Các số liệu này mô tả độ trễ của pipeline ở 192\,$\times$\,192, dưới giao thức khác với FPS của PIDNet.

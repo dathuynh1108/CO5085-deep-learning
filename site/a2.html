@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2 · Phân đoạn ảnh với phép trộn đặc trưng theo biên · CO5085</title>
+  <meta name="description" content="Phân tích PIDNet (CVPR 2023) và so sánh hai cách trộn đặc trưng trên Oxford-IIIT Pet.">
+  <meta name="theme-color" content="#263e35">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="Trang chủ CO5085"><span class="wordmark">CO5085<b>.</b></span><span class="brand-meta">HỌC SÂU<br>HỌC KỲ 261</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Mở điều hướng">Danh mục <span class="menu-icon" aria-hidden="true"></span></button>
+    <nav class="main-nav" id="site-nav" aria-label="Điều hướng chính">
+      <a href="index.html#exercises">Bài tập E1–E3</a>
+      <a href="a1.html">Bài tập lớn A1</a>
+      <a href="a2.html" aria-current="page">Bài tập lớn A2</a>
+      <a href="index.html#reports">Báo cáo</a>
+    </nav>
+    <a class="header-link" href="https://github.com/dathuynh1108/CO5085-deep-learning">GitHub <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+<main id="main" class="container">
+  <nav class="breadcrumb" aria-label="Đường dẫn"><a href="index.html">Trang chủ</a><span aria-hidden="true">/</span><span aria-current="page">A2</span></nav>
+  <section class="detail-hero">
+    <div>
+      <span class="tag elective">Bài tập lớn A2</span>
+      <h1>Phân đoạn ảnh với phép trộn đặc trưng theo biên</h1>
+      <p>Nghiên cứu vai trò của bản đồ biên trong việc kết hợp chi tiết và ngữ cảnh, dựa trên PIDNet và thực nghiệm trên Oxford-IIIT Pet.</p>
+    </div>
+    <div class="detail-meta">
+      <span class="mono">Phạm vi thực nghiệm</span>
+      <strong>Hai biến thể trên cùng bộ mã hóa ResNet18</strong>
+      <p><!--A2_STATUS--><!--/A2_STATUS--></p>
+    </div>
+  </section>
+  <div class="detail-layout">
+    <aside class="detail-aside" aria-label="Mục lục trang A2">
+      <span class="mono">Mục lục</span>
+      <a href="#paper">01 · Phân tích PIDNet</a>
+      <a href="#data">02 · Dữ liệu</a>
+      <a href="#method">03 · Phương pháp</a>
+      <a href="#results">04 · Kết quả</a>
+      <a href="#files">05 · Báo cáo và video</a>
+    </aside>
+    <div class="detail-content">
+      <section class="detail-section" id="paper">
+        <h2>Phân tích PIDNet</h2>
+        <p class="source-note">Jiacong Xu, Zixiang Xiong và Shankar P. Bhattacharyya. <cite>PIDNet: A Real-Time Semantic Segmentation Network Inspired by PID Controllers.</cite> Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, tr. 19529–19539.</p>
+        <p><a class="text-link" href="https://doi.org/10.1109/CVPR52729.2023.01871">DOI 10.1109/CVPR52729.2023.01871</a> · <a class="text-link" href="https://openaccess.thecvf.com/content/CVPR2023/html/Xu_PIDNet_A_Real-Time_Semantic_Segmentation_Network_Inspired_by_PID_Controllers_CVPR_2023_paper.html">Bản toàn văn tại CVF</a></p>
+        <p>BiSeNet và DDRNet duy trì một luồng giữ chi tiết và một luồng học ngữ cảnh. Khi trộn các đặc trưng này, ngữ cảnh từ vùng lân cận có thể lấn át tín hiệu ở đường viền. PIDNet thêm nhánh D để dự đoán nơi nhãn chuyển nhanh, bên cạnh nhánh P giữ chi tiết và nhánh I tổng hợp ngữ cảnh.</p>
+        <p>Mô-đun Bag dùng tín hiệu D để tăng trọng số của P gần biên và ưu tiên I ở vùng đồng nhất. Tác giả báo cáo PIDNet-S đạt 78,6% mIoU trên Cityscapes test ở 93,2 FPS theo giao thức đo trên RTX 3090. Báo cáo A2 phân tích riêng phép đối chứng, hàm mục tiêu và giới hạn của kết quả này.</p>
+      </section>
+      <section class="detail-section" id="data">
+        <h2>Oxford-IIIT Pet và nhãn trimap</h2>
+        <p>Bộ dữ liệu có 7.349 ảnh thuộc 37 giống chó và mèo. Mỗi ảnh có mặt nạ gồm vật thể, nền và dải chuyển tiếp. Dải chuyển tiếp dùng nhãn chưa phân loại trong dữ liệu gốc làm tín hiệu gần đúng cho biên.</p>
+        <div class="specs">
+          <div class="spec"><strong>3.310</strong><span>ảnh huấn luyện</span></div>
+          <div class="spec"><strong>370</strong><span>ảnh xác thực</span></div>
+          <div class="spec"><strong>3.669</strong><span>ảnh kiểm tra</span></div>
+        </div>
+        <p>Tập xác thực lấy 10 ảnh mỗi giống từ tập huấn luyện chính thức. Ảnh giữ tỷ lệ khung hình khi đổi cạnh dài về 192 pixel. Vùng đệm được bỏ qua trong hàm mất mát và phép đo. DataLoader chỉ áp dụng lật ngang đồng bộ ảnh và mặt nạ trong lúc huấn luyện.</p>
+        <figure class="a2-figure">
+          <img src="a2-media/dataset.png" alt="Tỷ lệ điểm ảnh theo ba nhãn và phân bố tỷ lệ dải chuyển tiếp trên các ảnh huấn luyện" loading="lazy">
+          <figcaption>Phân bố nhãn trên lưới huấn luyện 192×192 sau khi loại vùng đệm.</figcaption>
+        </figure>
+        <p><a class="text-link" href="https://www.robots.ox.ac.uk/~vgg/data/pets/">Nguồn dữ liệu và giấy phép CC BY-SA 4.0</a></p>
+      </section>
+      <section class="detail-section" id="method">
+        <h2>Đối chứng phép trộn đặc trưng</h2>
+        <p>Cả hai biến thể dùng các đặc trưng ở stride 4 và 32 của ResNet18 tiền huấn luyện ImageNet, cùng đầu phân đoạn và cùng hàm mất mát phụ cho nhánh biên. Biến thể cố định gán trọng số 0,5 cho hai nguồn. Biến thể theo biên lấy trọng số từ sigmoid của logit biên tại từng vị trí.</p>
+        <p>Mỗi biến thể chạy 12 epoch với ba hạt giống. mIoU xác thực quyết định checkpoint. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập kiểm tra sau khi khóa sáu checkpoint.</p>
+      </section>
+      <section class="detail-section" id="results">
+        <h2>Kết quả và trường hợp sai</h2>
+        <div class="table-wrap a2-results-table">
+          <table>
+            <caption>Kết quả trên tập kiểm tra, trung bình ± độ lệch chuẩn mẫu qua ba hạt giống</caption>
+            <thead><tr><th scope="col">Biến thể</th><th scope="col">mIoU</th><th scope="col">Macro-Dice</th><th scope="col">IoU dải chuyển tiếp</th></tr></thead>
+            <tbody><!--A2_RESULTS--><!--/A2_RESULTS--></tbody>
+          </table>
+        </div>
+        <p><!--A2_FINDING--><!--/A2_FINDING--></p>
+        <figure class="a2-figure">
+          <img src="a2-media/examples.png" alt="Ba ảnh kiểm tra cạnh trimap, dự đoán của hai biến thể và bản đồ hệ số trộn" loading="lazy">
+          <figcaption>Ba ví dụ ở hạt giống 42. Vật thể màu xanh lá, nền màu xanh đậm, dải chuyển tiếp màu vàng. Ảnh và trimap từ Oxford-IIIT Pet, CC BY-SA 4.0.</figcaption>
+        </figure>
+        <p>IoU dải chuyển tiếp đo độ khớp với vùng chưa phân loại trên lưới 192×192. Kết quả chịu ảnh hưởng của độ dày trimap, phép đổi kích thước và đặc điểm của ảnh thú cưng.</p>
+      </section>
+      <section class="detail-section" id="files">
+        <h2>Báo cáo, mã nguồn và video minh họa</h2>
+        <div class="hero-actions">
+          <a class="button" href="reports/assignment2.pdf">Báo cáo A2 (PDF)</a>
+          <a class="text-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/src/A2">Mã nguồn A2 <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="a2-media/demo.mp4">Video minh họa <span aria-hidden="true">↗</span></a>
+        </div>
+        <video class="a2-video" controls preload="metadata" aria-label="Minh họa phép trộn đặc trưng và kết quả A2" src="a2-media/demo.mp4"></video>
+      </section>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a class="footer-brand" href="index.html">CO5085<span>.</span></a>
+    <p>Huỳnh Thành Đạt · 2570161 · Học kỳ 261</p>
+    <a href="#main">Lên đầu trang ↑</a>
+  </div>
+</footer>
+</body>
+</html>

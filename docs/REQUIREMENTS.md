@@ -40,11 +40,23 @@ Nguồn A1: `assignments/assignment1-vne.pdf` (5 trang cả bìa), được ngư
 
 Giới hạn đã công bố trước chạy: ảnh gốc CIFAR-100 chỉ 32×32, resize không tạo thêm thông tin; 96×96 khác kích thước 224×224 phổ biến của pretrained; ngân sách 20 epoch không chứng minh scratch đã hội tụ. Báo cáo so sánh dưới setting này, không khái quát thành kiến trúc luôn tốt hơn.
 
-A2: đã lưu đề gốc nhưng chưa chọn chủ đề/paper; **chưa triển khai** theo yêu cầu người học. Không tạo report A2 giả hoặc chọn paper thay người học.
+## Đối chiếu đề A2
+
+Nguồn là `assignments/assignment2-vne.pdf`. Chủ đề là phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, dựa trên cơ chế trộn theo biên trong PIDNet.
+
+| Tiêu chí | Sản phẩm |
+|---|---|
+| Chủ đề khác A1 và paper liên quan | Phân đoạn theo trimap. Xu, Xiong và Bhattacharyya, PIDNet, IEEE/CVF CVPR 2023, tr. 19529–19539, DOI 10.1109/CVPR52729.2023.01871. |
+| Tập công khai, EDA và thiết lập | Oxford-IIIT Pet, CC BY-SA 4.0. Chia 3.310/370/3.669 ảnh. Phân tích tỷ lệ nhãn và phân bố dải chuyển tiếp. |
+| Hai biến thể huấn luyện và đánh giá | Trộn cố định 50/50 và trộn theo biên, giữ bộ mã hóa ResNet18 và giám sát biên. Ba hạt giống mỗi biến thể, 12 epoch, mIoU, macro-Dice và IoU theo vùng. |
+| Phân tích paper và đối chiếu cài đặt | Báo cáo A2 phân tích mạng hai nhánh, phép tương tự PID, ba nhánh, các mô-đun, hàm mục tiêu và thí nghiệm. Bảng đối chiếu mức thay đổi mIoU với các phép ablation công bố. |
+| Mã, PDF, trang A2 và video | `src/A2/`, `reports/assignment2/` và `site/a2.html`. Báo cáo có trích dẫn, DOI và liên kết toàn văn. |
+
+Mốc trong đề là 23:59 GMT+7 ngày 02/11/2026 cho A2.1 và ngày 16/11/2026 cho A2.2.
 
 ## Trạng thái thực nghiệm
 
-Đã hoàn tất60/60 lượt E1–E3, mỗi lượt30 epoch, và24/24 lượt A1, mỗi lượt20 epoch; tất cả đã đánh giá held-out test sau khi cố định protocol. Manifest, source/data/checkpoint hashes và lịch sử sao lưu được ghi trong `docs/TRAINING_EXECUTION.md`, `reports/exercises/generated/` và `reports/assignment1/generated/`.
+Đã hoàn tất 60 lượt E1–E3, 24 lượt A1 và 6 lượt A2, với ngân sách tương ứng 30, 20 và 12 epoch mỗi lượt. Mỗi phần chọn checkpoint bằng tập xác thực trước khi đánh giá tập kiểm tra. Manifest, source/data/checkpoint hashes và lịch sử sao lưu được ghi trong `docs/TRAINING_EXECUTION.md`, `reports/exercises/generated/` và `reports/assignment1/generated/`.
 
 ## Mốc trong đề
 

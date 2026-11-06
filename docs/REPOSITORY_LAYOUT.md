@@ -1,10 +1,10 @@
 # Cấu trúc repository
 
-Mã Python nằm trong `src/`: `common/` dùng chung, `E1/`, `E2/`, `E3/` cho bài tập, `A1/` cho bài tập lớn. Cài `python -m pip install --no-deps -e .` để dùng các module từ checkout. Config vẫn nằm trong `configs/`.
+Mã Python nằm trong `src/`: `common/` dùng chung, `E1/`, `E2/`, `E3/` cho bài tập, `A1/`, `A2/` cho hai bài tập lớn. Cài `python -m pip install --no-deps -e .` để dùng các module từ checkout. Config vẫn nằm trong `configs/`.
 
-Hai báo cáo độc lập ở `reports/exercises/` và `reports/assignment1/`; mỗi thư mục có LaTeX, PDF, assets và generated evidence. Landing source ở `site/`; `python scripts/build_site.py` tạo `build/site/` và giữ URL PDF công khai cũ `reports/exercises.pdf`, `reports/assignment1.pdf`.
+E1–E3 dùng chung `reports/exercises/`. A1 và A2 có thư mục báo cáo riêng `reports/assignment1/` và `reports/assignment2/`. Mỗi thư mục có LaTeX, PDF, hình và số liệu theo lượt. Video A2 nằm cạnh PDF. Lệnh `python scripts/build_site.py` dựng `build/site/` từ `site/` với các URL PDF `reports/exercises.pdf`, `reports/assignment1.pdf` và `reports/assignment2.pdf`.
 
-Artifact cục bộ: `runs/exercises/`, `runs/assignment1/`, `data/`, `artifacts/logs/`. Không đưa checkpoint và raw data vào Git. `scripts/` giữ các CLI, `tests/` kiểm tra mô hình/protocol/delivery, `docs/training-evidence/` giữ provenance.
+Artifact cục bộ: `runs/exercises/`, `runs/assignment1/`, `runs/assignment2/`, `data/`, `artifacts/logs/`. Không đưa checkpoint và raw data vào Git. `scripts/` giữ các CLI, `tests/` kiểm tra mô hình/protocol/delivery, `docs/training-evidence/` giữ provenance.
 
 ## Kết quả đã đo trước refactor
 

@@ -53,9 +53,9 @@ def write_exercises():
             for name in ['summary.json', 'temporal_gradients.csv']:
                 shutil.copy2(diagnostics / name, destination / 'diagnostics' / name)
     hardware = records[0]['environment']
-    introductory = (f'Các kết quả được đo với ba seed 42, 43 và 44 trên {latex_escape(hardware["device_name"])}; '
+    introductory = (f'Thí nghiệm dùng ba hạt giống 42, 43 và 44 trên {latex_escape(hardware["device_name"])} với '
                     f'PyTorch {latex_escape(hardware["torch"])} và CUDA runtime {latex_escape(hardware["cuda_runtime"])}. '
-                    'Chênh lệch giữa hai cấu hình được tính theo cặp cùng seed, rồi lấy trung bình và SD.\n\n')
+                    'Chênh lệch giữa hai cấu hình được tính theo cặp cùng hạt giống, rồi lấy trung bình và độ lệch chuẩn mẫu.\n\n')
     e1 = [introductory]
     for identifier in ['e1_softmax', 'e1_mlp', 'e1_cnn']:
         row = by_id[identifier]
@@ -64,24 +64,24 @@ def write_exercises():
         for run in own:
             with (run['directory'] / 'history.csv').open() as stream:
                 histories.append(list(csv.DictReader(stream))[-1])
-        e1.append(f'{latex_escape(row["label"])}: test accuracy '
+        e1.append(f'{latex_escape(row["label"])} đạt độ chính xác kiểm tra '
                   f'$({100 * row["test_accuracy_mean"]:.2f} \\pm {100 * row["test_accuracy_std"]:.2f})\\%$, '
-                  f'macro-F1 {row["test_macro_f1_mean"]:.4f}; '
-                  f'CE cuối epoch train/validation trung bình '
-                  f'{statistics.mean(float(h["train_ce"]) for h in histories):.4f}/'
+                  f'và macro-F1 {row["test_macro_f1_mean"]:.4f}. '
+                  f'Cross-entropy trung bình ở epoch cuối trên tập huấn luyện và xác thực lần lượt là '
+                  f'{statistics.mean(float(h["train_ce"]) for h in histories):.4f} và '
                   f'{statistics.mean(float(h["validation_ce"]) for h in histories):.4f}.'
                   '\n\n')
     for first, second in [('e1_mlp', 'e1_softmax'), ('e1_cnn', 'e1_mlp')]:
         mean, sd, _ = paired_delta(records, first, second)
         e1.append(f'{latex_escape(by_id[first]["label"])} trừ {latex_escape(by_id[second]["label"])}: '
                   f'{delta_text(mean, sd)}.\n\n')
-    e1.append('MLP thêm biểu diễn phi tuyến; CNN giữ cấu trúc hai chiều, chia sẻ kernel và pooling. '
+    e1.append('MLP bổ sung các lớp phi tuyến. CNN giữ cấu trúc hai chiều, chia sẻ trọng số tích chập và gộp cục bộ. '
               'Xếp hạng đã đo phù hợp với lợi ích của các biểu diễn này trên ảnh nhỏ. '
               'Khác biệt về số tham số và regularization cũng góp phần vào kết quả của từng kiến trúc.\n\n')
-    e1.append('CNN có khoảng cách train/validation CE cuối kỳ lớn dù test accuracy cao nhất E1. '
-              'Đường CE và error gallery gợi ý overfit hoặc dự đoán sai quá tự tin; '
-              'calibration chưa được khảo sát riêng trong bài này. Test dùng checkpoint được validation chọn, '
-              'còn các CE cuối kỳ ở trên mô tả epoch 30.\n\n')
+    e1.append('CNN đạt độ chính xác kiểm tra cao nhất, đồng thời có khoảng cách cross-entropy lớn '
+              'giữa tập huấn luyện và xác thực ở epoch 30. Các dự đoán sai có độ tin cậy cao '
+              'cho thấy mô hình vẫn có thể gán xác suất lớn cho lớp nhầm. Kết quả kiểm tra '
+              'được tính tại checkpoint đã chọn bằng tập xác thực.\n\n')
     cnn = next(r for r in records if r['experiment']['id'] == 'e1_cnn' and r['seed'] == 42)
     matrix = cnn['test']['confusion_matrix']
     a, b = max(((i, j) for i in range(10) for j in range(10) if i != j), key=lambda pair: matrix[pair[0]][pair[1]])
@@ -90,38 +90,41 @@ def write_exercises():
               f'{latex_escape(classes[b])}: {matrix[a][b]} ảnh.\n')
     (target / 'e1_analysis.tex').write_text(''.join(e1))
     e2 = []
-    for tokenizer in ['rows', 'patches', 'cnn']:
+    tokenizer_labels = {'rows': 'token theo hàng', 'patches': 'token theo ô ảnh', 'cnn': 'đặc trưng CNN-stem'}
+    for tokenizer in tokenizer_labels:
         first, second = f'e2_{tokenizer}_torch', f'e2_{tokenizer}_manual'
         mean, sd, _ = paired_delta(records, first, second)
         a, b = by_id[first], by_id[second]
-        e2.append(f'Tokenizer {latex_escape(tokenizer)}: PyTorch trừ manual có chênh lệch test '
-                  f'{delta_text(mean, sd)}; thời gian train/epoch trung bình của median từng seed lần lượt '
-                  f'{a["median_train_seconds_mean"]:.2f}s và {b["median_train_seconds_mean"]:.2f}s.\n\n')
+        e2.append(f'Với {tokenizer_labels[tokenizer]}, chênh lệch độ chính xác kiểm tra giữa bản PyTorch và bản tự viết là '
+                  f'{delta_text(mean, sd)}. Trung bình các trung vị thời gian mỗi epoch của hai bản lần lượt là '
+                  f'{a["median_train_seconds_mean"]:.2f} và {b["median_train_seconds_mean"]:.2f} giây.\n\n')
     best = max((r for r in rows if r['exercise'] == 'E2'), key=lambda r: r['test_accuracy_mean'])
-    e2.append(f'Trong sáu cấu hình, {latex_escape(best["label"])} có test accuracy trung bình cao nhất, '
-              f'đạt {percent(best["test_accuracy_mean"])}.\n\n')
+    _, best_tokenizer, best_backend = best['id'].split('_')
+    backend_label = 'bản tự viết' if best_backend == 'manual' else 'bản PyTorch'
+    e2.append(f'Trong sáu cấu hình, {backend_label} với {tokenizer_labels[best_tokenizer]} '
+              f'có độ chính xác kiểm tra trung bình cao nhất, đạt {percent(best["test_accuracy_mean"])}.\n\n')
     for second in ['e2_rows_manual', 'e2_patches_manual']:
         mean, sd, _ = paired_delta(records, 'e2_cnn_manual', second)
-        e2.append(f'Giữ backend manual, CNN-stem trừ {latex_escape(by_id[second]["label"])}: '
-                  f'{delta_text(mean, sd)}.\n\n')
+        e2.append(f'Khi dùng cùng bản attention tự viết, CNN-stem tăng độ chính xác so với '
+                  f'{tokenizer_labels[second.split("_")[1]]} {delta_text(mean, sd)}.\n\n')
     mean, sd, _ = paired_delta(records, best['id'], 'e1_cnn')
     e2.append(f'Cấu hình E2 tốt nhất so với CNN E1 có chênh lệch {delta_text(mean, sd)}. '
-              'CNN-stem cung cấp đặc trưng cục bộ trước attention; các kết quả gợi ý rằng prior không gian hữu ích '
-              'trong ngân sách này. Tokenizer đồng thời làm thay đổi số token, chiều đầu vào và số tham số.\n')
+              'CNN-stem đưa đặc trưng cục bộ vào attention trước khi tổng hợp trên chuỗi. '
+              'Phép so sánh thay đổi đồng thời số token, chiều đầu vào và số tham số, '
+              'nên chỉ phản ánh hiệu quả của từng cách biểu diễn hoàn chỉnh.\n')
     (target / 'e2_analysis.tex').write_text(''.join(e2))
     e3 = []
     for identifier in ['e3_lstm_rows', 'e3_gru_rows', 'e3_lstm_patches', 'e3_gru_patches']:
         mean, sd, _ = paired_delta(records, identifier, 'e1_cnn')
         e3.append(f'{latex_escape(by_id[identifier]["label"])} trừ CNN E1: {delta_text(mean, sd)}.\n\n')
-    e3.append('Rows và patches thay cả số bước lẫn số pixel/token; kết quả không tách riêng tác động độ dài chuỗi.\n')
+    e3.append('Cách quét theo hàng và theo ô thay đổi đồng thời số bước và số pixel mỗi token. Kết quả phản ánh ảnh hưởng kết hợp của hai yếu tố.\n\n')
     for family in ['lstm', 'gru']:
         mean, sd, _ = paired_delta(records, f'e3_{family}_rows', f'e3_{family}_patches')
         e3.append(f'{family.upper()} rows trừ patches: {delta_text(mean, sd)}.\n\n')
     mean, sd, _ = paired_delta(records, 'e3_gru_rows', 'e3_lstm_rows')
     e3.append(f'GRU rows trừ LSTM rows: {delta_text(mean, sd)}. '
-              'Rows giữ trọn ngữ cảnh ngang trong mỗi token và có ít bước hơn patches; đây là một cách diễn giải '
-              'phù hợp với kết quả trên cách chia dữ liệu này. Kiến trúc cell và đường quét cùng ảnh hưởng '
-              'đến khả năng tổng hợp đặc trưng.\n')
+              'Quét theo hàng giữ trọn thông tin theo chiều ngang trong một token và cho chuỗi ngắn hơn quét theo ô. '
+              'Đây là hai đặc điểm có thể giúp mạng tổng hợp thông tin trên tập ảnh này.\n')
     (target / 'e3_analysis.tex').write_text(''.join(e3))
     improvement = []
     init_delta, init_sd, _ = paired_delta(records, 'e3_lstm_rows_orth_init', 'e3_lstm_rows')
@@ -166,10 +169,11 @@ def write_exercises():
                            f'Hidden gradient norm trung bình tại bước 1/bước 28 là '
                            f'{statistics.mean(float(g[0]["hidden_grad_norm"]) for g in gradients):.3g}/'
                            f'{statistics.mean(float(g[-1]["hidden_grad_norm"]) for g in gradients):.3g}.\n\n')
-    improvement.append('Accuracy giảm khi đảo hoặc tráo thứ tự cho thấy checkpoint nhạy với thứ tự không gian. '
-                       'Mean pooling tạo đường gradient trực tiếp từ head tới mọi trạng thái hidden, '
-                       'trong khi last pooling nối head với trạng thái cuối; khác biệt này giải thích '
-                       'một phần hình dạng đường gradient của hai mô hình.\n')
+    improvement.append('Độ chính xác giảm khi đảo hoặc tráo thứ tự, cho thấy mô hình nhạy với cách quét ảnh. '
+                       'Các chuỗi biến đổi nằm ngoài phân phối huấn luyện, nên phép đo này chưa xác lập '
+                       'khả năng học phụ thuộc dài hạn. Phép gộp trung bình nối bộ phân loại trực tiếp '
+                       'với từng trạng thái ẩn, còn phép lấy trạng thái cuối chỉ tạo một đường nối trực tiếp. '
+                       'Gradient đo tại mỗi bước vẫn bao gồm đóng góp qua các trạng thái hồi tiếp về sau.\n')
     (target / 'improvement_analysis.tex').write_text(''.join(improvement))
     winner = max((r for r in rows if r['group'] == 'required'), key=lambda r: r['test_accuracy_mean'])
     (target / 'conclusion.tex').write_text(
@@ -193,9 +197,9 @@ def write_a1(*, source_files=None):
     target = ROOT / 'reports/assignment1/generated'
     summary = json.loads((target / 'summary.json').read_text())['groups']
     groups = {r['experiment']: r for r in summary}
-    paragraphs = ['Kết quả gồm 24 lượt chạy, với ba seed 42, 43 và 44 cho mỗi cấu hình. '
-                  'Chênh lệch accuracy được tính theo cặp cùng seed; các khoảng $\\pm$ là độ lệch chuẩn mẫu, '
-                  'không phải khoảng tin cậy.\n\n']
+    paragraphs = ['Mỗi cấu hình được chạy với ba hạt giống 42, 43 và 44. '
+                  'Chênh lệch độ chính xác được tính theo cặp cùng hạt giống. '
+                  'Giá trị sau dấu $\\pm$ là độ lệch chuẩn mẫu.\n\n']
     family_labels = {'resnet18': 'ResNet18', 'swin_t': 'Swin-T'}
     regime_labels = {'scratch': 'Scratch', 'head': 'Head-only', 'partial': 'Partial', 'full': 'Full'}
 
@@ -231,8 +235,8 @@ def write_a1(*, source_files=None):
     paragraphs.extend([
         '\\subsection{Khởi tạo và khả năng thích nghi biểu diễn}\n',
         f'ResNet18 head-only so với scratch có chênh lệch {paired("resnet18_head", "resnet18_scratch")}. '
-        'Backbone đóng băng chỉ cho phép head tuyến tính điều chỉnh ranh giới phân loại trên đặc trưng có sẵn. '
-        'Kết quả cho thấy đặc trưng ImageNet cố định chưa đủ phù hợp với thiết lập CIFAR-100 này. '
+        'Khi đóng băng bộ trích xuất đặc trưng, lớp tuyến tính cuối chỉ điều chỉnh ranh giới phân loại trên biểu diễn có sẵn. '
+        'Kết quả cho thấy lớp tuyến tính khai thác đặc trưng ImageNet cố định kém hiệu quả hơn cấu hình học từ đầu trong thiết lập này. '
         f'Mở stage cuối tăng {paired("resnet18_partial", "resnet18_scratch")} so với scratch; '
         f'mở toàn bộ tăng {paired("resnet18_full", "resnet18_scratch")}. '
         'Khả năng cập nhật biểu diễn đóng vai trò đáng kể đối với ResNet18.\n\n',
@@ -248,8 +252,7 @@ def write_a1(*, source_files=None):
         f'và full đạt {measured("swin_t_full", "test_accuracy", 100)}\\%. '
         f'Full cao hơn scratch {paired("swin_t_full", "swin_t_scratch")}; '
         'mức chênh lệch này phản ánh cả lợi ích của pretrained lẫn đối chứng scratch chưa học tốt. '
-        'Kết quả không đủ để kết luận Transformer luôn phụ thuộc pretrained '
-        'hoặc luôn vượt CNN trong những ngân sách khác.\n\n',
+        'Mức chênh lệch vì vậy chỉ áp dụng cho hai cấu hình và ngân sách đã đo.\n\n',
         '\\subsection{Accuracy và chi phí huấn luyện}\n',
     ])
     resnet, swin = groups['resnet18_full'], groups['swin_t_full']
@@ -268,8 +271,7 @@ def write_a1(*, source_files=None):
         f'{groups["resnet18_head"]["peak_gpu_memory_bytes"]["mean"] / 2**20:.1f} MiB ở ResNet18, và từ '
         f'{swin["peak_gpu_memory_bytes"]["mean"] / 2**20:.1f} xuống '
         f'{groups["swin_t_head"]["peak_gpu_memory_bytes"]["mean"] / 2**20:.1f} MiB ở Swin-T. '
-        'Đóng băng backbone giảm bộ nhớ gradient và trạng thái optimizer, '
-        'nhưng vẫn cần bước forward qua toàn bộ backbone.\n\n')
+        'Khi bộ trích xuất đặc trưng đóng băng, vòng lặp vẫn tính đầu ra của nó nhưng cần ít bộ nhớ cho gradient và trạng thái bộ tối ưu hơn.\n\n')
     paragraphs.append(
         '\\Needspace{7\\baselineskip}\n\\subsection{Đường cong học và lỗi phân loại}\n'
         'Ở epoch 20, train/validation accuracy của các bản full có khoảng cách rõ: ')
@@ -299,8 +301,7 @@ def write_a1(*, source_files=None):
         'Hai mô hình cùng nhầm oak\\_tree với maple\\_tree, gợi ý khó khăn khi phân biệt '
         'các lớp cây có hình dáng và kết cấu gần nhau trong ảnh $32\\times32$. '
         'Đây là cách diễn giải từ ma trận lỗi và các ví dụ quan sát, không phải phép đo riêng '
-        'về mức tương đồng thị giác. Những lỗi confidence cao cho thấy accuracy cao vẫn đi kèm '
-        'một số dự đoán sai rất tự tin; calibration chưa được đánh giá riêng.\n')
+        'về mức tương đồng thị giác. Một số dự đoán sai vẫn nhận điểm tin cậy cao.\n')
     (target / 'analysis.tex').write_text(''.join(paragraphs))
     (target / 'conclusion.tex').write_text(
         'Trong thiết lập CIFAR-100 đầy đủ với 20 epoch, Swin-T fine-tuning toàn bộ cho '

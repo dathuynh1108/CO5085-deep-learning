@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Báo cáo bài tập · CO5085</title>
-  <meta name="description" content="Báo cáo bài tập CO5085 của Huỳnh Thành Đạt: phương pháp, thiết lập thực nghiệm và kết quả phân loại ảnh trên Fashion-MNIST và CIFAR-100.">
+  <meta name="description" content="Báo cáo CO5085 của Huỳnh Thành Đạt về phân loại ảnh trên Fashion-MNIST và CIFAR-100, cùng nghiên cứu phân đoạn ảnh trên Oxford-IIIT Pet.">
   <meta name="theme-color" content="#263e35">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -19,6 +19,7 @@
     <nav class="main-nav" id="site-nav" aria-label="Điều hướng chính">
       <a href="index.html#exercises">Bài tập E1–E3</a>
       <a href="a1.html">Bài tập lớn A1</a>
+      <a href="a2.html">Bài tập lớn A2</a>
       <a href="index.html#reports">Báo cáo</a>
     </nav>
     <a class="header-link" href="https://github.com/dathuynh1108/CO5085-deep-learning">GitHub <span aria-hidden="true">↗</span></a>
@@ -30,7 +31,7 @@
       <div>
         <p class="eyebrow">HUỲNH THÀNH ĐẠT / 2570161</p>
         <h1 id="hero-heading">Báo cáo bài tập CO5085</h1>
-        <p class="hero-copy">Các bài tập E1–E3 sử dụng Fashion-MNIST để so sánh mô hình tuyến tính, mạng tích chập, self-attention và mạng hồi quy. Bài tập lớn A1 khảo sát ảnh hưởng của tiền huấn luyện và mức độ tinh chỉnh trên ResNet18 và Swin-T với tập CIFAR-100.</p>
+        <p class="hero-copy">E1–E3 nghiên cứu các cách biểu diễn ảnh cho bài toán phân loại Fashion-MNIST. A1 so sánh ResNet18 và Swin-T trên CIFAR-100 ở các mức tinh chỉnh khác nhau. A2 khảo sát phép trộn đặc trưng theo biên trong phân đoạn ảnh, dựa trên PIDNet.</p>
         <p class="hero-course">Học sâu và ứng dụng trong thị giác máy tính<br>Học kỳ 261 · Trường Đại học Bách khoa, ĐHQG-HCM</p>
         <div class="hero-actions">
           <a class="button" href="#reports">Báo cáo PDF <span aria-hidden="true">↓</span></a>
@@ -51,20 +52,20 @@
           <p>Token theo hàng, patch và CNN-stem</p>
         </div>
         <div class="model-sheet">
-          <div class="sheet-label"><span>E3 / MẠNG HỒI QUY</span><span>T = 28 / 49</span></div>
+          <div class="sheet-label"><span>E3 / MẠNG HỒI TIẾP</span><span>T = 28 / 49</span></div>
           <strong>LSTM và GRU</strong><p>Chuỗi hàng ảnh hoặc patch</p>
         </div>
       </div>
     </section>
     <div class="meta-strip">
       <div><span class="mono">Bài tập</span><strong>E1–E3 · Fashion-MNIST</strong></div>
-      <div><span class="mono">Bài tập lớn</span><strong>A1 · CIFAR-100</strong></div>
+      <div><span class="mono">Bài tập lớn</span><strong>A1 · CIFAR-100<br>A2 · Oxford-IIIT Pet</strong></div>
       <div><span class="mono">Giảng viên</span><strong>Lê Thành Sách · Nguyễn Quốc Minh</strong></div>
     </div>
 
     <section class="section" id="exercises">
       <div class="section-top">
-        <div><span class="section-label"><span>01</span> Bài tập E1–E3</span><h2>Phương pháp thực hiện</h2></div>
+        <div><span class="section-label"><span>01</span> Bài tập E1–E3</span><h2>Phân loại ảnh trên Fashion-MNIST</h2></div>
         <p>Các mô hình được huấn luyện từ đầu và sử dụng chung tập huấn luyện, tập xác thực và tập kiểm tra. Mỗi cấu hình được chạy với ba giá trị seed 42, 43 và 44, mỗi lượt 30 epoch. Checkpoint được chọn theo kết quả trên tập xác thực.</p>
       </div>
       <div class="study-list">
@@ -80,7 +81,7 @@
         </article>
         <article class="study-item">
           <span class="study-number">E3</span>
-          <div><h3>Phân loại ảnh bằng LSTM và GRU</h3><p>Ảnh được biểu diễn thành chuỗi hàng hoặc patch để đưa vào mạng hồi quy. Phần mở rộng khảo sát khởi tạo trực giao, phạt trực giao, khởi tạo chrono và phép gộp trung bình, kèm thí nghiệm loại bỏ từng thành phần.</p></div>
+          <div><h3>Phân loại ảnh bằng LSTM và GRU</h3><p>Ảnh được biểu diễn thành chuỗi hàng hoặc patch để đưa vào mạng hồi tiếp. Phần mở rộng khảo sát khởi tạo trực giao, phạt trực giao, khởi tạo chrono và phép gộp trung bình, kèm thí nghiệm loại bỏ từng thành phần.</p></div>
           <a class="text-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/src/E3">Mã nguồn E3 <span aria-hidden="true">↗</span></a>
         </article>
       </div>
@@ -121,17 +122,31 @@
     </div>
   </section>
 
+  <section class="section container intro-grid" aria-labelledby="a2-heading">
+    <div>
+      <span class="section-label"><span>04</span> Bài tập lớn A2</span>
+      <h2 id="a2-heading">Phân đoạn ảnh với phép trộn đặc trưng theo biên</h2>
+      <p class="section-description">Thí nghiệm trên Oxford-IIIT Pet đối chiếu hai mô hình cùng dùng ResNet18. Một mô hình trộn đều đặc trưng chi tiết và ngữ cảnh, mô hình còn lại dùng bản đồ biên dự đoán để thay đổi tỷ lệ trộn theo vị trí.</p>
+      <a class="text-link" href="a2.html">Phân tích PIDNet và kết quả A2 <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="result-panel">
+      <span class="mono">Bài báo phân tích</span>
+      <p class="section-description">Jiacong Xu, Zixiang Xiong và Shankar P. Bhattacharyya. <cite>PIDNet: A Real-Time Semantic Segmentation Network Inspired by PID Controllers.</cite> IEEE/CVF CVPR 2023, tr. 19529–19539.</p>
+      <a class="text-link" href="https://doi.org/10.1109/CVPR52729.2023.01871">Bài báo và DOI <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+
   <section class="section container resources" id="reports">
     <div>
-      <span class="section-label"><span>04</span> Tài liệu</span>
+      <span class="section-label"><span>05</span> Tài liệu</span>
       <h2>Báo cáo và mã nguồn</h2>
-      <p class="section-description">Báo cáo E1–E3 và báo cáo A1 được trình bày riêng. Mỗi phần có tệp PDF, mã LaTeX, bảng và hình thực nghiệm. Cấu hình huấn luyện và hướng dẫn tái lập được lưu trong repository.</p>
-      <p class="a2-note"><strong>Bài tập lớn A2:</strong> chưa triển khai do chưa chọn bài báo nghiên cứu.</p>
+      <p class="section-description">E1–E3 có một báo cáo chung. A1 và A2 có báo cáo riêng theo từng chủ đề. Mã nguồn, cấu hình và số liệu của từng phần được lưu cùng bài nộp.</p>
     </div>
     <div class="report-list resource-list">
       <a class="resource-link" href="reports/exercises.pdf"><div><span class="resource-title">Báo cáo E1–E3</span><p>Phân loại ảnh trên Fashion-MNIST · PDF</p></div><span aria-hidden="true">↗</span></a>
       <a class="resource-link" href="reports/assignment1.pdf"><div><span class="resource-title">Báo cáo bài tập lớn A1</span><p>ResNet18 và Swin-T trên CIFAR-100 · PDF</p></div><span aria-hidden="true">↗</span></a>
-      <a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/reports"><div><span class="resource-title">Mã LaTeX và kết quả thực nghiệm</span><p>Bảng số liệu và hình của hai báo cáo</p></div><span aria-hidden="true">↗</span></a>
+      <a class="resource-link" href="reports/assignment2.pdf"><div><span class="resource-title">Báo cáo bài tập lớn A2</span><p>PIDNet và phân đoạn trên Oxford-IIIT Pet · PDF</p></div><span aria-hidden="true">↗</span></a>
+      <a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/tree/main/reports"><div><span class="resource-title">Mã LaTeX và kết quả thực nghiệm</span><p>Bảng số liệu và hình thực nghiệm</p></div><span aria-hidden="true">↗</span></a>
       <a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/docs/GPU_RUNBOOK.md"><div><span class="resource-title">Hướng dẫn tái lập thí nghiệm</span><p>Chuẩn bị dữ liệu, huấn luyện và đánh giá</p></div><span aria-hidden="true">↗</span></a>
       <a class="resource-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI_USE_REPORT.md"><div><span class="resource-title">Báo cáo sử dụng AI</span><p>AI_USE_REPORT.md</p></div><span aria-hidden="true">↗</span></a>
     </div>

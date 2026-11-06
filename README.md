@@ -5,11 +5,13 @@ Bài làm cá nhân. Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh.
 
 Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/MLP/CNN, attention với nhiều cách chia token, và LSTM/GRU khi biểu diễn ảnh thành chuỗi. Tất cả mô hình được khởi tạo mới; không tải trọng số pretrained.
 
-**Kết quả ngày 15/10/2026:** E1–E3 hoàn tất 60/60 lượt train và test; A1 hoàn tất 24/24 lượt train và test trên RTX 5090. CNN E1 đạt 92,69% ±0,15%; Swin-T full A1 đạt 86,63% ±0,22% test accuracy (trung bình ±SD mẫu, ba seed). A2 chờ chọn paper. Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).
+**Kết quả ngày 15/10/2026:** E1–E3 hoàn tất 60/60 lượt train và test; A1 hoàn tất 24/24 lượt train và test trên RTX 5090. CNN E1 đạt 92,69% ±0,15%; Swin-T full A1 đạt 86,63% ±0,22% test accuracy (trung bình ±SD mẫu, ba seed). Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_REPORT.md).
 
-A1 có tám cấu hình ResNet18/Swin-T × scratch/head/partial/full, ba seed, 20 epoch; dùng toàn bộ CIFAR-100 với split45.000/5.000/10.000. Code ở [A1](src/A1/README.md), báo cáo tách riêng [A1 LaTeX](reports/assignment1/report.tex) và [A1 PDF](reports/assignment1/assignment1.pdf). PDF E1–E3 không chứa assignment.
+A1 có tám cấu hình ResNet18/Swin-T × scratch/head/partial/full, ba seed, 20 epoch; dùng toàn bộ CIFAR-100 với split45.000/5.000/10.000. Code ở [A1](src/A1/README.md), báo cáo tách riêng [A1 LaTeX](reports/assignment1/report.tex) và [A1 PDF](reports/assignment1/assignment1.pdf). E1–E3 dùng một báo cáo chung.
 
 [Báo cáo PDF](reports/exercises/exercises.pdf) · [LaTeX](reports/exercises/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
+
+A2 khảo sát phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, đối chiếu trộn cố định với trộn theo biên dựa trên [PIDNet, CVPR 2023](https://doi.org/10.1109/CVPR52729.2023.01871). Sáu lượt huấn luyện và đánh giá cho mIoU trung bình lần lượt 77,88% và 77,78%. Xem [mã nguồn và cách chạy A2](src/A2/README.md), [báo cáo A2](reports/assignment2/assignment2.pdf) và [video minh họa](reports/assignment2/demo.mp4).
 
 ## Nội dung
 
@@ -88,17 +90,18 @@ Bảng và hình được xuất từ log đã kiểm tra provenance. `scripts.w
 ## Cấu trúc và kiểm tra
 
 ```text
-src/                 Mã Python: common, E1, E2, E3, A1
+src/                 Mã Python: common, E1, E2, E3, A1, A2
 configs/             Protocol và cấu hình thí nghiệm
 reports/exercises/   PDF, LaTeX, hình và evidence E1–E3
-reports/assignment1/  PDF, LaTeX, hình và evidence A1 riêng
+reports/assignment1/  PDF, LaTeX, hình và dữ liệu thực nghiệm A1
+reports/assignment2/  PDF, LaTeX, hình, video và dữ liệu thực nghiệm A2
 assignments/         Đề gốc
 site/                HTML, CSS, JavaScript của landing page
 scripts/             Lệnh train, export, build và kiểm tra
 tests/              Unit và protocol tests
 docs/               Quy trình, yêu cầu và provenance
 data/               Dữ liệu cục bộ (không đưa vào Git)
-runs/               exercises/ và assignment1/ (không đưa vào Git)
+runs/               exercises/, assignment1/ và assignment2/ (không đưa vào Git)
 artifacts/          Log và trạng thái vận hành (không đưa vào Git)
 build/site/         Bản build Pages (không đưa vào Git)
 ```
@@ -106,14 +109,14 @@ build/site/         Bản build Pages (không đưa vào Git)
 
 ```bash
 python -m pytest -q
-python -m compileall -q common E1 E2 E3 A1 scripts
+python -m compileall -q src scripts
 ```
 
 Kiểm thử bao gồm forward/gradient của MSA tự viết so với PyTorch, thứ tự token, unroll LSTM/GRU, gradient của regularizer, split, resume shuffle, khóa thư mục run và xuất báo cáo khi chưa có kết quả. Chúng không thay thế kiểm chứng train end-to-end trên máy đích.
 
 ## GitHub Pages
 
-Trang giới thiệu được dựng từ `site/`, kèm hai PDF riêng và JSON kết quả. [Trang chung](https://dathuynh1108.github.io/CO5085-deep-learning/) liên kết E1–E3 và [trang A1](https://dathuynh1108.github.io/CO5085-deep-learning/a1.html). Workflow Pages xuất các artifact đã commit.
+Mã trang chung, trang A1 và trang A2 nằm trong `site/`. Bản dựng gồm PDF, dữ liệu kết quả và video minh họa A2. Workflow Pages xuất bản các tệp từ nhánh `main` lên [trang học phần](https://dathuynh1108.github.io/CO5085-deep-learning/).
 
 Trong **Settings → Pages**, chọn **Source: GitHub Actions**. Sau đó chạy workflow `Pages` hoặc push thay đổi của trang/báo cáo lên `main`. Có thể xem trước bằng:
 
@@ -132,6 +135,6 @@ Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_RE
 
 ## Đường dẫn và kết quả trước khi tổ chức lại
 
-Xem [cấu trúc repository](docs/REPOSITORY_LAYOUT.md). Cài editable package trước khi chạy các module: `python -m pip install --no-deps -e .`. Module vẫn là `E1`, `E2`, `E3`, `A1`, nhưng source nằm dưới `src/`.
+Xem [cấu trúc repository](docs/REPOSITORY_LAYOUT.md). Cài editable package trước khi chạy các module: `python -m pip install --no-deps -e .`. Các module `E1`, `E2`, `E3`, `A1` và `A2` nằm dưới `src/`.
 
 Các lượt GPU được giữ nguyên chữ ký nguồn trước refactor, tại commit `1250e56`. Kiểm tra bằng `python -m scripts.verify_archive --checkpoints`. Để xuất lại A1 đã đo, dùng `python -m A1.export_report --archive`; nhận xét dùng `python -m scripts.write_findings --archive`. Không resume các checkpoint này bằng mã sau refactor; chạy mới phải dùng output root mới.

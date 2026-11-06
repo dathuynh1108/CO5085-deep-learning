@@ -10,4 +10,4 @@ requires-python = ">=3.12"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["common*", "E1*", "E2*", "E3*", "A1*"]
+include = ["common*", "E1*", "E2*", "E3*", "A1*", "A2*"]

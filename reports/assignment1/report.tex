@@ -52,7 +52,7 @@
 \rule{\textwidth}{0.6pt}\par\vspace{0.35cm}
 {\Huge\bfseries BÁO CÁO BÀI TẬP A1\par}
 \vspace{0.45cm}
-{\Large CNN vs Transformer trên CIFAR-100\par}
+{\Large So sánh CNN và Transformer trên CIFAR-100\par}
 {\Large ResNet18 và Swin-T\par}
 \vspace{0.35cm}\rule{\textwidth}{0.6pt}\par
 \vspace{0.7cm}
@@ -262,6 +262,8 @@ Danh sách lượt chạy và checkpoint tương ứng được lưu trong manif
 \section{Thảo luận kết quả}
 \input{generated/analysis.tex}
 
+Phép kiểm tra hiệu chuẩn từ các dự đoán đã lưu chia điểm tin cậy của lớp được chọn thành 15 khoảng đều. ECE là chênh lệch tuyệt đối giữa độ chính xác và điểm tin cậy trung bình trong từng khoảng, lấy trung bình theo số ảnh. Qua ba hạt giống, các bản tinh chỉnh toàn bộ có ECE 8,21 điểm phần trăm với ResNet18 và 7,96 với Swin-T. Với Swin-T, độ tin cậy trung bình 94,58\% vượt độ chính xác 86,63\%. Phép đo này mô tả các checkpoint gốc trên tập kiểm tra chính thức và không thay đổi quy tắc chọn mô hình.
+
 \section{Đường cong và lỗi phân loại}
 Các hình dùng seed 42 đã định trước, không chọn seed theo kết quả test.
 Ma trận lỗi dùng chỉ số lớp 0--99; danh sách tên lớp và số đếm đầy đủ nằm
@@ -288,9 +290,11 @@ Ba seed mô tả biến thiên giữa các lượt khởi tạo, với cùng ph�
 thiết lập workers. Tình trạng license của dữ liệu vẫn là chưa rõ.
 
 \subsection{Ảnh trùng giữa các split}
-Audit toàn bộ pixel và nhãn, khớp hash dữ liệu gốc, phát hiện 2 nội dung ảnh trùng train--validation và 10 trùng train--test; không có trùng validation--test. Split và checkpoint gốc được giữ nguyên. Loại 10 ảnh test trùng train khỏi prediction đã lưu cho accuracy trung bình 79.009\% với ResNet18 full và 86.677\% với Swin-T full. Đây là kiểm tra độ nhạy, không phải train lại sau loại trùng. Hai nội dung trùng train--validation vẫn có thể ảnh hưởng chọn checkpoint; near duplicates chưa được đánh giá. Chi tiết nằm trong \code{docs/training-evidence/cifar100-pixel-audit.json} và các tệp overlap/sensitivity.
+Đối chiếu toàn bộ ảnh theo giá trị pixel phát hiện hai ảnh xác thực và mười ảnh kiểm tra trùng với ảnh huấn luyện. Các bảng sử dụng đủ 10.000 ảnh kiểm tra chính thức và giữ nguyên checkpoint đã chọn. Do mười ảnh trong số này đã xuất hiện khi huấn luyện, tập kiểm tra có một phần nội dung trùng với tập huấn luyện.
 
-Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md} trong repository.
+Tính lại trên 9.990 dự đoán sau khi loại mười ảnh trùng cho độ chính xác trung bình 79,009\% với ResNet18 và 86,677\% với Swin-T khi tinh chỉnh toàn bộ. Thứ hạng của hai cấu hình giữ nguyên. Phép kiểm tra độ nhạy dùng lại các dự đoán đã lưu. Hai ảnh xác thực trùng vẫn có thể ảnh hưởng việc chọn checkpoint, và phạm vi đối chiếu chỉ bao gồm các ảnh trùng pixel chính xác. Dữ liệu đối chiếu được lưu trong \code{docs/training-evidence/}.
+
+Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 
 \begin{thebibliography}{9}
 \addcontentsline{toc}{chapter}{Tài liệu tham khảo}

@@ -12,4 +12,4 @@ LSTM / rows trên 256 ảnh validation: original accuracy 89.71\%; reversed accu
 
 LSTM combined trên 256 ảnh validation: original accuracy 88.80\%; reversed accuracy 30.73\%; permuted accuracy 42.97\%. Hidden gradient norm trung bình tại bước 1/bước 28 là 0.34/0.0192.
 
-Accuracy giảm khi đảo hoặc tráo thứ tự cho thấy checkpoint nhạy với thứ tự không gian. Mean pooling tạo đường gradient trực tiếp từ head tới mọi trạng thái hidden, trong khi last pooling nối head với trạng thái cuối; khác biệt này giải thích một phần hình dạng đường gradient của hai mô hình.
+Độ chính xác giảm khi đảo hoặc tráo thứ tự, cho thấy mô hình nhạy với cách quét ảnh. Các chuỗi biến đổi nằm ngoài phân phối huấn luyện, nên phép đo này chưa xác lập khả năng học phụ thuộc dài hạn. Phép gộp trung bình nối bộ phân loại trực tiếp với từng trạng thái ẩn, còn phép lấy trạng thái cuối chỉ tạo một đường nối trực tiếp. Gradient đo tại mỗi bước vẫn bao gồm đóng góp qua các trạng thái hồi tiếp về sau.

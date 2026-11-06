@@ -56,7 +56,7 @@
 {\Huge\bfseries BÁO CÁO BÀI TẬP E1–E3\par}
 \vspace{0.45cm}
 {\Large Phân loại ảnh với CNN, attention\par}
-{\Large và mạng hồi quy\par}
+{\Large và mạng hồi tiếp\par}
 \vspace{0.35cm}
 \rule{\textwidth}{0.6pt}\par
 \vspace{0.7cm}
@@ -80,14 +80,14 @@ Hình thức: & Cá nhân
 
 \chapter{Dữ liệu và quy trình chung}
 \section{Phạm vi bài làm}
-Báo cáo so sánh các mô hình phân loại ảnh trên cùng tập Fashion-MNIST. E1 gồm softmax, MLP và CNN. E2 trình bày hiện thực multi-head self-attention (MSA), đối chiếu với thư viện và khảo sát ba cách tạo token. E3 biểu diễn ảnh thành chuỗi để phân loại bằng LSTM/GRU, với MLP và CNN của E1 làm đối chứng. Chỉ số bước của mạng hồi quy tương ứng với thứ tự quét các vùng trên ảnh.
+Báo cáo so sánh các mô hình phân loại ảnh trên cùng tập Fashion-MNIST. E1 gồm softmax, MLP và CNN. E2 trình bày hiện thực multi-head self-attention (MSA), đối chiếu với thư viện và khảo sát ba cách tạo token. E3 biểu diễn ảnh thành chuỗi để phân loại bằng LSTM/GRU, với MLP và CNN của E1 làm đối chứng. Chỉ số bước của mạng hồi tiếp tương ứng với thứ tự quét các vùng trên ảnh.
 
 Phần mở rộng khảo sát bốn thay đổi trên LSTM: khởi tạo ma trận hồi quy trực giao, regularization trực giao mềm, khởi tạo bias cổng theo độ dài chuỗi và mean pooling. Mỗi thành phần được đánh giá riêng, sau đó kết hợp và thực hiện ablation. Tất cả mô hình trong E1–E3 đều được huấn luyện từ đầu.
 
 Thực nghiệm gồm 20 cấu hình, mỗi cấu hình chạy với ba seed 42, 43 và 44, tương ứng 60 lượt huấn luyện. Các mô hình dùng chung cách chia dữ liệu và quy tắc chọn checkpoint để so sánh kết quả.
 
 \section{Tập dữ liệu và cách chia}
-Fashion-MNIST gồm ảnh thời trang mức xám $28\times28$, 10 lớp, với 60.000 ảnh train và 10.000 ảnh test chính thức \cite{fashion}. Kích thước ảnh nhỏ phù hợp để khảo sát cả CNN, attention và mạng hồi quy trên cùng đầu vào.
+Fashion-MNIST gồm ảnh thời trang mức xám $28\times28$, 10 lớp, với 60.000 ảnh train và 10.000 ảnh test chính thức \cite{fashion}. Kích thước ảnh nhỏ phù hợp để khảo sát cả CNN, attention và mạng hồi tiếp trên cùng đầu vào.
 
 Từ 60.000 ảnh train, tách phân tầng 10\% làm validation với split seed 2026. Như vậy có 54.000 ảnh train, 6.000 validation và 10.000 test. Mỗi lớp lần lượt có 5.400, 600 và 1.000 ảnh theo phân bố chuẩn của bộ dữ liệu. Split seed không đổi giữa E1–E3 và không trùng vai trò với seed khởi tạo mô hình.
 
@@ -122,7 +122,7 @@ Vòng lặp huấn luyện gồm zero gradient, forward, tính loss, backward, c
 
 Accuracy là chỉ số chính; macro-F1 bổ sung đánh giá theo lớp. Confusion matrix và các dự đoán sai có confidence cao được dùng để phân tích lỗi. Chi phí mô hình được mô tả qua số tham số và thời gian train/epoch. Thời gian được đồng bộ CUDA, gồm lấy batch và cập nhật trọng số; median bỏ epoch đầu để giảm ảnh hưởng khởi tạo. Tốc độ inference được đo riêng, bỏ hai batch đầu và không tính thời gian truyền dữ liệu sang GPU.
 
-Bảng kết quả trình bày trung bình và độ lệch chuẩn mẫu qua ba seed. Các đường cong, confusion matrix và ảnh minh họa dùng seed 42. Ngân sách 30 epoch được giữ cố định cho mọi cấu hình; do đó kết quả phản ánh hiệu quả trong ngân sách này.
+Bảng kết quả trình bày độ chính xác xác thực trung bình và độ chính xác kiểm tra dưới dạng trung bình $\pm$ độ lệch chuẩn mẫu qua ba seed. Các đường cong, confusion matrix và ảnh minh họa dùng seed 42. Ngân sách 30 epoch được giữ cố định cho mọi cấu hình; do đó kết quả phản ánh hiệu quả trong ngân sách này.
 
 \chapter{E1: Softmax, MLP và CNN}
 \section{Ba bộ phân loại}
@@ -149,6 +149,8 @@ Hai phép pooling đưa ảnh $28\to14\to7$, vì vậy head CNN nhận $64\times
 
 Train/validation CE được đối chiếu với accuracy để phân tích quá trình học. Confusion matrix và ảnh dự đoán sai bên dưới lấy từ CNN ở seed 42.
 \IfFileExists{generated/e1_analysis.tex}{\input{generated/e1_analysis.tex}}{}
+
+Kiểm tra bổ sung dùng điểm tin cậy của lớp dự đoán trong các tệp đã lưu. ECE được tính bằng cách chia điểm tin cậy thành 15 khoảng đều, lấy chênh lệch tuyệt đối giữa độ chính xác và điểm tin cậy trung bình trong mỗi khoảng, rồi gộp theo số ảnh. ECE trung bình của softmax, MLP và CNN lần lượt là 0,96, 3,03 và 4,47 điểm phần trăm. CNN phân loại đúng nhiều nhất nhưng điểm tin cậy trung bình 97,13\% cao hơn độ chính xác 92,69\%. Kết quả trên cùng tập kiểm tra này tách hai thuộc tính: chọn đúng lớp và gán mức tin cậy phù hợp.
 
 \resultfigure{e1_comparison_ce}{Validation CE của ba mô hình E1 ở seed 42.}{0.88}
 \resultfigure{e1_comparison_accuracy}{Validation accuracy của E1; seed dùng cho hình ghi trên biểu đồ.}{0.88}
@@ -207,7 +209,7 @@ Các kết quả dưới đây được đo trên cùng split, với cùng thi�
 \section{Biểu diễn ảnh và kiến trúc}
 Ảnh được biến thành chuỗi theo hai cách đã dùng trong E2, nhưng không qua embedding học được: hàng cho $T=28,D=28$; patch $4\times4$ cho $T=49,D=16$. Cả LSTM và GRU đều có một tầng, một chiều, hidden size $H=128$, trạng thái đầu bằng zero. Baseline lấy hidden state cuối, dropout 0,1 rồi Linear $128\to10$.
 
-Quét hàng giữ các quan hệ ngang trong một token và để mạng hồi quy xử lý quan hệ giữa các hàng. Quét patch tạo nhiều bước hơn, mỗi bước mô tả một vùng nhỏ hơn. Vì vậy, so sánh này thay đổi đồng thời độ dài chuỗi và kích thước đầu vào tại mỗi bước.
+Quét hàng giữ các quan hệ ngang trong một token và để mạng hồi tiếp xử lý quan hệ giữa các hàng. Quét patch tạo nhiều bước hơn, mỗi bước mô tả một vùng nhỏ hơn. Vì vậy, so sánh này thay đổi đồng thời độ dài chuỗi và kích thước đầu vào tại mỗi bước.
 
 \section{Các phương trình được sử dụng}
 Với LSTM, đặt $a_t=W_xx_t+W_hh_{t-1}+b$ rồi tách thành bốn phần \cite{pytorch-lstm}:
@@ -236,17 +238,17 @@ PyTorch lưu hai vector bias cho mỗi tầng. Vì vậy, số tham số phần 
 \end{table}
 \tablenote
 
-CNN khai thác lân cận hai chiều và chia sẻ kernel; LSTM/GRU tích lũy thông tin theo đường quét. Khi chuyển từ cuối một hàng patch sang đầu hàng kế tiếp, hai phần tử kề nhau trong chuỗi chưa chắc là hàng xóm gần nhất trên ảnh. Đây là đặc điểm của biểu diễn, không phải lỗi của cell.
+CNN khai thác lân cận hai chiều và chia sẻ kernel; LSTM/GRU tích lũy thông tin theo đường quét. Khi chuyển từ cuối một hàng patch sang đầu hàng kế tiếp, hai phần tử kề nhau trong chuỗi chưa chắc là hàng xóm gần nhất trên ảnh. Đường quét vì vậy giữ thứ tự một chiều và chỉ bảo toàn một phần quan hệ lân cận hai chiều.
 
 Ảnh hưởng của cách quét được khảo sát bằng cách đánh giá checkpoint trên cùng ảnh validation với thứ tự gốc, đảo ngược và một hoán vị cố định. Mô hình giữ nguyên trọng số trong ba phép đo. Gradient theo vị trí chuỗi được đo đồng thời để mô tả đường truyền loss.
 \IfFileExists{generated/e3_analysis.tex}{\input{generated/e3_analysis.tex}}{}
 
-\resultfigure{e3_comparison_ce}{Validation CE của các mạng hồi quy và baseline E1 ở cùng seed.}{0.9}
+\resultfigure{e3_comparison_ce}{Validation CE của các mạng hồi tiếp và baseline E1 ở cùng seed.}{0.9}
 \resultfigure{e3_comparison_accuracy}{So sánh accuracy của E3 với MLP/CNN.}{0.9}
 
 \chapter{Mở rộng E3: Điều kiện truyền gradient}
 \section{Vấn đề và giả thuyết}
-Phần này khảo sát ảnh hưởng của khởi tạo, regularization và cách tổng hợp trạng thái lên LSTM. Chuỗi hàng và patch có độ dài lần lượt 28 và 49 bước, phù hợp để kiểm tra các thay đổi này trên bài toán ảnh nhỏ. Phân tích bắt đầu từ tích Jacobian của mạng hồi quy, sau đó đối chiếu với gradient và kết quả thực nghiệm.
+Phần này khảo sát ảnh hưởng của khởi tạo, regularization và cách tổng hợp trạng thái lên LSTM. Chuỗi hàng và patch có độ dài lần lượt 28 và 49 bước, phù hợp để kiểm tra các thay đổi này trên bài toán ảnh nhỏ. Phân tích bắt đầu từ tích Jacobian của mạng hồi tiếp, sau đó đối chiếu với gradient và kết quả thực nghiệm.
 
 Với trạng thái hồi quy tổng quát $s_t=F_\theta(s_{t-1},x_t)$ và $J_t=\partial s_t/\partial s_{t-1}$, đóng góp từ loss cuối chuỗi thỏa
 \begin{equation}
@@ -307,7 +309,7 @@ Baseline dự đoán từ $h_T$. Biến thể mean pooling dùng $\bar h=T^{-1}\
 \left.\frac{\partial\ell}{\partial h_t}\right|_{\text{head}}
 =\frac1T W_o^\top(p-y).
 \end{equation}
-Đạo hàm tổng còn gồm các đường hồi quy về sau. Lợi ích tiềm năng là một trạng thái sớm không chỉ phụ thuộc vào việc tín hiệu đi qua toàn bộ chuỗi để tới head. Đổi lại, trung bình có thể làm mờ vị trí và trộn vùng nền vào biểu diễn. Learned position không được thêm cho E3; mạng hồi quy tự phụ thuộc thứ tự quét.
+Đạo hàm tổng còn gồm các đường hồi quy về sau. Lợi ích tiềm năng là một trạng thái sớm không chỉ phụ thuộc vào việc tín hiệu đi qua toàn bộ chuỗi để tới head. Đổi lại, trung bình có thể làm mờ vị trí và trộn vùng nền vào biểu diễn. Learned position không được thêm cho E3; mạng hồi tiếp tự phụ thuộc thứ tự quét.
 
 Clipping global norm được dùng cho tất cả baseline lẫn cải tiến:
 \begin{equation}
@@ -353,10 +355,9 @@ Các kiểm thử bao gồm forward/gradient của MSA, thứ tự token, unroll
 Ba seed cho phép quan sát biến thiên giữa các lượt khởi tạo. Phạm vi so sánh giới hạn ở một tập dữ liệu, ngân sách 30 epoch và các siêu tham số đã chọn. Các chuỗi 28/49 bước cũng ngắn hơn nhiều so với những bài toán phụ thuộc dài hạn.
 
 \section{Kết luận}
-Ba nhóm mô hình được hiện thực và đánh giá trên cùng Fashion-MNIST. Các đối chứng cho thấy ảnh hưởng của biểu diễn đầu vào, cơ chế xử lý và điều kiện khởi tạo trong cùng ngân sách huấn luyện.
 \IfFileExists{generated/conclusion.tex}{\input{generated/conclusion.tex}}{}
 
-Báo cáo sử dụng AI được đính kèm tại tệp \code{AI_USE_REPORT.md} trong repository.
+Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 
 \begin{thebibliography}{9}
 \addcontentsline{toc}{chapter}{Tài liệu tham khảo}

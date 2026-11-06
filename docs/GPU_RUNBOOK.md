@@ -60,7 +60,7 @@ Phần phân tích đối chiếu các nội dung: khoảng cách train/validati
 
 Chỉ commit source, config, bảng/figures tổng hợp, PDF và log cần để tái lập. Không commit data/raw hoặc checkpoint nặng. Có thể lưu checkpoint ngoài Git và ghi checksum/đường dẫn được phép chia sẻ. Trước nộp cần mở lại PDF và các link Pages, kiểm tra bảng không bị tràn, không còn kết luận dự kiến viết như sự thật.
 
-A1 được bổ sung theo đề thật trong `assignments/assignment1-vne.pdf`. Code và báo cáo riêng ở `src/A1/`; xem `src/A1/README.md`. A2 đã có đề nhưng chờ người học chọn paper.
+A1 được bổ sung theo đề thật trong `assignments/assignment1-vne.pdf`. Code và báo cáo riêng ở `src/A1/`; xem `src/A1/README.md`. A2 có giao thức riêng trên Oxford-IIIT Pet, xem mục cuối tài liệu này.
 
 ## Pipeline Vast của lượt ngày14/10/2026
 
@@ -71,3 +71,7 @@ Lượt Vast dùng `scripts.run_exercises_isolated` cho E1–E3: một child pro
 Sau complete, `scripts/watch_vast_training.py` tải báo cáo, evidence và checkpoint về workspace. `scripts/vast_finalize.py` kiểm tra đủ60+24 run, checkpoint/test signatures, tensor/file hashes, SHA256 bản sao và đúng endpoint rồi mới xóa instance đã được người học cho phép. Nếu job lỗi hoặc checksum/endpoint sai, máy được giữ để xử lý. Không tự thuê máy mới hoặc suy ra permission xóa một instance khác.
 
 Người học đã yêu cầu push sau khi train xong. Bước cuối kiểm tra PDF thực nghiệm, cập nhật code/PDF/LaTeX và evidence, rồi commit/push; raw data và checkpoint không vào Git. Heartbeat trong chat tiếp tục việc kiểm tra và phát hành khi run dài kết thúc.
+
+## Pipeline A2
+
+Quy trình chuẩn bị dữ liệu, huấn luyện, khóa checkpoint, đánh giá và xuất báo cáo ở [hướng dẫn A2](../src/A2/README.md). A2 ghi dữ liệu vào `data/a2_prepared/` và các lượt chạy vào `runs/assignment2/`. Sáu lượt hoàn tất trên RTX 3090. Mã nguồn, hash tensor và kết quả được ghi trong `reports/assignment2/generated/`. Bản sao checkpoint và kết quả khớp SHA-256 trước khi instance Vast.ai được xóa.

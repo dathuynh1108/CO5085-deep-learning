@@ -14,6 +14,12 @@ def test_static_site_copies_pdf_and_reports_actual_empty_status(tmp_path):
     expected = 'Báo cáo chưa có kết quả thực nghiệm' if manifest['train_runs'] == 0 else f"{manifest['train_runs']} lượt huấn luyện"
     assert expected in text
     assert (target / 'reports/exercises.pdf').is_file()
+    assert 'href="a2.html"' in text
+    a2 = (target / 'a2.html').read_text()
+    assert '10.1109/CVPR52729.2023.01871' in a2 and 'Trộn theo biên</th>' in a2
+    assert '<!--A2_RESULTS-->' not in a2
+    assert (target / 'reports/assignment2.pdf').is_file()
+    assert (target / 'a2-media/demo.mp4').is_file()
     assert (target / 'results.json').is_file()
     assert 'href="favicon.svg"' in text
     assert (target / 'favicon.svg').is_file()

@@ -5,7 +5,7 @@ Read `docs/REQUIREMENTS.md` and `docs/GPU_RUNBOOK.md` before changes.
 
 - E1–E3 classify the same Fashion-MNIST images. LSTM/GRU consume image rows or patches, not text.
 - E1–E3: no pretrained weights or model zoo backbone. All coursework uses explicit training loops, not high-level Trainer or `trainer.fit`.
-- A1 follows `assignments/assignment1-vne.pdf`: torchvision CNN/Transformer and pretrained weights are allowed. Keep A1 code, runs and report separate from E1–E3; A2 waits for the student's topic/paper selection.
+- A1 follows `assignments/assignment1-vne.pdf`: torchvision CNN/Transformer and pretrained weights are allowed. Keep A1 code, runs and report separate from E1–E3; A2 uses Oxford-IIIT Pet and studies the Bag fusion mechanism from PIDNet (CVPR 2023). Keep A2 code, runs and report separate.
 - Manual MSA must remain primitive Linear/matmul/softmax/head concatenation. Keep the native reference separately.
 - Use validation for checkpoint/model decisions. Explicitly confirm held-out test evaluation only after freezing the protocol.
 - Never fabricate measurements, copy reference-repo results or describe an untrained improvement as successful.
@@ -17,6 +17,6 @@ Read `docs/REQUIREMENTS.md` and `docs/GPU_RUNBOOK.md` before changes.
 - Write all reports in neutral Vietnamese academic prose, with minimal personal pronouns (no repeated "tôi"). Present methods and measured findings directly; avoid handoff instructions, third-person advice to the student, integrity lectures, or discussion of supplied templates. In each main report, keep AI disclosure to one sentence linking `AI_USE_REPORT.md`; retain the substantive, accurate disclosure in that separate file. Apply this style to generated analysis as well as LaTeX source.
 - Keep `AI_USE_REPORT.md` accurate about assistance, student-supplied decisions and actual checks; do not claim student implementation or measurements without evidence.
 
-- Current layout: Python packages in `src/`, E1–E3 reports in `reports/exercises/`, A1 reports in `reports/assignment1/`; see `docs/REPOSITORY_LAYOUT.md`. Install `pip install --no-deps -e .` before module commands. Historical measurements and source snapshots keep original bytes and signatures; use explicit `--archive` only to read the verified published source. Never enable archive identities for training/resume.
+- Current layout: Python packages in `src/`, E1–E3 reports in `reports/exercises/`, A1 and A2 reports in `reports/assignment1/` and `reports/assignment2/`; see `docs/REPOSITORY_LAYOUT.md`. Install `pip install --no-deps -e .` before module commands. Historical measurements and source snapshots keep original bytes and signatures; use explicit `--archive` only to read the verified published source. Never enable archive identities for training/resume.
 
 - Website copy follows the same neutral Vietnamese academic register as reports. Use descriptive headings about methods, data, settings or findings. Avoid slogans, rhetorical fragments, isolated italic words in headings, handoff commentary, and unnecessary English in narrative text. Keep model names and established technical terms precise.

@@ -1,6 +1,7 @@
 """Build the course site from separate reports and verified measured summaries."""
 from pathlib import Path
 import argparse
+import hashlib
 import html
 import json
 import re
@@ -46,6 +47,34 @@ def result_markup(exercises, assignment):
     return ''.join(rows), ''.join(a1)
 
 
+def a2_markup(report):
+    generated = report / 'generated'
+    manifest = json.loads((generated / 'manifest.json').read_text())
+    summary_bytes = (generated / 'summary.json').read_bytes()
+    if hashlib.sha256(summary_bytes).hexdigest() != manifest['summary_sha256']:
+        raise ValueError('A2 summary does not match the experiment manifest.')
+    summary = json.loads(summary_bytes)
+    if not manifest['trained_runs'] == manifest['tested_runs'] == summary['test_runs']:
+        raise ValueError('A2 requires complete training and evaluation evidence.')
+    names = {'fixed': 'Trộn cố định', 'guided': 'Trộn theo biên'}
+    rows = []
+    for variant, name in names.items():
+        group = summary['groups'][variant]
+        values = [accuracy_text(group[key]['mean'], group[key]['sd']).replace('.', ',')
+                  for key in ['miou', 'macro_dice', 'transition_iou']]
+        rows.append(f'<tr><th scope="row">{name}</th>' +
+                    ''.join(f'<td>{value}</td>' for value in values) + '</tr>')
+    status = (f'{manifest["trained_runs"]} lượt huấn luyện và '
+              f'{manifest["tested_runs"]} lượt đánh giá trên tập kiểm tra.')
+    difference = summary['guided_minus_fixed']
+    delta = f'{100 * difference["miou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
+    edge = f'{100 * difference["transition_iou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
+    finding = (f'Chênh lệch trung bình khi chuyển từ trộn cố định sang trộn theo biên là {delta} điểm phần trăm '
+               f'mIoU và {edge} điểm phần trăm IoU dải chuyển tiếp. Chênh lệch được tính theo cặp cùng hạt giống.')
+    return [('A2_STATUS', html.escape(status)), ('A2_RESULTS', ''.join(rows)),
+            ('A2_FINDING', html.escape(finding))]
+
+
 def build_site(output: Path) -> Path:
     output = Path(output).resolve()
     protected = [ROOT, ROOT / 'site', ROOT / 'src', ROOT / 'reports']
@@ -54,6 +83,7 @@ def build_site(output: Path) -> Path:
     output.mkdir(parents=True, exist_ok=True)
     ex = ROOT / 'reports/exercises'
     a1 = ROOT / 'reports/assignment1'
+    a2 = ROOT / 'reports/assignment2'
     manifest = json.loads((ex / 'generated/manifest.json').read_text())
     am = json.loads((a1 / 'generated/manifest.json').read_text())
     summaries = json.loads((ex / 'generated/summary.json').read_text())
@@ -63,19 +93,26 @@ def build_site(output: Path) -> Path:
     status = ('Báo cáo chưa có kết quả thực nghiệm.' if not count else
               f'Đã tổng hợp {count} lượt huấn luyện và {manifest["test_runs"]} lượt đánh giá trên tập kiểm tra Fashion-MNIST.')
     a1_status = f'{am["trained_runs"]} lượt huấn luyện · {am["tested_runs"]} lượt đánh giá trên tập kiểm tra'
-    for name in ['index.html', 'a1.html']:
+    replacements = [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),
+                    ('RESULTS', result_rows), ('A1_RESULTS', a1_rows)] + a2_markup(a2)
+    for name in ['index.html', 'a1.html', 'a2.html']:
         source = (ROOT / 'site' / name).read_text()
-        for token, value in [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),
-                             ('RESULTS', result_rows), ('A1_RESULTS', a1_rows)]:
+        for token, value in replacements:
             source = re.sub(rf'<!--{token}-->.*?<!--/{token}-->', lambda _: value, source, flags=re.DOTALL)
         (output / name).write_text(source)
     for name in ['styles.css', 'app.js', 'favicon.svg']:
         shutil.copy2(ROOT / 'site' / name, output / name)
     (output / 'reports').mkdir(exist_ok=True)
-    for origin, name in [(ex / 'exercises.pdf', 'exercises.pdf'), (a1 / 'assignment1.pdf', 'assignment1.pdf')]:
-        shutil.copy2(origin, output / 'reports' / name)
+    for directory, name in [(ex, 'exercises.pdf'), (a1, 'assignment1.pdf'), (a2, 'assignment2.pdf')]:
+        shutil.copy2(directory / name, output / 'reports' / name)
+    media = output / 'a2-media'
+    media.mkdir(exist_ok=True)
+    for name in ['dataset.png', 'examples.png']:
+        shutil.copy2(a2 / 'generated/figures' / name, media / name)
+    shutil.copy2(a2 / 'demo.mp4', media / 'demo.mp4')
     shutil.copy2(ex / 'generated/summary.json', output / 'results.json')
     shutil.copy2(a1 / 'generated/summary.json', output / 'a1-results.json')
+    shutil.copy2(a2 / 'generated/summary.json', output / 'a2-results.json')
     (output / '.nojekyll').touch()
     return output
 
