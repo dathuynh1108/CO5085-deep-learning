@@ -22,7 +22,7 @@
 Bài toán & Phân đoạn vật thể, nền và dải chuyển tiếp trên Oxford-IIIT Pet.\\
 Bài báo & PIDNet của Xu, Xiong và Bhattacharyya, IEEE/CVF CVPR 2023 \cite{pidnet}.\\
 Đối chứng & ResNet18 dùng chung kiến trúc và giám sát biên. Hai biến thể lần lượt dùng tỷ lệ 50/50 và hệ số trộn theo vị trí.\\
-Phép đo & mIoU, macro-Dice và IoU theo vùng trên 3.669 ảnh kiểm tra. Mỗi biến thể chạy ba hạt giống.\\
+Phép đo & mIoU, macro-Dice và IoU theo vùng trên 3.669 ảnh test. Mỗi biến thể chạy ba seed.\\
 Kết quả chính & mIoU của trộn cố định và trộn theo biên lần lượt là 77,88\% và 77,78\%.\\
 Đối chiếu & Bảng kết quả công bố và thí nghiệm A2 đối chiếu hướng thay đổi của mIoU trong từng giao thức.\\
 }
@@ -32,7 +32,7 @@ Kết quả chính & mIoU của trộn cố định và trộn theo biên lần 
 \chapter{Câu hỏi nghiên cứu}
 Phân đoạn ảnh yêu cầu xác định vùng của từng điểm ảnh. Đặc trưng ở độ phân giải thấp giúp nhận ra vật thể trong ngữ cảnh chung, nhưng khi đưa trở lại lưới ảnh, chúng có thể làm mờ đường viền. Đặc trưng ở độ phân giải cao giữ nhiều chi tiết hơn và cũng dễ phản ứng với hoa văn của lông hoặc nền. Hai nguồn thông tin vì vậy có giá trị khác nhau ở phần trong của vật thể và vùng chuyển tiếp giữa vật thể với nền.
 
-Bài tập kiểm tra ý tưởng trộn đặc trưng theo bản đồ biên trong PIDNet của Xu, Xiong và Bhattacharyya \cite{pidnet}. Câu hỏi thực nghiệm là liệu phép trộn thay đổi theo vị trí có tăng IoU của dải chuyển tiếp trên Oxford-IIIT Pet khi cả hai mô hình đã được giám sát bằng nhãn vùng này. IoU theo từng vùng được đọc cùng mIoU và Dice để xác định mức cải thiện ở vùng hẹp có đi kèm thay đổi ở phần trong và nền hay không.
+Bài tập test ý tưởng trộn đặc trưng theo bản đồ biên trong PIDNet của Xu, Xiong và Bhattacharyya \cite{pidnet}. Câu hỏi thực nghiệm là liệu phép trộn thay đổi theo vị trí có tăng IoU của dải chuyển tiếp trên Oxford-IIIT Pet khi cả hai mô hình đã được giám sát bằng nhãn vùng này. IoU theo từng vùng được đọc cùng mIoU và Dice để xác định mức cải thiện ở vùng hẹp có đi kèm thay đổi ở phần trong và nền hay không.
 
 \chapter{Phân tích PIDNet}
 \section{Giới hạn của các mạng hai nhánh}
@@ -83,9 +83,9 @@ Hàm mục tiêu của paper gồm cross-entropy ở đầu ra phụ và đầu 
 
 \section{Thí nghiệm gốc và phạm vi kết luận}
 
-Bài báo đánh giá mIoU trên Cityscapes, CamVid và PASCAL Context. Với Cityscapes, tác giả dùng ảnh $2048\times1024$ và báo cáo PIDNet-S đạt 78,6\% mIoU trên tập kiểm tra, ở 93,2 FPS trong phép đo với RTX 3090, batch 1 và gộp BatchNorm vào tích chập. Trên CamVid, mô hình này đạt 80,1\% mIoU sau khi khởi tạo từ trọng số Cityscapes. Điều kiện khởi tạo cần được tính đến khi so sánh với mô hình học từ nguồn khác. PIDNet-L đạt 80,6\% trên Cityscapes test ở 31,1 FPS, phản ánh chi phí của biến thể lớn. Trên PASCAL Context, PIDNet-L đạt 51,9\% mIoU ở giao thức 59 lớp với suy luận đa tỷ lệ và lật ảnh, so với 54,0\% của HRNet-W48 trong Bảng~7. Kết quả này cho thấy lợi thế phụ thuộc bộ dữ liệu và chế độ suy luận.
+Bài báo đánh giá mIoU trên Cityscapes, CamVid và PASCAL Context. Với Cityscapes, tác giả dùng ảnh $2048\times1024$ và báo cáo PIDNet-S đạt 78,6\% mIoU trên tập test, ở 93,2 FPS trong phép đo với RTX 3090, batch 1 và gộp BatchNorm vào tích chập. Trên CamVid, mô hình này đạt 80,1\% mIoU sau khi khởi tạo từ trọng số Cityscapes. Điều kiện khởi tạo cần được tính đến khi so sánh với mô hình học từ nguồn khác. PIDNet-L đạt 80,6\% trên Cityscapes test ở 31,1 FPS, phản ánh chi phí của biến thể lớn. Trên PASCAL Context, PIDNet-L đạt 51,9\% mIoU ở giao thức 59 lớp với suy luận đa tỷ lệ và lật ảnh, so với 54,0\% của HRNet-W48 trong Bảng~7. Kết quả này cho thấy lợi thế phụ thuộc bộ dữ liệu và chế độ suy luận.
 
-Đối chứng trong Bảng~1 của paper cho thấy thêm nhánh biên và Bag vào BiSeNet dùng ResNet18 tăng mIoU xác thực Cityscapes từ 75,4\% lên 76,7\%, đồng thời giảm tốc độ từ 63,2 xuống 52,1 FPS. Hai thành phần được thêm cùng lúc nên mức tăng này chưa tách riêng tác dụng của phép trộn. Bảng~3 giữ PAPPM và so sánh phép cộng với Light-Bag trên PIDNet-S. mIoU tăng từ 78,4\% lên 78,8\%, còn FPS giảm từ 97,8 xuống 93,2. Kết quả thể hiện sự đánh đổi giữa độ chính xác và tốc độ ngay trong cùng một họ kiến trúc.
+Đối chứng trong Bảng~1 của paper cho thấy thêm nhánh biên và Bag vào BiSeNet dùng ResNet18 tăng mIoU trên tập validation của Cityscapes từ 75,4\% lên 76,7\%, đồng thời giảm tốc độ từ 63,2 xuống 52,1 FPS. Hai thành phần được thêm cùng lúc nên mức tăng này chưa tách riêng tác dụng của phép trộn. Bảng~3 giữ PAPPM và so sánh phép cộng với Light-Bag trên PIDNet-S. mIoU tăng từ 78,4\% lên 78,8\%, còn FPS giảm từ 97,8 xuống 93,2. Kết quả thể hiện sự đánh đổi giữa độ chính xác và tốc độ ngay trong cùng một họ kiến trúc.
 
 Trong chuỗi ablation ở Bảng~4, việc bổ sung loss biên có trọng số tăng mIoU từ 78,8\% lên 79,9\% khi loss ngữ nghĩa phụ đã có. Mức tăng là hiệu ứng đo được ở cấu hình đó. Tác giả cũng lưu ý mô hình cần nhãn biên đủ chính xác. Các bảng mIoU gộp toàn ảnh nên khó xác định phần cải thiện nằm sát biên, trên vật thể nhỏ hay ở vùng trong. Phép đo FPS còn phụ thuộc độ phân giải, phần cứng và cấu hình suy luận. Ở ảnh thú cưng, lông, bóng đổ và nền có hoa văn tạo nhiều biến thiên cục bộ; đáp ứng cao ở các vùng này có thể dẫn đến ưu tiên chi tiết ngay cả khi nhãn thực thuộc vùng nền. Thí nghiệm dưới đây đo riêng sai số vùng chuyển tiếp để kiểm tra giới hạn đó.
 
@@ -93,7 +93,7 @@ Trong chuỗi ablation ở Bảng~4, việc bổ sung loss biên có trọng s�
 \section{Dữ liệu và phân tích khám phá}
 Oxford-IIIT Pet có 7.349 ảnh với 37 giống chó và mèo, kích thước và tư thế đa dạng \cite{pets,petsdata}. Mỗi ảnh có trimap, trong đó giá trị 1 là vật thể, 2 là nền và 3 là vùng chưa phân loại. Báo cáo gọi nhãn 3 là \emph{dải chuyển tiếp} và dùng nó làm tín hiệu gần đúng cho biên. Nhãn giống chỉ phục vụ việc chia tập. Tập dữ liệu được công bố theo CC BY-SA 4.0 trên trang của Oxford. Quyền tác giả ảnh thuộc về chủ sở hữu gốc.
 
-Từ 3.680 ảnh trong tập huấn luyện/xác thực chính thức, chọn 10 ảnh mỗi giống làm tập xác thực bằng hạt giống 2026. Phần còn lại gồm 3.310 ảnh dùng để cập nhật trọng số. Tập kiểm tra chính thức gồm 3.669 ảnh được giữ riêng. So sánh SHA-256 của kích thước và pixel RGB giải mã cho thấy không có ảnh trùng chính xác giữa các tập. Kiểm tra này chỉ phát hiện ảnh trùng pixel.
+Từ 3.680 ảnh trong tập huấn luyện/validation chính thức, chọn 10 ảnh mỗi giống làm tập validation bằng seed 2026. Phần còn lại gồm 3.310 ảnh dùng để cập nhật trọng số. Tập test chính thức gồm 3.669 ảnh được giữ riêng. So sánh SHA-256 của kích thước và pixel RGB giải mã cho thấy không có ảnh trùng chính xác giữa các tập. Kiểm tra này chỉ phát hiện ảnh trùng pixel.
 
 \input{generated/data_analysis.tex}
 
@@ -107,7 +107,7 @@ Từ 3.680 ảnh trong tập huấn luyện/xác thực chính thức, chọn 10
 \section{Cài đặt và giao thức đánh giá}
 \subsection{Tiền xử lý}
 
-Cạnh dài của ảnh được nội suy về 192 pixel, giữ tỷ lệ khung hình và đệm bên phải hoặc phía dưới để có đầu vào $192\times192$. Ảnh RGB dùng nội suy song tuyến tính, còn trimap dùng láng giềng gần nhất để giữ giá trị nhãn. Nhãn đệm được bỏ qua trong hàm mục tiêu và phép đo. Tập huấn luyện xáo thứ tự và lật ngang đồng thời ảnh và mặt nạ với xác suất 0,5. Các tập xác thực và kiểm tra dùng phép biến đổi cố định. Chuẩn hóa RGB sử dụng trung bình và độ lệch chuẩn ImageNet.
+Cạnh dài của ảnh được nội suy về 192 pixel, giữ tỷ lệ khung hình và đệm bên phải hoặc phía dưới để có đầu vào $192\times192$. Ảnh RGB dùng nội suy song tuyến tính, còn trimap dùng láng giềng gần nhất để giữ giá trị nhãn. Nhãn đệm được bỏ qua trong hàm mục tiêu và phép đo. Tập huấn luyện xáo thứ tự và lật ngang đồng thời ảnh và mặt nạ với xác suất 0,5. Các tập validation và kiểm tra dùng phép biến đổi cố định. Chuẩn hóa RGB sử dụng trung bình và độ lệch chuẩn ImageNet.
 
 \subsection{Hai biến thể có cùng cấu trúc}
 
@@ -139,11 +139,11 @@ Với $\Omega$ là các điểm ảnh có nhãn, hàm mục tiêu là cross-entr
 \]
 Nếu một nhóm rỗng trong batch, đóng góp của nhóm đó bằng 0. Việc lấy trung bình riêng giúp dải chuyển tiếp vẫn đóng góp vào gradient dù chiếm ít điểm ảnh. Khác với loss có ngưỡng của PIDNet, thành phần CE ở đây luôn tính trên toàn bộ $\Omega$. Tín hiệu biên của bản trộn theo biên còn nhận gradient qua loss chính vì phép trộn khả vi.
 
-Mỗi biến thể chạy 12 epoch với ba hạt giống 42, 43 và 44. Batch size là 32. AdamW dùng hệ số suy giảm trọng số $10^{-4}$ và tốc độ học ban đầu $2\times10^{-4}$ cho bộ mã hóa, $10^{-3}$ cho các đầu mới. Tốc độ học giảm theo cosine sau mỗi epoch. Vòng lặp gọi trực tiếp forward, tính loss, lan truyền ngược và cập nhật trọng số. Phép đo dùng NVIDIA GeForce RTX 3090, BF16 autocast với loss tính bằng FP32, 6 worker tải dữ liệu và 2 luồng CPU của PyTorch. Môi trường gồm PyTorch 2.14.1, torchvision 0.29.1 và CUDA 13.2.
+Mỗi biến thể chạy 12 epoch với ba seed 42, 43 và 44. Batch size là 32. AdamW dùng hệ số suy giảm trọng số $10^{-4}$ và tốc độ học ban đầu $2\times10^{-4}$ cho bộ mã hóa, $10^{-3}$ cho các đầu mới. Tốc độ học giảm theo cosine sau mỗi epoch. Vòng lặp gọi trực tiếp forward, tính loss, lan truyền ngược và cập nhật trọng số. Phép đo dùng NVIDIA GeForce RTX 3090, BF16 autocast với loss tính bằng FP32, 6 worker tải dữ liệu và 2 luồng CPU của PyTorch. Môi trường gồm PyTorch 2.14.1, torchvision 0.29.1 và CUDA 13.2.
 
 \subsection{Chỉ số và kiểm soát so sánh}
 
-Mỗi lượt chọn checkpoint có mIoU xác thực cao nhất. Khi bằng nhau, chọn epoch sớm hơn. Sau khi cả sáu lượt hoàn tất, cấu hình, dữ liệu và checkpoint được đối chiếu bằng SHA-256 rồi khóa trước bước đánh giá trên tập kiểm tra.
+Mỗi lượt chọn checkpoint có mIoU trên tập validation cao nhất. Khi bằng nhau, chọn epoch sớm hơn. Sau khi cả sáu lượt hoàn tất, cấu hình, dữ liệu và checkpoint được đối chiếu bằng SHA-256 rồi khóa trước bước đánh giá trên tập test.
 
 Với mỗi lớp $c$, lấy $TP_c$, $FP_c$ và $FN_c$ từ ma trận đếm điểm ảnh trên toàn tập. Các chỉ số được tính như sau:
 \[
@@ -156,19 +156,19 @@ mIoU và macro-Dice là trung bình đều trên ba lớp. Cách gộp này cho 
 \section{So sánh các biến thể}
 \input{generated/results.tex}
 
-Các checkpoint được chọn ở epoch 8--11 trong lịch 12 epoch. Đường cong ở Hình~\ref{fig:curves} cho thấy phần lớn mức tăng mIoU xác thực đến từ những epoch đầu. Hai đường sau đó tiến gần nhau, với mức dao động lớn hơn ở IoU dải chuyển tiếp. Kết quả vì vậy được đọc theo từng cặp hạt giống và theo từng vùng.
+Các checkpoint được chọn ở epoch 8--11 trong lịch 12 epoch. Đường cong ở Hình~\ref{fig:curves} cho thấy phần lớn mức tăng mIoU trên tập validation đến từ những epoch đầu. Hai đường sau đó tiến gần nhau, với mức dao động lớn hơn ở IoU dải chuyển tiếp. Kết quả vì vậy được đọc theo từng cặp seed và theo từng vùng.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.95\linewidth]{generated/figures/curves.png}
-\caption{mIoU xác thực và IoU dải chuyển tiếp theo epoch. Đường đậm là trung bình của ba hạt giống, vùng mờ biểu diễn một độ lệch chuẩn mẫu.}
+\caption{mIoU trên tập validation và IoU dải chuyển tiếp theo epoch. Đường đậm là trung bình của ba seed, vùng mờ biểu diễn một độ lệch chuẩn mẫu.}
 \label{fig:curves}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{generated/figures/examples.png}
-\caption{Ví dụ từ tập kiểm tra với hạt giống 42. Xanh lá là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp. Bản đồ bên phải là hệ số trộn của biến thể theo biên. Ảnh và trimap gốc từ Oxford-IIIT Pet, CC BY-SA 4.0 \cite{petsdata}.}
+\caption{Ví dụ từ tập test với seed 42. Xanh lá là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp. Bản đồ bên phải là hệ số trộn của biến thể theo biên. Ảnh và trimap gốc từ Oxford-IIIT Pet, CC BY-SA 4.0 \cite{petsdata}.}
 \label{fig:examples}
 \end{figure}
 
@@ -182,12 +182,12 @@ Các checkpoint được chọn ở epoch 8--11 trong lịch 12 epoch. Đường
 \toprule
 Thí nghiệm & Điều kiện đối chứng & mIoU trước/sau (\%) & Chênh lệch (đpt)\\
 \midrule
-PIDNet, Bảng 1 & Cityscapes xác thực, BiSeNet--ResNet18, thêm nhánh biên và Bag. & $75{,}4 / 76{,}7$ & $+1{,}3$\\
+PIDNet, Bảng 1 & Cityscapes (validation), BiSeNet--ResNet18, thêm nhánh biên và Bag. & $75{,}4 / 76{,}7$ & $+1{,}3$\\
 PIDNet, Bảng 3 & Cityscapes, PIDNet-S giữ PAPPM, thay phép cộng bằng Light-Bag. & $78{,}4 / 78{,}8$ & $+0{,}4$\\
-A2 & Oxford-IIIT Pet kiểm tra, ResNet18 giữ giám sát biên, thay trộn 50/50 bằng trộn theo biên. & $77{,}88 / 77{,}78$ & $-0{,}11$\\
+A2 & Oxford-IIIT Pet (test), ResNet18 giữ giám sát biên, thay trộn 50/50 bằng trộn theo biên. & $77{,}88 / 77{,}78$ & $-0{,}11$\\
 \bottomrule
 \end{tabularx}
-\caption{Đối chiếu tác động của phép trộn trong bài báo gốc \cite{pidnet} và A2. Đpt là điểm phần trăm. Giá trị A2 là trung bình qua ba hạt giống, chênh lệch tính trước khi làm tròn.}
+\caption{Đối chiếu tác động của phép trộn trong bài báo gốc \cite{pidnet} và A2. Đpt là điểm phần trăm. Giá trị A2 là trung bình qua ba seed, chênh lệch tính trước khi làm tròn.}
 \label{tab:paper-comparison}
 \end{table}
 
@@ -195,7 +195,7 @@ Bảng~\ref{tab:paper-comparison} đối chiếu chênh lệch mIoU trong từng
 
 \section{Lặp lại thực nghiệm trên RTX 5090}
 
-\href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb}{Notebook A2} chạy lại sáu lượt huấn luyện với lịch 12 epoch và cùng các hạt giống. Trên RTX 5090, mIoU kiểm tra của trộn cố định và trộn theo biên lần lượt là $77{,}88\pm0{,}09$\% và $77{,}79\pm0{,}10$\%. Macro-Dice tương ứng là 86,52\% và 86,46\%. Chênh lệch mIoU theo cặp là $-0{,}09$ điểm phần trăm, cùng chiều với phép đo trên RTX 3090. Hai lần thực nghiệm đều cho thấy việc điều tiết phép trộn bằng đầu biên chưa cải thiện mIoU trên trimap Oxford-IIIT Pet trong cấu hình đã khảo sát.
+\href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb}{Notebook A2} chạy lại sáu lượt huấn luyện với lịch 12 epoch và cùng các seed. Trên RTX 5090, mIoU kiểm tra của trộn cố định và trộn theo biên lần lượt là $77{,}88\pm0{,}09$\% và $77{,}79\pm0{,}10$\%. Macro-Dice tương ứng là 86,52\% và 86,46\%. Chênh lệch mIoU theo cặp là $-0{,}09$ điểm phần trăm, cùng chiều với phép đo trên RTX 3090. Hai lần thực nghiệm đều cho thấy việc điều tiết phép trộn bằng đầu biên chưa cải thiện mIoU trên trimap Oxford-IIIT Pet trong cấu hình đã khảo sát.
 
 \chapter{Kết luận và giới hạn}
 \input{generated/conclusion.tex}

@@ -53,9 +53,9 @@ def write_exercises():
             for name in ['summary.json', 'temporal_gradients.csv']:
                 shutil.copy2(diagnostics / name, destination / 'diagnostics' / name)
     hardware = records[0]['environment']
-    introductory = (f'Thí nghiệm dùng ba hạt giống 42, 43 và 44 trên {latex_escape(hardware["device_name"])} với '
+    introductory = (f'Thí nghiệm dùng ba seed 42, 43 và 44 trên {latex_escape(hardware["device_name"])} với '
                     f'PyTorch {latex_escape(hardware["torch"])} và CUDA runtime {latex_escape(hardware["cuda_runtime"])}. '
-                    'Chênh lệch giữa hai cấu hình được tính theo cặp cùng hạt giống, rồi lấy trung bình và độ lệch chuẩn mẫu.\n\n')
+                    'Chênh lệch giữa hai cấu hình được tính theo cặp cùng seed, rồi lấy trung bình và độ lệch chuẩn mẫu.\n\n')
     e1 = [introductory]
     for identifier in ['e1_softmax', 'e1_mlp', 'e1_cnn']:
         row = by_id[identifier]
@@ -64,10 +64,10 @@ def write_exercises():
         for run in own:
             with (run['directory'] / 'history.csv').open() as stream:
                 histories.append(list(csv.DictReader(stream))[-1])
-        e1.append(f'{latex_escape(row["label"])} đạt độ chính xác kiểm tra '
+        e1.append(f'{latex_escape(row["label"])} đạt độ chính xác trên tập test '
                   f'$({100 * row["test_accuracy_mean"]:.2f} \\pm {100 * row["test_accuracy_std"]:.2f})\\%$, '
                   f'và macro-F1 {row["test_macro_f1_mean"]:.4f}. '
-                  f'Cross-entropy trung bình ở epoch cuối trên tập huấn luyện và xác thực lần lượt là '
+                  f'Cross-entropy trung bình ở epoch cuối trên tập huấn luyện và validation lần lượt là '
                   f'{statistics.mean(float(h["train_ce"]) for h in histories):.4f} và '
                   f'{statistics.mean(float(h["validation_ce"]) for h in histories):.4f}.'
                   '\n\n')
@@ -78,10 +78,10 @@ def write_exercises():
     e1.append('MLP bổ sung các lớp phi tuyến. CNN giữ cấu trúc hai chiều, chia sẻ trọng số tích chập và gộp cục bộ. '
               'Xếp hạng đã đo phù hợp với lợi ích của các biểu diễn này trên ảnh nhỏ. '
               'Khác biệt về số tham số và regularization cũng góp phần vào kết quả của từng kiến trúc.\n\n')
-    e1.append('CNN đạt độ chính xác kiểm tra cao nhất, đồng thời có khoảng cách cross-entropy lớn '
-              'giữa tập huấn luyện và xác thực ở epoch 30. Các dự đoán sai có độ tin cậy cao '
-              'cho thấy mô hình vẫn có thể gán xác suất lớn cho lớp nhầm. Kết quả kiểm tra '
-              'được tính tại checkpoint đã chọn bằng tập xác thực.\n\n')
+    e1.append('CNN đạt độ chính xác trên tập test cao nhất, đồng thời có khoảng cách cross-entropy lớn '
+              'giữa tập huấn luyện và validation ở epoch 30. Các dự đoán sai có độ tin cậy cao '
+              'cho thấy mô hình vẫn có thể gán xác suất lớn cho lớp nhầm. Kết quả trên tập test '
+              'được tính tại checkpoint đã chọn bằng tập validation.\n\n')
     cnn = next(r for r in records if r['experiment']['id'] == 'e1_cnn' and r['seed'] == 42)
     matrix = cnn['test']['confusion_matrix']
     a, b = max(((i, j) for i in range(10) for j in range(10) if i != j), key=lambda pair: matrix[pair[0]][pair[1]])
@@ -95,14 +95,14 @@ def write_exercises():
         first, second = f'e2_{tokenizer}_torch', f'e2_{tokenizer}_manual'
         mean, sd, _ = paired_delta(records, first, second)
         a, b = by_id[first], by_id[second]
-        e2.append(f'Với {tokenizer_labels[tokenizer]}, chênh lệch độ chính xác kiểm tra giữa bản PyTorch và bản tự viết là '
+        e2.append(f'Với {tokenizer_labels[tokenizer]}, chênh lệch độ chính xác trên tập test giữa bản PyTorch và bản tự viết là '
                   f'{delta_text(mean, sd)}. Trung bình các trung vị thời gian mỗi epoch của hai bản lần lượt là '
                   f'{a["median_train_seconds_mean"]:.2f} và {b["median_train_seconds_mean"]:.2f} giây.\n\n')
     best = max((r for r in rows if r['exercise'] == 'E2'), key=lambda r: r['test_accuracy_mean'])
     _, best_tokenizer, best_backend = best['id'].split('_')
     backend_label = 'bản tự viết' if best_backend == 'manual' else 'bản PyTorch'
     e2.append(f'Trong sáu cấu hình, {backend_label} với {tokenizer_labels[best_tokenizer]} '
-              f'có độ chính xác kiểm tra trung bình cao nhất, đạt {percent(best["test_accuracy_mean"])}.\n\n')
+              f'có độ chính xác trên tập test trung bình cao nhất, đạt {percent(best["test_accuracy_mean"])}.\n\n')
     for second in ['e2_rows_manual', 'e2_patches_manual']:
         mean, sd, _ = paired_delta(records, 'e2_cnn_manual', second)
         e2.append(f'Khi dùng cùng bản attention tự viết, CNN-stem tăng độ chính xác so với '
@@ -197,8 +197,8 @@ def write_a1(*, source_files=None):
     target = ROOT / 'reports/assignment1/generated'
     summary = json.loads((target / 'summary.json').read_text())['groups']
     groups = {r['experiment']: r for r in summary}
-    paragraphs = ['Mỗi cấu hình được chạy với ba hạt giống 42, 43 và 44. '
-                  'Chênh lệch độ chính xác được tính theo cặp cùng hạt giống. '
+    paragraphs = ['Mỗi cấu hình được chạy với ba seed 42, 43 và 44. '
+                  'Chênh lệch độ chính xác được tính theo cặp cùng seed. '
                   'Giá trị sau dấu $\\pm$ là độ lệch chuẩn mẫu.\n\n']
     family_labels = {'resnet18': 'ResNet18', 'swin_t': 'Swin-T'}
     regime_labels = {'scratch': 'Scratch', 'head': 'Head-only', 'partial': 'Partial', 'full': 'Full'}

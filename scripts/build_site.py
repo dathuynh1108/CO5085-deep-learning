@@ -69,12 +69,12 @@ def a2_markup(report):
         rows.append(f'<tr><th scope="row">{name}</th>' +
                     ''.join(f'<td>{value}</td>' for value in values) + '</tr>')
     status = (f'{manifest["trained_runs"]} lượt huấn luyện và '
-              f'{manifest["tested_runs"]} lượt đánh giá trên tập kiểm tra.')
+              f'{manifest["tested_runs"]} lượt đánh giá trên tập test.')
     difference = summary['guided_minus_fixed']
     delta = f'{100 * difference["miou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
     edge = f'{100 * difference["transition_iou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
     finding = (f'Chênh lệch trung bình khi chuyển từ trộn cố định sang trộn theo biên là {delta} điểm phần trăm '
-               f'mIoU và {edge} điểm phần trăm IoU dải chuyển tiếp. Chênh lệch được tính theo cặp cùng hạt giống.')
+               f'mIoU và {edge} điểm phần trăm IoU dải chuyển tiếp. Chênh lệch được tính theo cặp cùng seed.')
     return [('A2_STATUS', html.escape(status)), ('A2_RESULTS', ''.join(rows)),
             ('A2_FINDING', html.escape(finding))]
 
@@ -98,10 +98,10 @@ def build_site(output: Path) -> Path:
     count = sum(row['n_train_runs'] for row in summaries)
     tested = sum(row['n_test_runs'] for row in summaries)
     status = ('Báo cáo chưa có kết quả thực nghiệm.' if not count else
-              f'Đã tổng hợp {count} lượt huấn luyện và {tested} lượt đánh giá trên tập kiểm tra Fashion-MNIST.')
+              f'Đã tổng hợp {count} lượt huấn luyện và {tested} lượt đánh giá trên tập test Fashion-MNIST.')
     a1_trained = am['trained_runs'] + followup_manifest['trained_runs']
     a1_tested = am['tested_runs'] + followup_manifest['tested_runs']
-    a1_status = f'{a1_trained} lượt huấn luyện · {a1_tested} lượt đánh giá trên tập kiểm tra'
+    a1_status = f'{a1_trained} lượt huấn luyện · {a1_tested} lượt đánh giá trên tập test'
     replacements = [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),
                     ('RESULTS', result_markup(summaries)), ('A1_RESULTS', a1_table_rows(assignment)),
                     ('A1_FOLLOWUP', a1_table_rows(followup))] + a2_markup(a2)

@@ -5,9 +5,9 @@ Bài làm cá nhân. Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh.
 
 Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/MLP/CNN, attention với nhiều cách chia token, và LSTM/GRU khi biểu diễn ảnh thành chuỗi. Tất cả mô hình được khởi tạo mới; không tải trọng số pretrained.
 
-**Kết quả E1–E3.** Ba notebook đã huấn luyện và đánh giá 39 lượt trên RTX 5090. CNN đạt độ chính xác kiểm tra trung bình 92,62% ± 0,06 điểm phần trăm qua ba hạt giống. Phạm vi hỗ trợ của AI được ghi trong [AI_USE_REPORT.md](AI_USE_REPORT.md).
+**Kết quả E1–E3.** Ba notebook đã huấn luyện và đánh giá 39 lượt trên RTX 5090. CNN đạt độ chính xác trên tập test trung bình 92,62% ± 0,06 điểm phần trăm qua ba seed. Phạm vi hỗ trợ của AI được ghi trong [AI_USE_REPORT.md](AI_USE_REPORT.md).
 
-Thiết lập A1 gồm tám cấu hình ResNet18/Swin-T, ba hạt giống và 20 epoch trên CIFAR-100 với phân hoạch 45.000/5.000/10.000 ảnh. Đối chứng bổ sung dùng chung lịch 40 epoch cho hai bản Swin-T. Bản khởi tạo ngẫu nhiên đạt 60,30% và bản ImageNet đạt 86,39%. Xem [notebook A1](notebooks/A1.ipynb) và [báo cáo A1](reports/assignment1/assignment1.pdf).
+Thiết lập A1 gồm tám cấu hình ResNet18/Swin-T, ba seed và 20 epoch trên CIFAR-100 với phân hoạch 45.000/5.000/10.000 ảnh. Đối chứng bổ sung dùng chung lịch 40 epoch cho hai bản Swin-T. Bản khởi tạo ngẫu nhiên đạt 60,30% và bản ImageNet đạt 86,39%. Xem [notebook A1](notebooks/A1.ipynb) và [báo cáo A1](reports/assignment1/assignment1.pdf).
 
 [Báo cáo PDF](reports/exercises/exercises.pdf) · [LaTeX](reports/exercises/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
 
@@ -23,7 +23,7 @@ A2 khảo sát phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, đối chiếu 
 | [A1](notebooks/A1.ipynb) | ResNet18 và Swin-T trên CIFAR-100 với các chế độ tinh chỉnh và phép so sánh Swin-T ở lịch học 40 epoch |
 | [A2](notebooks/A2.ipynb) | Đối chiếu trộn cố định và trộn theo biên cho phân đoạn trimap Oxford-IIIT Pet |
 
-E1–E3 gồm 13 cấu hình theo yêu cầu của đề. Mỗi cấu hình dùng ba hạt giống 42, 43 và 44, với 30 epoch cố định. Báo cáo trình bày chỉ số, môi trường và cách đo thời gian.
+E1–E3 gồm 13 cấu hình theo yêu cầu của đề. Mỗi cấu hình dùng ba seed 42, 43 và 44, với 30 epoch cố định. Báo cáo trình bày chỉ số, môi trường và cách đo thời gian.
 
 ## Môi trường
 
@@ -48,7 +48,7 @@ E1–E3 sử dụng FP32 với TF32, AMP và compile tắt. A1 sử dụng BF16 
 
 ## Chạy thí nghiệm bằng notebook
 
-Mỗi notebook thực hiện lần lượt khảo sát và tiền xử lý dữ liệu, thiết lập đối chứng, huấn luyện, chọn checkpoint theo tập xác thực, đánh giá và tạo biểu đồ. Thư mục kết quả lưu cấu hình, hạt giống, lịch sử huấn luyện, checkpoint, chỉ số và ma trận nhầm lẫn. Notebook là điểm bắt đầu của thí nghiệm. Các module Python và lệnh CLI tiếp tục cung cấp mã dùng chung và quy trình xuất báo cáo.
+Mỗi notebook thực hiện lần lượt khảo sát và tiền xử lý dữ liệu, thiết lập đối chứng, huấn luyện, chọn checkpoint theo tập validation, đánh giá và tạo biểu đồ. Thư mục kết quả lưu cấu hình, seed, lịch sử huấn luyện, checkpoint, chỉ số và ma trận nhầm lẫn. Notebook là điểm bắt đầu của thí nghiệm. Các module Python và lệnh CLI tiếp tục cung cấp mã dùng chung và quy trình xuất báo cáo.
 
 Từ thư mục gốc, mở JupyterLab, chọn notebook trong bảng trên, chọn kernel **Python (CO5085)** rồi chạy các ô từ đầu theo thứ tự.
 
@@ -56,9 +56,9 @@ Từ thư mục gốc, mở JupyterLab, chọn notebook trong bảng trên, ch�
 jupyter lab
 ```
 
-E1–E3 dùng cùng phân hoạch Fashion-MNIST với 54.000 ảnh huấn luyện, 6.000 ảnh xác thực và 10.000 ảnh kiểm tra. Các thống kê chuẩn hóa được tính trên tập huấn luyện. Chạy E1 trước E3 với cùng thư mục đầu ra để E3 có thể kiểm tra và dùng lại hai đối chứng MLP/CNN. A1 và A2 có thể chạy độc lập. Chế độ GPU dùng BF16 của A1 và A2 cần phần cứng hỗ trợ BF16.
+E1–E3 dùng cùng phân hoạch Fashion-MNIST với 54.000 ảnh huấn luyện, 6.000 ảnh validation và 10.000 ảnh test. Các thống kê chuẩn hóa được tính trên tập huấn luyện. Chạy E1 trước E3 với cùng thư mục đầu ra để E3 có thể kiểm tra và dùng lại hai đối chứng MLP/CNN. A1 và A2 có thể chạy độc lập. Chế độ GPU dùng BF16 của A1 và A2 cần phần cứng hỗ trợ BF16.
 
-Ví dụ chạy E1 trên CUDA với hạt giống 42 và lưu bản notebook đã thực thi.
+Ví dụ chạy E1 trên CUDA với seed 42 và lưu bản notebook đã thực thi.
 
 ```bash
 mkdir -p artifacts/notebooks
@@ -68,17 +68,17 @@ CO5085_EXERCISES_SEEDS=42 CO5085_EXERCISES_DEVICE=cuda CO5085_EXERCISES_WORKERS=
   --output E1-seed42.ipynb --output-dir artifacts/notebooks
 ```
 
-| Phần | Thư mục kết quả mặc định | Đánh giá trên tập kiểm tra sau khi chốt giao thức |
+| Phần | Thư mục kết quả mặc định | Đánh giá trên tập test sau khi chốt giao thức |
 |---|---|---|
 | E1–E3 | `runs/notebooks/exercises/` | Đặt `CO5085_EXERCISES_CONFIRM_TEST=1` hoặc bật `CONFIRM_TEST` trong ô cấu hình |
 | A1 | `runs/notebooks/assignment1/` và `runs/notebooks/a1_swin_followup/` | Đặt `CO5085_A1_CONFIRM_TEST=1` |
 | A2 | `runs/notebooks/a2/` | Nhập `TEST` tại ô xác nhận hoặc đặt `CO5085_CONFIRM_TEST=1` khi chạy tự động |
 
-E1–E3 và A1 hỗ trợ chạy theo hạt giống và tiếp tục lượt bị gián đoạn với cấu hình và môi trường ban đầu. Các thiết lập nằm trong ô đầu của từng notebook. Lượt kiểm tra nhanh hoặc thay đổi giao thức sử dụng thư mục đầu ra riêng. Lệnh CLI và quy trình tái lập các lượt đã lưu được mô tả trong [hướng dẫn GPU](docs/GPU_RUNBOOK.md).
+E1–E3 và A1 hỗ trợ chạy theo seed và tiếp tục lượt bị gián đoạn với cấu hình và môi trường ban đầu. Các thiết lập nằm trong ô đầu của từng notebook. Lượt kiểm tra nhanh hoặc thay đổi giao thức sử dụng thư mục đầu ra riêng. Lệnh CLI và quy trình tái lập các lượt đã lưu được mô tả trong [hướng dẫn GPU](docs/GPU_RUNBOOK.md).
 
 ## Đánh giá và cập nhật báo cáo
 
-E1–E3 chọn checkpoint theo độ chính xác xác thực, rồi xét cross-entropy xác thực khi hai checkpoint có cùng độ chính xác. Tập kiểm tra dành cho phép đo cuối cùng sau khi chốt thiết kế. Các lệnh dưới đây thuộc quy trình CLI để đánh giá và cập nhật báo cáo từ các thư mục lượt chạy đã lưu.
+E1–E3 chọn checkpoint theo độ chính xác trên tập validation, rồi xét cross-entropy trên tập validation khi hai checkpoint có cùng độ chính xác. Tập test dành cho phép đo cuối cùng sau khi chốt thiết kế. Các lệnh dưới đây thuộc quy trình CLI để đánh giá và cập nhật báo cáo từ các thư mục lượt chạy đã lưu.
 
 ```bash
 python -m scripts.run_exercises_isolated --group required --seeds 42 43 44 --phase test --confirm-test --device cuda --num-workers 8
@@ -94,7 +94,7 @@ python -m scripts.build_report --report-root reports/assignment1 --jobname assig
 
 Bước build PDF dùng XeLaTeX hoặc Tectonic với font TeX Gyre Termes (hoặc Liberation Serif/Sans), các gói `fontspec`, `geometry`, `titlesec`, `fancyhdr`, `booktabs`, `tabularx`, `longtable`, `amsmath`, `hyperref`. Trên Ubuntu có thể cài `texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-liberation fonts-dejavu-core`. Các bảng đã commit đủ để build PDF mà không tải dữ liệu hoặc checkpoint.
 
-Bảng và hình được xuất từ log đã đối chiếu nguồn gốc. Chênh lệch giữa các cấu hình được tính theo cặp cùng hạt giống. SD là độ lệch chuẩn mẫu qua ba hạt giống. Các kết quả thấp, bao gồm Swin-T huấn luyện từ đầu, được giữ trong bảng để phân tích giới hạn của thiết lập.
+Bảng và hình được xuất từ log đã đối chiếu nguồn gốc. Chênh lệch giữa các cấu hình được tính theo cặp cùng seed. SD là độ lệch chuẩn mẫu qua ba seed. Các kết quả thấp, bao gồm Swin-T huấn luyện từ đầu, được giữ trong bảng để phân tích giới hạn của thiết lập.
 
 ## Cấu trúc và kiểm tra
 

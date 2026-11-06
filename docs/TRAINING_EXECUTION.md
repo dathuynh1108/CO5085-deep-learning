@@ -54,8 +54,8 @@ Instance55938548 đã được xóa sau khi đủ các kiểm tra; CLI xác nh�
 
 ## Lượt chạy notebook tháng 11/2026
 
-- E1–E3 chạy 13 cấu hình bắt buộc, ba hạt giống và 30 epoch, tổng cộng 39 lượt. Accuracy và macro-F1 được tính lại từ 10.000 dự đoán kiểm tra của mỗi lượt. Xem `reports/exercises/notebook-evidence/`.
+- E1–E3 chạy 13 cấu hình bắt buộc, ba seed và 30 epoch, tổng cộng 39 lượt. Accuracy và macro-F1 được tính lại từ 10.000 dự đoán kiểm tra của mỗi lượt. Xem `reports/exercises/notebook-evidence/`.
 - A1 chạy lại 24 lượt của lịch 20 epoch từ notebook. Sáu lượt đối chứng Swin-T dùng lịch 40 epoch. Một số epoch của đối chứng đã bắt đầu trước khi chuyển sang notebook, sau đó notebook tiếp tục từ checkpoint đã xác minh và thực hiện bước đánh giá. Hai thiết lập lưu tại `reports/assignment1/notebook-evidence/` và `reports/assignment1/swin-followup/`.
-- A2 chạy lại hai biến thể với ba hạt giống trên RTX 5090. Đối chiếu ma trận theo ảnh và checkpoint với tệp khóa giao thức. Xem `reports/assignment2/notebook-evidence/`.
+- A2 chạy lại hai biến thể với ba seed trên RTX 5090. Đối chiếu ma trận theo ảnh và checkpoint với tệp khóa giao thức. Xem `reports/assignment2/notebook-evidence/`.
 
 Báo cáo E1–E3 và A1 có PDF/LaTeX riêng, dùng kết quả thực đo và văn phong học thuật trung tính, hạn chế đại từ. Mỗi PDF chỉ dẫn một câu đến `AI_USE_REPORT.md`. Bản LaTeX và bảng/figures đã lưu trong repository để build lại PDF mà không tải checkpoint. Kết quả QA và hash PDF cuối ở `docs/training-evidence/final-pdf-qa.json`; Git history và các workflow CI/Pages ghi nhận bản phát hành.

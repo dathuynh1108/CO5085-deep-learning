@@ -22,7 +22,7 @@ Nguồn: `exercise-vne.pdf`, 6 trang, học kỳ 261. Số trang dưới đây t
 | Trang 6: phụ thuộc chuỗi | Phân tích thứ tự không gian; diagnostic validation | Gradient, đảo/tráo thứ tự, giới hạn diễn giải |
 | Trang 6: tái lập | Config, seed, source hash, dataset hash, checkpoint RNG | Lưu toàn bộ artifact của từng seed |
 
-E3 đối chiếu bốn cấu hình hồi tiếp, gồm LSTM và GRU trên chuỗi hàng và chuỗi ô ảnh 4×4. Hai đối chứng MLP và CNN được dùng lại từ E1. Phép đảo chuỗi và hoán vị cố định trên tập xác thực khảo sát độ nhạy của checkpoint với thứ tự quét.
+E3 đối chiếu bốn cấu hình hồi tiếp, gồm LSTM và GRU trên chuỗi hàng và chuỗi ô ảnh 4×4. Hai đối chứng MLP và CNN được dùng lại từ E1. Phép đảo chuỗi và hoán vị cố định trên tập validation khảo sát độ nhạy của checkpoint với thứ tự quét.
 
 ## Đề A1/A2 được bổ sung ngày 14/10/2026
 
@@ -48,7 +48,7 @@ Nguồn là `assignments/assignment2-vne.pdf`. Chủ đề là phân đoạn ng�
 |---|---|
 | Chủ đề khác A1 và paper liên quan | Phân đoạn theo trimap. Xu, Xiong và Bhattacharyya, PIDNet, IEEE/CVF CVPR 2023, tr. 19529–19539, DOI 10.1109/CVPR52729.2023.01871. |
 | Tập công khai, EDA và thiết lập | Oxford-IIIT Pet, CC BY-SA 4.0. Chia 3.310/370/3.669 ảnh. Phân tích tỷ lệ nhãn và phân bố dải chuyển tiếp. |
-| Hai biến thể huấn luyện và đánh giá | Trộn cố định 50/50 và trộn theo biên, giữ bộ mã hóa ResNet18 và giám sát biên. Ba hạt giống mỗi biến thể, 12 epoch, mIoU, macro-Dice và IoU theo vùng. |
+| Hai biến thể huấn luyện và đánh giá | Trộn cố định 50/50 và trộn theo biên, giữ bộ mã hóa ResNet18 và giám sát biên. Ba seed mỗi biến thể, 12 epoch, mIoU, macro-Dice và IoU theo vùng. |
 | Phân tích paper và đối chiếu cài đặt | Báo cáo A2 phân tích mạng hai nhánh, phép tương tự PID, ba nhánh, các mô-đun, hàm mục tiêu và thí nghiệm. Bảng đối chiếu mức thay đổi mIoU với các phép ablation công bố. |
 | Notebook, PDF, trang A2 và video | `notebooks/A2.ipynb`, `reports/assignment2/` và `site/a2.html`. Báo cáo có trích dẫn, DOI và liên kết toàn văn. |
 
@@ -56,7 +56,7 @@ Mốc trong đề là 23:59 GMT+7 ngày 02/11/2026 cho A2.1 và ngày 16/11/2026
 
 ## Trạng thái thực nghiệm
 
-Báo cáo E1–E3 trình bày 39 lượt từ 13 cấu hình theo đề. A1 có 24 lượt trong lịch 20 epoch và sáu lượt đối chứng Swin-T trong lịch 40 epoch. A2 có sáu lượt chính và sáu lượt chạy lại bằng notebook với cùng lịch 12 epoch. Các lượt chọn checkpoint bằng tập xác thực trước khi đánh giá tập kiểm tra. Cấu hình, hạt giống và lịch sử huấn luyện được lưu cùng từng báo cáo.
+Báo cáo E1–E3 trình bày 39 lượt từ 13 cấu hình theo đề. A1 có 24 lượt trong lịch 20 epoch và sáu lượt đối chứng Swin-T trong lịch 40 epoch. A2 có sáu lượt chính và sáu lượt chạy lại bằng notebook với cùng lịch 12 epoch. Các lượt chọn checkpoint bằng tập validation trước khi đánh giá tập test. Cấu hình, seed và lịch sử huấn luyện được lưu cùng từng báo cáo.
 
 ## Mốc trong đề
 

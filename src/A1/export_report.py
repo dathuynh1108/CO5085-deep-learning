@@ -212,7 +212,7 @@ def export(output_root, destination, *, source_files=None, config=CONFIG):
     regimes = {'scratch': 'Từ đầu', 'head': 'Chỉ đầu ra', 'partial': 'Một phần', 'full': 'Toàn bộ'}
     presets = {experiment['id']: experiment for experiment in protocol['experiments']}
     lines = ['\\begin{tabular}{lrrrrr}', '\\toprule',
-             'Cấu hình & Xác thực (\\%) & Kiểm tra (\\%) & Macro-F1 & Thời gian (s) & Tham số (M) \\\\', '\\midrule']
+             'Cấu hình & Validation (\\%) & Test (\\%) & Macro-F1 & Thời gian (s) & Tham số (M) \\\\', '\\midrule']
     for group in summary:
         preset = presets[group['experiment']]
         name = f"{families[preset['family']]}: {regimes[preset['regime']]}"

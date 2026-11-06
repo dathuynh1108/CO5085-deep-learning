@@ -16,7 +16,7 @@
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-Thực nghiệm so sánh ResNet18 và Swin-T trên CIFAR-100 để khảo sát ảnh hưởng của tiền huấn luyện và số tầng được cập nhật. Thiết lập 20 epoch gồm tám cấu hình với ba hạt giống. Mỗi kiến trúc được huấn luyện từ đầu và thử ba chế độ với trọng số ImageNet, gồm chỉ học bộ phân loại, tinh chỉnh một phần và tinh chỉnh toàn bộ.
+Thực nghiệm so sánh ResNet18 và Swin-T trên CIFAR-100 để khảo sát ảnh hưởng của tiền huấn luyện và số tầng được cập nhật. Thiết lập 20 epoch gồm tám cấu hình với ba seed. Mỗi kiến trúc được huấn luyện từ đầu và thử ba chế độ với trọng số ImageNet, gồm chỉ học bộ phân loại, tinh chỉnh một phần và tinh chỉnh toàn bộ.
 
 Trong thiết lập 20 epoch, Swin-T tinh chỉnh toàn bộ đạt độ chính xác cao hơn ResNet18 và cần nhiều thời gian, bộ nhớ hơn. Hai bản Swin-T chạy dưới cùng lịch 40 epoch đạt lần lượt 60,30\% khi khởi tạo ngẫu nhiên và 86,39\% khi dùng trọng số ImageNet. Độ chính xác của bản ngẫu nhiên tăng rõ so với cấu hình 20 epoch, trong đó quá trình học dừng gần mức đoán ngẫu nhiên ở một số lượt.
 }
@@ -37,7 +37,7 @@ Giới hạn & Cách chia có một số ảnh trùng pixel. Phép đối chứn
 A1 so sánh CNN và Transformer trên CIFAR-100, tập trung vào ảnh hưởng của
 khởi tạo pretrained và mức độ đóng băng backbone. Hai kiến trúc được chọn là
 ResNet18 và Swin-T của torchvision. Thí nghiệm chính gồm 24 lượt, với bốn chế độ
-huấn luyện cho mỗi kiến trúc và ba hạt giống 42, 43, 44. Thí nghiệm bổ sung
+huấn luyện cho mỗi kiến trúc và ba seed 42, 43, 44. Thí nghiệm bổ sung
 khảo sát riêng cách khởi tạo Swin-T dưới cùng lịch huấn luyện 40 epoch.
 
 Các so sánh chính gồm huấn luyện từ đầu với pretrained, và head-only với
@@ -58,9 +58,9 @@ thức \code{uoft-cs/cifar100} trên Hugging Face ghi \emph{license: unknown}
 Bản lưu CIFAR-100 dùng cho thực nghiệm được đối chiếu mã băm với bản gốc của Toronto. Dữ liệu ảnh được lưu riêng.
 
 \section{Phân bố dữ liệu và cách chia tập}
-Trong 50.000 ảnh phát triển, chỉ số được xáo theo từng lớp bằng hạt giống
-2026. Mỗi lớp đóng góp 450 ảnh cho tập huấn luyện và 50 ảnh cho tập xác thực.
-Tập kiểm tra chính thức gồm 100 ảnh mỗi lớp. Ba tập lần lượt có 45.000,
+Trong 50.000 ảnh phát triển, chỉ số được xáo theo từng lớp bằng seed
+2026. Mỗi lớp đóng góp 450 ảnh cho tập huấn luyện và 50 ảnh cho tập validation.
+Tập test chính thức gồm 100 ảnh mỗi lớp. Ba tập lần lượt có 45.000,
 5.000 và 10.000 ảnh, nên sai khác về số ảnh giữa các lớp không chi phối
 độ chính xác chung. Trung bình RGB của tập huấn luyện trên thang $[0,1]$
 là $(0{,}507,0{,}487,0{,}441)$. Phép đối chiếu theo pixel phát hiện một số
@@ -69,11 +69,11 @@ là $(0{,}507,0{,}487,0{,}441)$. Phép đối chiếu theo pixel phát hiện m�
 \section{Tiền xử lý và tải dữ liệu}
 Ảnh huấn luyện được đệm bốn pixel, cắt ngẫu nhiên về $32\times32$ và lật
 ngang với xác suất 0,5. Sau đó ảnh được nội suy song tuyến tính lên
-$96\times96$. Tập xác thực và tập kiểm tra chỉ dùng bước nội suy.
+$96\times96$. Tập validation và tập test chỉ dùng bước nội suy.
 Cả hai kiến trúc chuẩn hóa ảnh với trung bình ImageNet
 $(0{,}485,0{,}456,0{,}406)$ và độ lệch chuẩn $(0{,}229,0{,}224,0{,}225)$.
 DataLoader xáo thứ tự ảnh huấn luyện. Phép biến đổi của từng ảnh được
-xác định theo hạt giống, epoch và chỉ số ảnh, để một lượt tiếp tục từ
+xác định theo seed, epoch và chỉ số ảnh, để một lượt tiếp tục từ
 checkpoint nhận lại đúng chuỗi biến đổi.
 
 \chapter{Kiến trúc và chế độ huấn luyện}
@@ -158,14 +158,14 @@ mức hội tụ còn được đối chiếu qua đường cong train/validatio
 
 \section{Thiết lập 40 epoch cho Swin-T}
 
-Trong lịch 20 epoch, hai lượt Swin-T khởi tạo ngẫu nhiên có độ chính xác xác thực
+Trong lịch 20 epoch, hai lượt Swin-T khởi tạo ngẫu nhiên có độ chính xác trên tập validation
 1\% ở epoch cuối và cross-entropy huấn luyện gần $\ln(100)$. Vì sai số cao
 ngay trên tập huấn luyện, điểm thấp cho thấy quá trình tối ưu chưa học được
 biểu diễn phân lớp trong thiết lập đó. So sánh trực tiếp với bản ImageNet
 trong điều kiện này sẽ phóng đại chênh lệch giữa hai cách khởi tạo.
 
 Thí nghiệm bổ sung giữ kiến trúc, cách chia tập, tiền xử lý, batch 128 và
-ba hạt giống. Hai bản cập nhật toàn bộ tham số và chỉ khác nguồn trọng số
+ba seed. Hai bản cập nhật toàn bộ tham số và chỉ khác nguồn trọng số
 backbone. Cả hai dùng AdamW với hệ số suy giảm trọng số $10^{-2}$, tốc độ học
 tăng tuyến tính từ $2\times10^{-5}$ đến $2\times10^{-4}$ qua năm epoch
 làm nóng, rồi giảm theo cosine đến cuối lịch 40 epoch. Lịch tăng dần
@@ -202,10 +202,10 @@ chế độ deterministic. Các phép đo thời gian của cùng cấu hình đ
 những thông số môi trường này thống nhất.
 
 \section{Thông tin tái lập}
-Mỗi lượt lưu trạng thái huấn luyện ở cuối epoch để có thể tiếp tục từ mốc hoàn tất gần nhất. Checkpoint có kết quả xác thực tốt nhất giữ trọng số và chỉ số dùng để chọn mô hình. Dữ liệu, cách chia tập, mã nguồn và môi trường thực nghiệm được ghi nhận cùng từng lượt. Sai khác phần cứng hoặc thư viện có thể ảnh hưởng khả năng tái lập từng bit.
+Mỗi lượt lưu trạng thái huấn luyện ở cuối epoch để có thể tiếp tục từ mốc hoàn tất gần nhất. Checkpoint có kết quả trên tập validation tốt nhất giữ trọng số và chỉ số dùng để chọn mô hình. Dữ liệu, cách chia tập, mã nguồn và môi trường thực nghiệm được ghi nhận cùng từng lượt. Sai khác phần cứng hoặc thư viện có thể ảnh hưởng khả năng tái lập từng bit.
 
 \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A1.ipynb}{Notebook A1}
-trình bày từ khảo sát dữ liệu đến huấn luyện và đánh giá. Các tệp cấu hình và kết quả theo hạt giống
+trình bày từ khảo sát dữ liệu đến huấn luyện và đánh giá. Các tệp cấu hình và kết quả theo seed
 cho phép đối chiếu bảng với checkpoint đã chọn.
 
 \chapter{Kết quả trong thiết lập 20 epoch}
@@ -222,7 +222,7 @@ Danh sách lượt chạy và checkpoint tương ứng được lưu trong manif
 \begin{table}[htbp]\centering\small
 \setlength{\tabcolsep}{4pt}
 \input{notebook-evidence/cost_table.tex}
-\caption{Tổng tham số và tham số được học theo triệu (M), thời gian huấn luyện đủ 20 epoch và bộ nhớ cấp phát cực đại ở hạt giống 42 trên cùng máy.}
+\caption{Tổng tham số và tham số được học theo triệu (M), thời gian huấn luyện đủ 20 epoch và bộ nhớ cấp phát cực đại ở seed 42 trên cùng máy.}
 \end{table}
 
 \section{Thảo luận kết quả}
@@ -246,7 +246,7 @@ trong các tệp CSV kèm báo cáo.
 \centering\small
 \setlength{\tabcolsep}{4pt}
 \input{swin-followup/comparison_table.tex}
-\caption{Swin-T dưới cùng lịch 40 epoch, trung bình và độ lệch chuẩn mẫu qua ba hạt giống.}
+\caption{Swin-T dưới cùng lịch 40 epoch, trung bình và độ lệch chuẩn mẫu qua ba seed.}
 \label{tab:swin-followup}
 \end{table}
 
@@ -255,7 +255,7 @@ trong các tệp CSV kèm báo cáo.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.94\linewidth]{swin-followup/figures/swin_t_scratch_curves.png}
-\caption{Đường cong học của Swin-T khởi tạo ngẫu nhiên trong lịch 40 epoch, hạt giống 42.}
+\caption{Đường cong học của Swin-T khởi tạo ngẫu nhiên trong lịch 40 epoch, seed 42.}
 \end{figure}
 
 \chapter{Kết luận và giới hạn}
@@ -272,9 +272,9 @@ Ba seed mô tả biến thiên giữa các lượt khởi tạo, với cùng ph�
 thiết lập workers. Tình trạng license của dữ liệu vẫn là chưa rõ.
 
 \subsection{Ảnh trùng giữa các split}
-Đối chiếu toàn bộ ảnh theo giá trị pixel phát hiện hai ảnh xác thực và mười ảnh kiểm tra trùng với ảnh huấn luyện. Các bảng sử dụng đủ 10.000 ảnh kiểm tra chính thức và giữ nguyên checkpoint đã chọn. Do mười ảnh trong số này đã xuất hiện khi huấn luyện, tập kiểm tra có một phần nội dung trùng với tập huấn luyện.
+Đối chiếu toàn bộ ảnh theo giá trị pixel phát hiện hai ảnh validation và mười ảnh test trùng với ảnh huấn luyện. Các bảng sử dụng đủ 10.000 ảnh test chính thức và giữ nguyên checkpoint đã chọn. Do mười ảnh trong số này đã xuất hiện khi huấn luyện, tập test có một phần nội dung trùng với tập huấn luyện.
 
-Tính lại trên 9.990 dự đoán sau khi loại mười ảnh trùng cho độ chính xác trung bình 79,009\% với ResNet18 và 86,677\% với Swin-T khi tinh chỉnh toàn bộ. Thứ hạng của hai cấu hình giữ nguyên. Phép kiểm tra độ nhạy dùng lại các dự đoán đã lưu. Hai ảnh xác thực trùng vẫn có thể ảnh hưởng việc chọn checkpoint, và phạm vi đối chiếu chỉ bao gồm các ảnh trùng pixel chính xác. Dữ liệu đối chiếu được lưu trong \code{docs/training-evidence/}.
+Tính lại trên 9.990 dự đoán sau khi loại mười ảnh trùng cho độ chính xác trung bình 79,009\% với ResNet18 và 86,677\% với Swin-T khi tinh chỉnh toàn bộ. Thứ hạng của hai cấu hình giữ nguyên. Phép kiểm tra độ nhạy dùng lại các dự đoán đã lưu. Hai ảnh validation trùng vẫn có thể ảnh hưởng việc chọn checkpoint, và phạm vi đối chiếu chỉ bao gồm các ảnh trùng pixel chính xác. Dữ liệu đối chiếu được lưu trong \code{docs/training-evidence/}.
 
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 

@@ -105,7 +105,7 @@ def show_comparison(configs, directories, evaluations, representative_seed, repo
                     label=config.label, marker='.' if len(epochs) == 1 else None)
             ax.set(xlabel='Epoch', ylabel=ylabel)
             ax.grid(alpha=.25)
-    fig.suptitle(f'Đường cong xác thực — seed {representative_seed}')
+    fig.suptitle(f'Đường cong trên tập validation — seed {representative_seed}')
     axes[1].legend(fontsize=7, loc='best')
     fig.tight_layout()
     fig.savefig(report_dir / 'validation_curves.png', dpi=150)

@@ -145,7 +145,7 @@ def plot_data(cache, manifest, output):
 def plot_curves(rows, config, output):
     fig, axes = plt.subplots(1, 2, figsize=(9.4, 3), layout="constrained")
     for ax, key, title in zip(
-        axes, ("val_miou", "val_transition_iou"), ("mIoU xác thực (%)", "IoU dải chuyển tiếp (%)"),
+        axes, ("val_miou", "val_transition_iou"), ("Validation mIoU (%)", "IoU dải chuyển tiếp (%)"),
         strict=True,
     ):
         for variant in config["variants"]:
@@ -233,11 +233,11 @@ def write_tables(destination, summary, manifest):
         table.append(" & ".join([NAMES[variant]] + [tex_stat(result[k]) for k in METRICS]) + r"\\")
     table.extend([
         r"\bottomrule\end{tabular}",
-        r"\caption{Kết quả kiểm tra theo phần trăm, trình bày trung bình và độ lệch chuẩn mẫu qua ba hạt giống.}",
+        r"\caption{Kết quả trên tập test theo phần trăm, trình bày trung bình và độ lệch chuẩn mẫu qua ba seed.}",
         r"\label{tab:results}\end{table}", "",
         r"\begin{table}[htbp]\centering\small",
         r"\begin{tabular}{@{}lrrrr@{}}\toprule",
-        r"Biến thể & mIoU xác thực (\%) & Epoch được chọn & Thời gian (s) & Đỉnh (MiB)\\\midrule",
+        r"Biến thể & Validation mIoU (\%) & Epoch được chọn & Thời gian (s) & Đỉnh (MiB)\\\midrule",
     ])
     for variant, result in groups.items():
         table.append(" & ".join([
@@ -247,8 +247,8 @@ def write_tables(destination, summary, manifest):
         ]) + r"\\")
     table.extend([
         r"\bottomrule\end{tabular}",
-        r"\caption{Chi phí của 12 epoch và kết quả xác thực. Epoch theo thứ tự hạt giống 42, 43, 44. "
-        r"Thời gian gồm tải batch và cập nhật trọng số. Mức cấp phát GPU cực đại bao gồm lượt xác thực.}",
+        r"\caption{Chi phí của 12 epoch và kết quả trên tập validation. Epoch theo thứ tự seed 42, 43, 44. "
+        r"Thời gian gồm tải batch và cập nhật trọng số. Mức cấp phát GPU cực đại bao gồm lượt đánh giá trên tập validation.}",
         r"\label{tab:cost}\end{table}", "",
     ])
     (destination / "results.tex").write_text("\n".join(table))

@@ -1,8 +1,8 @@
 # A1 — CNN vs Transformer trên CIFAR-100
 
 A1 so sánh ResNet18 và Swin-T trên CIFAR-100. Thiết lập 20 epoch có 24 lượt
-huấn luyện và đánh giá, với ba hạt giống 42, 43 và 44. Swin-T tinh chỉnh
-toàn bộ đạt độ chính xác kiểm tra 86,63% ± 0,22 điểm phần trăm, so với
+huấn luyện và đánh giá, với ba seed 42, 43 và 44. Swin-T tinh chỉnh
+toàn bộ đạt độ chính xác trên tập test 86,63% ± 0,22 điểm phần trăm, so với
 78,97% ± 0,04 của ResNet18 cùng chế độ.
 
 Ở lịch 20 epoch, Swin-T từ đầu chỉ đạt 2,76% ± 1,26 điểm phần trăm. Thí
@@ -67,9 +67,9 @@ kiểm tra sau mỗi epoch và khi resume. Full/scratch dùng train toàn bộ b
 
 ## Notebook
 
-Mở [A1.ipynb](../../notebooks/A1.ipynb) bằng kernel Python đã cài PyTorch và torchvision. Notebook mặc định thực hiện cả tám cấu hình 20 epoch và đối chứng khởi tạo Swin-T 40 epoch. Các ô đầu trình bày cách chia dữ liệu, cấu hình và ba hạt giống. Các ô sau huấn luyện, chọn checkpoint trên tập xác thực và vẽ đường cong cùng ma trận nhầm lẫn.
+Mở [A1.ipynb](../../notebooks/A1.ipynb) bằng kernel Python đã cài PyTorch và torchvision. Notebook mặc định thực hiện cả tám cấu hình 20 epoch và đối chứng khởi tạo Swin-T 40 epoch. Các ô đầu trình bày cách chia dữ liệu, cấu hình và ba seed. Các ô sau huấn luyện, chọn checkpoint trên tập validation và vẽ đường cong cùng ma trận nhầm lẫn.
 
-Có thể chạy từng hạt giống với `CO5085_A1_SEEDS`. Đặt `CO5085_A1_PROTOCOLS=assignment1` cho thiết lập 20 epoch hoặc `a1_swin_followup` cho đối chứng 40 epoch. Mặc định notebook xuất kết quả xác thực. Sau khi chốt giao thức, `CO5085_A1_CONFIRM_TEST=1` bật bước đánh giá trên tập kiểm tra. Kết quả lưu dưới `runs/notebooks/`.
+Có thể chạy từng seed với `CO5085_A1_SEEDS`. Đặt `CO5085_A1_PROTOCOLS=assignment1` cho thiết lập 20 epoch hoặc `a1_swin_followup` cho đối chứng 40 epoch. Mặc định notebook xuất kết quả trên tập validation. Sau khi chốt giao thức, `CO5085_A1_CONFIRM_TEST=1` bật bước đánh giá trên tập test. Kết quả lưu dưới `runs/notebooks/`.
 
 ## Artifact và resume
 
