@@ -149,7 +149,7 @@ với $e=0$ trước epoch đầu. Loss cross-entropy không label smoothing:
 Clip global gradient norm ở 1 trước optimizer.step. BF16 autocast áp dụng
 cho tất cả chế độ; tham số và Adam moments giữ FP32, không GradScaler,
 TF32 tắt và không dùng compile. Các phép đo được thiết lập trên RTX 5090 với
-tám worker tải dữ liệu và bốn luồng CPU.
+bốn worker tải dữ liệu và bốn luồng CPU.
 
 Ngân sách 20 epoch được giữ cố định giữa các chế độ. Learning rate của
 head/scratch và partial/full được đặt khác nhau để phù hợp với mức độ cập
@@ -208,8 +208,8 @@ cho phép đối chiếu bảng với checkpoint đã chọn.
 
 \chapter{Kết quả trong thiết lập 20 epoch}
 \section{So sánh các chế độ huấn luyện}
-\begin{table}[htbp]\centering\small
-\setlength{\tabcolsep}{5pt}
+\begin{table}[htbp]\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
 \input{notebook-evidence/comparison_table.tex}
 \caption{Accuracy và macro-F1 của tám cấu hình, trung bình và SD mẫu qua ba seed. Accuracy theo phần trăm, F1 theo thang 0--1.}
 \end{table}
@@ -241,8 +241,8 @@ trong các tệp CSV kèm báo cáo.
 
 \chapter{Kết quả đối chứng khởi tạo Swin-T}
 \begin{table}[htbp]
-\centering\small
-\setlength{\tabcolsep}{4pt}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
 \input{swin-followup/comparison_table.tex}
 \caption{Swin-T dưới cùng lịch 40 epoch, trung bình và độ lệch chuẩn mẫu qua ba seed.}
 \label{tab:swin-followup}

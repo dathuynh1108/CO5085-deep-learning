@@ -9,7 +9,18 @@
     "figures": 5,
     "source_sha256": "f46a320bde98eca8e59620c5abf060f3bb6d9a135b6b1ea019e6cca5e33b9e7f",
     "executed_notebook_sha256": "0ef4106b6c7b4a31a0e33e7bbcda7cd453622f7804d397259849058212dd1677",
-    "error_outputs": 0
+    "error_outputs": 0,
+    "analysis_revision": {
+      "scope": "Configuration display and E3 gallery only; training and held-out evaluation cells unchanged",
+      "device": "cpu",
+      "changed_cell_ids": [
+        "658381c8"
+      ],
+      "code_sha256": {
+        "658381c8": "b1c79e5bbbbd039a0fc22c909aa2a627166762b506ba39fb10a3421be509d417"
+      },
+      "e3_gallery_verified_predictions": null
+    }
   },
   "E2": {
     "seeds": [
@@ -21,7 +32,18 @@
     "figures": 5,
     "source_sha256": "35fad65857a34b91e03d681f40e1e1dad9be07fe8978001e3da2bed23ce53e68",
     "executed_notebook_sha256": "dafff47028eca2903e23aed401346ffbedd4dfb3538958ca7126fff0c3f0dd2c",
-    "error_outputs": 0
+    "error_outputs": 0,
+    "analysis_revision": {
+      "scope": "Configuration display and E3 gallery only; training and held-out evaluation cells unchanged",
+      "device": "cpu",
+      "changed_cell_ids": [
+        "de8885de"
+      ],
+      "code_sha256": {
+        "de8885de": "30efb7698101d53c1128697e13345c4ae37eb3f574d3a1b167cf5f1171ff9a5d"
+      },
+      "e3_gallery_verified_predictions": null
+    }
   },
   "E3": {
     "seeds": [
@@ -33,6 +55,19 @@
     "figures": 9,
     "source_sha256": "95792cb5322110c6b9585789a0b53b6489ba4bf75d67e9cf77d2790516d7c000",
     "executed_notebook_sha256": "82ea56d5521aa3c2a59382edda6a4abfa7a7d2273bed51c70867f48ca9a19f96",
-    "error_outputs": 0
+    "error_outputs": 0,
+    "analysis_revision": {
+      "scope": "Configuration display and E3 gallery only; training and held-out evaluation cells unchanged",
+      "device": "cpu",
+      "changed_cell_ids": [
+        "851d1c32",
+        "971c8e6e"
+      ],
+      "code_sha256": {
+        "851d1c32": "c3bc5517a2b8a8b948ae7cfa54baeb617bfbf681add72b1211e9218782ad469f",
+        "971c8e6e": "eb137841e60af7d179a14d1c15cfe9f076b7a8aee2fa47739e6122568ab09a14"
+      },
+      "e3_gallery_verified_predictions": 10000
+    }
   }
 }

@@ -61,3 +61,11 @@ Báo cáo E1–E3 hiện trình bày 39 lượt từ 13 cấu hình theo đề, 
 ## Mốc trong đề
 
 Khung GitHub Pages: 19/10/2026. E1 và E2: 02/11/2026. E3: 09/11/2026. Hạn ghi trong đề là 23:59 GMT+7; khi có thông báo cập nhật từ giảng viên thì đối chiếu lại LMS. Không tự tạo tag “đã nộp” trước khi có kết quả.
+
+## Đối chiếu bổ sung ngày 07/11/2026
+
+- E1–E3 có đủ yêu cầu thuật toán và thực nghiệm trong 39 lượt hiện tại. Đề không quy định phần sáng tạo 10% cho các bài này.
+- A1 có đủ 24 lượt cơ bản và sáu lượt đối chứng 40 epoch. Số worker của cả 30 lượt là bốn; báo cáo đã sửa thống nhất với metadata. Trang A1 có notebook chính và link thư mục mã nguồn A1 theo mục 7.1.2 của đề.
+- A2 yêu cầu pipeline chạy được, ít nhất hai phương pháp hoặc biến thể, phân tích paper và liên hệ với cài đặt; không bắt buộc tái hiện toàn bộ PIDNet. Hai biến thể trộn và phần phân tích paper có bằng chứng tương ứng.
+- Mục 1.6 của đề E1–E3 chỉ cho phép AI hỗ trợ, không nộp sản phẩm do AI tạo phần lớn và yêu cầu hiểu, bảo vệ được code cùng số liệu. Kiểm tra kỹ thuật hoặc thay đổi câu chữ khai báo không xác nhận được điều kiện này.
+- Theo PDF, A2.1 hạn ngày 02/11/2026; commit A2 đầu tiên trong kho mã ngày 06/11/2026. Chưa có thông báo gia hạn được cung cấp. Người học cho biết LMS chưa mở submission và yêu cầu tiếp tục push; lịch sử commit được giữ nguyên.
