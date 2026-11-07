@@ -1,21 +1,21 @@
 \documentclass[12pt,a4paper]{report}
 \input{../course-report.tex}
 \CourseReportHeader{CO5085 · A2}
-\hypersetup{pdftitle={Phan doan anh voi phep tron dac trung theo bien},pdfauthor={Huynh Thanh Dat}}
+\hypersetup{pdftitle={PIDNet: phan tich kien truc va thuc nghiem fusion theo bien},pdfauthor={Huynh Thanh Dat}}
 
 \begin{document}
 \CourseCover{assets/hcmut-logo.png}
   {BÁO CÁO BÀI TẬP LỚN A2}
   {CO5085 · Học sâu và ứng dụng trong thị giác máy tính}
-  {Phân đoạn ảnh với phép trộn đặc trưng theo biên}
-  {Sinh viên}
+  {PIDNet: phân tích kiến trúc và thực nghiệm fusion theo biên}
+  {Học viên}
   {Huỳnh Thành Đạt & 2570161\\[0.5em]
    Giảng viên & Lê Thành Sách\\
               & Nguyễn Quốc Minh}
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-\input{notebook-evidence/abstract.tex}
+\input{prose/abstract.tex}
 }
 
 \CourseOverview{
@@ -29,96 +29,40 @@ Kết quả chính & mIoU của trộn cố định và trộn theo biên lần 
 
 \CourseContents
 
-\chapter{Câu hỏi nghiên cứu}
-Phân đoạn ảnh yêu cầu xác định vùng của từng điểm ảnh. Đặc trưng ở độ phân giải thấp giúp nhận ra vật thể trong ngữ cảnh chung, nhưng khi đưa trở lại lưới ảnh, chúng có thể làm mờ đường viền. Đặc trưng ở độ phân giải cao giữ nhiều chi tiết hơn và cũng dễ phản ứng với hoa văn của lông hoặc nền. Hai nguồn thông tin vì vậy có giá trị khác nhau ở phần trong của vật thể và vùng chuyển tiếp giữa vật thể với nền.
+\input{prose/introduction.tex}
 
-Thí nghiệm khảo sát ý tưởng trộn đặc trưng theo bản đồ biên trong PIDNet của Xu, Xiong và Bhattacharyya \cite{pidnet}. Câu hỏi thực nghiệm là liệu phép trộn thay đổi theo vị trí có tăng IoU của dải chuyển tiếp trên Oxford-IIIT Pet khi cả hai mô hình đã được giám sát bằng nhãn vùng này. IoU theo từng vùng được phân tích cùng mIoU và Dice để xác định thay đổi ở dải chuyển tiếp có đi kèm thay đổi ở vật thể và nền hay không.
-
-\chapter{Phân tích PIDNet}
-\section{Giới hạn của các mạng hai nhánh}
-
-Trong phân đoạn thời gian thực, giảm kích thước bản đồ đặc trưng giúp giảm chi phí, nhưng việc giảm mẫu sớm làm mất thông tin định vị. Một pixel trong bản đồ sâu có thể tổng hợp cả hai phía của đường viền. Khi nội suy trở lại lưới ảnh, tín hiệu đó có thể lan sang vùng bên cạnh, làm mờ biên hoặc xóa một vật thể nhỏ giữa vùng nền lớn. Các bộ mã hóa dùng tích chập giãn có thể giữ lưới dày hơn ở những tầng sâu, với chi phí bộ nhớ và độ trễ phụ thuộc phần cứng.
-
-BiSeNet \cite{bisenet} xử lý sự đánh đổi này bằng một luồng giữ chi tiết không gian và một luồng tổng hợp ngữ cảnh. DDRNet \cite{ddrnet} duy trì hai độ phân giải và trao đổi thông tin giữa chúng qua nhiều tầng. Theo phân tích của PIDNet, ngay cả khi nhánh chi tiết còn giữ được một đoạn biên, việc cộng hai bản đồ có thể làm đáp ứng ngữ cảnh mạnh lấn át tín hiệu cục bộ. Chẳng hạn ở mép một vật thể mảnh, phần lớn trường tiếp nhận của nhánh sâu có thể nằm trong nền. Nhãn nền có thể lan qua mép khi đặc trưng hai nhánh được trộn cùng một cách ở mọi vị trí.
-
-\section{Phép tương tự với điều khiển PID}
-
-Trong bộ điều khiển, thành phần tỉ lệ P phản ứng với sai số hiện tại, I tích lũy sai số và D phản ứng với sự thay đổi của sai số. Ở miền tần số rời rạc, bỏ qua hệ số khuếch đại và xét $0<\omega\leq\pi$, độ lớn đáp ứng của tích phân và vi phân lần lượt là
-\[
- \lvert H_I(e^{j\omega})\rvert
- = \frac{1}{2\lvert\sin(\omega/2)\rvert},
- \qquad
- \lvert H_D(e^{j\omega})\rvert
- = 2\lvert\sin(\omega/2)\rvert.
-\]
-Tích phân nhấn mạnh biến thiên chậm, còn vi phân đáp ứng mạnh khi tín hiệu đổi nhanh. Trên mô hình một chiều của paper, nhánh chi tiết có trường tiếp nhận tập trung gần vị trí đang xét, trong khi nhánh ngữ cảnh tổng hợp trên vùng rộng hơn. Tác giả liên hệ hai nhánh với P và I, rồi dùng hiện tượng đáp ứng vượt mức của PI để giải thích trực giác về sự lan nhãn qua biên. Thành phần D gợi ý một tín hiệu bổ sung có thể làm thay đổi phép trộn tại nơi nhãn chuyển nhanh.
-
-\begin{table}[htbp]
-\centering
-\begin{tabularx}{\linewidth}{@{}lXX@{}}
-\toprule
-Nhánh & Thông tin chính & Vai trò khi tổng hợp\\
-\midrule
-P & Chi tiết không gian trên lưới tương đối dày. & Giữ hình dạng và vị trí của đường viền.\\
-I & Ngữ cảnh từ tầng sâu và khối gộp hình tháp. & Ổn định nhãn trong vùng đồng nhất.\\
-D & Tín hiệu chuyển lớp được giám sát bằng nhãn biên. & Điều chỉnh trọng số dành cho P và I theo vị trí.\\
-\bottomrule
-\end{tabularx}
-\caption{Vai trò của ba nhánh trong PIDNet.}
-\label{tab:branches}
-\end{table}
-
-PIDNet dùng một nhánh học từ dữ liệu để định vị biên ngữ nghĩa như mô tả trong Bảng~\ref{tab:branches}. Các đáp ứng tần số trên mô tả bộ điều khiển tuyến tính, còn các nhánh tích chập thực tế có chuẩn hóa, hàm kích hoạt và các kết nối chéo. Trong Bag, D cung cấp hệ số trộn cho hai luồng đặc trưng.
-
-\section{Trao đổi thông tin và hàm mục tiêu}
-
-Nhánh I gửi thông tin ngữ nghĩa sang P qua Pag và bổ sung đặc trưng cho D bằng phép cộng. Pag chiếu hai vector tại cùng vị trí, lấy tích vô hướng và áp dụng sigmoid để điều chỉnh mức tiếp nhận ngữ cảnh của P. PAPPM tổng hợp ngữ cảnh qua các nhánh gộp song song trong PIDNet-S/M. Ở cuối mạng, Bag sử dụng tín hiệu của D để điều tiết hai luồng. Với đặc trưng chi tiết $P$, ngữ cảnh $I$ và biểu diễn biên $D$, biểu thức của Bag có dạng
-\[
-    a=\sigma(D),\qquad
-    Y=f_{\mathrm{out}}\big(a\odot P+(1-a)\odot I\big).
-\]
-Hệ số $a$ lớn tăng đóng góp của P ở vùng chuyển lớp. Ở vùng tương đối đồng nhất, I cung cấp ngữ cảnh để ổn định nhãn. Light-Bag dùng một phép kết hợp với các tích chập $1\times1$ để giảm độ trễ trong biến thể nhẹ.
-
-Hàm mục tiêu của paper gồm cross-entropy ở đầu ra phụ và đầu ra chính, BCE có trọng số để giám sát nhánh D, cùng một cross-entropy có nhận biết biên. Thành phần cuối chỉ tính tại các vị trí có đáp ứng biên vượt ngưỡng $0{,}8$ theo thiết lập của tác giả. Nhánh D vừa nhận tín hiệu trực tiếp từ nhãn biên, vừa tham gia quyết định đặc trưng được đưa vào bộ phân loại điểm ảnh.
-
-\section{Thí nghiệm gốc và phạm vi kết luận}
-
-Bài báo đánh giá mIoU trên Cityscapes, CamVid và PASCAL Context. Với Cityscapes, tác giả dùng ảnh $2048\times1024$ và báo cáo PIDNet-S đạt 78,6\% mIoU trên tập test, ở 93,2 FPS trong phép đo với RTX 3090, batch 1 và gộp BatchNorm vào tích chập. Trên CamVid, mô hình này đạt 80,1\% mIoU sau khi khởi tạo từ trọng số Cityscapes. Kết quả này gắn với điều kiện khởi tạo từ Cityscapes. PIDNet-L đạt 80,6\% trên Cityscapes test ở 31,1 FPS, phản ánh chi phí của biến thể lớn. Trên PASCAL Context, PIDNet-L đạt 51,9\% mIoU ở giao thức 59 lớp với suy luận đa tỷ lệ và lật ảnh, so với 54,0\% của HRNet-W48 trong Bảng~7. Kết quả này cho thấy lợi thế phụ thuộc bộ dữ liệu và chế độ suy luận.
-
-Đối chứng trong Bảng~1 của paper cho thấy thêm nhánh biên và Bag vào BiSeNet dùng ResNet18 tăng mIoU trên tập validation của Cityscapes từ 75,4\% lên 76,7\%, đồng thời giảm tốc độ từ 63,2 xuống 52,1 FPS. Hai thành phần được thêm cùng lúc nên mức tăng này chưa tách riêng tác dụng của phép trộn. Bảng~3 giữ PAPPM và so sánh phép cộng với Light-Bag trên PIDNet-S. mIoU tăng từ 78,4\% lên 78,8\%, còn FPS giảm từ 97,8 xuống 93,2. Kết quả thể hiện sự đánh đổi giữa độ chính xác và tốc độ ngay trong cùng một họ kiến trúc.
-
-Trong chuỗi ablation ở Bảng~4, việc bổ sung loss biên có trọng số tăng mIoU từ 78,8\% lên 79,9\% khi loss ngữ nghĩa phụ đã có. Tác giả cũng lưu ý mô hình cần nhãn biên đủ chính xác. Các bảng mIoU gộp toàn ảnh nên khó xác định phần cải thiện nằm sát biên, trên vật thể nhỏ hay ở vùng trong. Phép đo FPS còn phụ thuộc độ phân giải, phần cứng và cấu hình suy luận. Ở ảnh thú cưng, lông, bóng đổ và nền có hoa văn tạo nhiều biến thiên cục bộ; đáp ứng cao ở các vùng này có thể dẫn đến ưu tiên chi tiết ngay cả khi nhãn thực thuộc vùng nền. Thí nghiệm đo riêng IoU dải chuyển tiếp để khảo sát sai số tại vùng này.
+\input{prose/paper_analysis.tex}
 
 \chapter{Dữ liệu và thiết lập thực nghiệm}
 \section{Dữ liệu và phân tích khám phá}
-Oxford-IIIT Pet có 7.349 ảnh với 37 giống chó và mèo, kích thước và tư thế đa dạng \cite{pets,petsdata}. Mỗi ảnh có trimap, trong đó giá trị 1 là vật thể, 2 là nền và 3 là vùng chưa phân loại. Báo cáo gọi nhãn 3 là \emph{dải chuyển tiếp} và dùng nó làm tín hiệu gần đúng cho biên. Nhãn giống chỉ phục vụ việc chia tập. Tập dữ liệu được công bố theo CC BY-SA 4.0 trên trang của Oxford. Quyền tác giả ảnh thuộc về chủ sở hữu gốc.
+Oxford-IIIT Pet có 7.349 ảnh với 37 giống chó và mèo, kích thước và tư thế đa dạng \cite{pets,petsdata}. Mỗi ảnh có trimap, trong đó giá trị 1 là vật thể, 2 là nền và 3 là vùng chưa phân loại. Báo cáo gọi nhãn 3 là \emph{dải chuyển tiếp} và dùng nó làm tín hiệu gần đúng cho biên. Nhãn giống chỉ phục vụ việc chia tập. Dữ liệu được tải từ trang Visual Geometry Group, University of Oxford. Bản gốc lưu ảnh JPG trong \code{images/}, trimap PNG trong \code{annotations/trimaps/} và danh sách ảnh cùng nhãn giống trong \code{annotations/trainval.txt} và \code{annotations/test.txt}.
 
-Từ 3.680 ảnh trong tập huấn luyện/validation chính thức, chọn 10 ảnh mỗi giống làm tập validation bằng seed 2026. Phần còn lại gồm 3.310 ảnh dùng để cập nhật trọng số. Tập test chính thức gồm 3.669 ảnh được giữ riêng. Đối chiếu kích thước và pixel RGB giải mã không tìm thấy ảnh trùng chính xác giữa các tập; phép đối chiếu này chỉ phát hiện ảnh trùng pixel.
+Từ 3.680 ảnh trong tập train/validation chính thức, chọn 10 ảnh mỗi giống làm tập validation bằng seed 2026. Phần còn lại gồm 3.310 ảnh dùng để cập nhật trọng số. Tập test chính thức gồm 3.669 ảnh được giữ riêng. Đối chiếu kích thước và pixel RGB giải mã không tìm thấy ảnh trùng chính xác giữa các tập; phép đối chiếu này chỉ phát hiện ảnh trùng pixel.
 
 \input{notebook-evidence/data_analysis.tex}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-1.png}
-\caption{Tỷ lệ điểm ảnh theo nhãn và số ảnh theo giống ở tập train và validation. Tỷ lệ pixel được tính sau khi đưa ảnh về lưới thực nghiệm và bỏ vùng đệm.}
+\caption{Tỷ lệ điểm ảnh theo nhãn và số ảnh theo giống ở tập train và validation. Tỷ lệ pixel được tính sau khi đưa ảnh về lưới thực nghiệm và bỏ vùng padding.}
 \label{fig:eda}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-2.png}
-\caption{Bốn ảnh validation và trimap tương ứng. Xanh lục là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp và xám nhạt là vùng đệm. Ảnh và trimap từ Oxford-IIIT Pet, CC BY-SA 4.0 \cite{petsdata}.}
+\caption{Bốn ảnh validation và trimap tương ứng. Xanh lục là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp và xám nhạt là vùng padding. Ảnh và trimap từ Oxford-IIIT Pet \cite{petsdata}.}
 \label{fig:trimaps}
 \end{figure}
 
 \section{Cài đặt và giao thức đánh giá}
 \subsection{Tiền xử lý}
 
-Cạnh dài của ảnh được nội suy về 192 pixel, giữ tỷ lệ khung hình và đệm bên phải hoặc phía dưới để có đầu vào $192\times192$. Ảnh RGB dùng nội suy song tuyến tính, còn trimap dùng láng giềng gần nhất để giữ giá trị nhãn. Nhãn đệm được bỏ qua trong hàm mục tiêu và phép đo. Tập huấn luyện xáo thứ tự và lật ngang đồng thời ảnh và mặt nạ với xác suất 0,5. Các tập validation và test dùng phép biến đổi cố định. Chuẩn hóa RGB sử dụng trung bình và độ lệch chuẩn ImageNet.
+Ảnh được resize cạnh dài về 192 pixel, giữ aspect ratio rồi thêm padding bên phải hoặc phía dưới để tạo đầu vào $192\times192$. Ảnh RGB dùng bilinear interpolation; trimap dùng nearest-neighbor interpolation để giữ giá trị nhãn. Pixel padding được bỏ qua trong loss và metric. Tập train dùng shuffle và random horizontal flip đồng thời ảnh với mask, xác suất 0,5. Validation và test dùng phép biến đổi cố định. RGB normalization sử dụng mean và standard deviation ImageNet.
 
 \subsection{Hai biến thể có cùng cấu trúc}
 
-Hai mô hình dùng ResNet18 với trọng số ImageNet từ torchvision \cite{resnet,torchvision}. Đầu phân loại của ResNet18 được bỏ. Đặc trưng nông lấy từ \code{layer1} ở stride 4 và đặc trưng sâu lấy từ \code{layer4} ở stride 32. Hai nhánh được chiếu về 64 kênh; đặc trưng sâu được nội suy về lưới đặc trưng nông. Một đầu dự đoán biên trên đặc trưng nông xuất một logit $e$ tại mỗi vị trí.
+Hai mô hình dùng ResNet18 với trọng số pretrained ImageNet từ torchvision \cite{resnet,torchvision}. Đầu phân loại của ResNet18 được bỏ. Đặc trưng nông lấy từ \code{layer1} ở stride 4 và đặc trưng sâu lấy từ \code{layer4} ở stride 32. Hai nhánh được chiếu về 64 kênh; đặc trưng sâu được upsampling về lưới đặc trưng nông. Một đầu dự đoán biên trên đặc trưng nông xuất một logit $e$ tại mỗi vị trí.
 
 \begin{table}[htbp]
 \centering
@@ -134,7 +78,7 @@ Trộn theo biên & $\sigma(e)P+(1-\sigma(e))I$ & Học bằng hàm mất mát p
 \label{tab:variants}
 \end{table}
 
-Bộ phân loại điểm ảnh giống nhau ở hai biến thể. Logit của ba vùng được nội suy về lưới ảnh trước khi tính loss và lấy nhãn có logit lớn nhất. Thí nghiệm giữ phép trộn theo sigmoid của Bag, dùng một hệ số chung cho mọi kênh và một bộ mã hóa ResNet18. Các khối Pag, PAPPM và nhánh D độc lập của PIDNet nằm ngoài cấu hình này. Đầu phụ và giám sát biên giống nhau ở hai biến thể, giúp cô lập việc đưa bản đồ biên vào phép trộn.
+Bộ phân loại điểm ảnh giống nhau ở hai biến thể. Logit của ba vùng được upsampling về lưới ảnh trước khi tính loss và lấy nhãn có logit lớn nhất. Thí nghiệm giữ phép trộn theo sigmoid của Bag, dùng một hệ số chung cho mọi kênh và một encoder ResNet18. Các khối Pag, PAPPM và nhánh D độc lập của PIDNet nằm ngoài cấu hình này. Đầu phụ và giám sát biên giống nhau ở hai biến thể, giúp cô lập việc đưa bản đồ biên vào phép trộn.
 
 \subsection{Huấn luyện}
 
@@ -146,7 +90,7 @@ Với $\Omega$ là các điểm ảnh có nhãn, hàm mục tiêu là cross-entr
 \]
 Nếu một nhóm rỗng trong batch, đóng góp của nhóm đó bằng 0. Việc lấy trung bình riêng giúp dải chuyển tiếp vẫn đóng góp vào gradient dù chiếm ít điểm ảnh. Khác với loss có ngưỡng của PIDNet, thành phần CE ở đây luôn tính trên toàn bộ $\Omega$. Tín hiệu biên của bản trộn theo biên còn nhận gradient qua loss chính vì phép trộn khả vi.
 
-Mỗi biến thể chạy 12 epoch với ba seed 42, 43 và 44. Batch size là 32. AdamW dùng hệ số suy giảm trọng số $10^{-4}$ và tốc độ học ban đầu $2\times10^{-4}$ cho bộ mã hóa, $10^{-3}$ cho các đầu mới. Tốc độ học giảm theo cosine sau mỗi epoch. Vòng lặp gọi trực tiếp forward, tính loss, lan truyền ngược và cập nhật trọng số. Sáu lượt huấn luyện được thực hiện trực tiếp từ notebook trên NVIDIA GeForce RTX 5090, BF16 autocast với loss tính bằng FP32, 4 worker tải dữ liệu và 4 luồng CPU của PyTorch. Môi trường gồm Python 3.12.12, PyTorch 2.10.0, torchvision 0.25.0 và CUDA 13.0.
+Mỗi biến thể chạy 12 epoch với ba seed 42, 43 và 44. Batch size là 32. AdamW dùng weight decay $10^{-4}$ và learning rate ban đầu $2\times10^{-4}$ cho encoder, $10^{-3}$ cho các đầu mới. Learning rate giảm theo cosine sau mỗi epoch. Vòng lặp gọi trực tiếp forward, tính loss, lan truyền ngược và cập nhật trọng số. Sáu lượt huấn luyện được thực hiện trực tiếp từ notebook trên NVIDIA GeForce RTX 5090, BF16 autocast với loss tính bằng FP32, 4 worker tải dữ liệu và 4 luồng CPU của PyTorch. Môi trường gồm Python 3.12.12, PyTorch 2.10.0, torchvision 0.25.0 và CUDA 13.0.
 
 \subsection{Chọn checkpoint và chỉ số đánh giá}
 
@@ -175,18 +119,18 @@ Cả hai biến thể chọn các epoch 10, 8 và 9 theo thứ tự seed 42, 43 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.95\linewidth,height=0.75\textheight,keepaspectratio]{notebook-evidence/figures/notebook-5.png}
-\caption{Bốn ảnh test tại seed 42, lần lượt gồm ảnh RGB, trimap, dự đoán trộn cố định và dự đoán trộn theo biên. Xanh lục là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp. Ảnh và trimap từ Oxford-IIIT Pet, CC BY-SA 4.0 \cite{petsdata}.}
+\caption{Bốn ảnh test tại seed 42, lần lượt gồm ảnh RGB, trimap, dự đoán trộn cố định và dự đoán trộn theo biên. Xanh lục là vật thể, xanh đậm là nền, vàng là dải chuyển tiếp. Ảnh và trimap từ Oxford-IIIT Pet \cite{petsdata}.}
 \label{fig:examples}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{notebook-evidence/figures/notebook-4.png}
-\caption{Ma trận nhầm lẫn theo pixel, gộp ba seed của mỗi biến thể. Hàng là nhãn thực, cột là nhãn dự đoán; tỷ lệ được chuẩn hóa theo từng hàng.}
+\caption{Confusion matrix theo pixel, gộp ba seed của mỗi biến thể. Hàng là nhãn thực, cột là nhãn dự đoán; tỷ lệ được chuẩn hóa theo từng hàng.}
 \label{fig:confusion}
 \end{figure}
 
-\input{notebook-evidence/discussion.tex}
+\input{prose/discussion.tex}
 
 \section{Đối chiếu với kết quả công bố}
 
@@ -207,22 +151,18 @@ A2 & Oxford-IIIT Pet (test), ResNet18 giữ giám sát biên, thay trộn 50/50 
 
 Bảng~\ref{tab:paper-comparison} đối chiếu chênh lệch mIoU trong từng giao thức. Hai thí nghiệm Cityscapes đo thay đổi khi thêm nhánh biên cùng Bag vào BiSeNet, hoặc thay phép cộng bằng Light-Bag trong PIDNet-S. Trên Oxford-IIIT Pet, cả hai biến thể ResNet18 đã học với cùng loss biên. Mức chênh lệch đo được ở A2 vì vậy mô tả tác dụng của việc đưa bản đồ biên vào phép trộn trong cấu hình đó. Dải chưa phân loại của trimap khác nhãn biên ngữ nghĩa của Cityscapes về độ dày và cách tạo nhãn. Khác biệt này, cùng với kiến trúc và độ phân giải, giới hạn phạm vi đối chiếu giữa hai nghiên cứu.
 
-\section{Đối chiếu với lượt thực nghiệm trước}
-
-Lượt thực nghiệm trước trên RTX 3090, cùng hai biến thể và lịch 12 epoch, đạt 77,88\% mIoU với trộn cố định và 77,78\% với trộn theo biên, chênh lệch $-0{,}11$ điểm phần trăm. Thí nghiệm hiện tại cũng cho mIoU trung bình thấp hơn ở bản theo biên. Phần cứng và phiên bản phần mềm khác nhau giữa hai lần đo nên các chênh lệch nhỏ không được quy riêng cho GPU.
-
 \chapter{Kết luận và giới hạn}
-\input{notebook-evidence/conclusion.tex}
+\input{prose/conclusion.tex}
 
 Tập ảnh chủ yếu gồm một thú cưng nổi bật, nên kết quả chưa bao quát cảnh có nhiều lớp tiếp giáp hoặc vật thể nhỏ như Cityscapes. Dải chưa phân loại trong trimap có độ dày khác nhau giữa các ảnh. Đổi độ phân giải ảnh và mặt nạ cũng làm thay đổi độ dày biểu kiến của dải này. Ngoài ra, chỉ ba lượt khởi tạo cho mỗi biến thể được dùng để mô tả độ ổn định.
 
-Các đường cong, ma trận nhầm lẫn và ảnh dự đoán được trích từ kết quả thực thi của \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb}{notebook A2}.
+Các đường cong, confusion matrix và ảnh dự đoán được trích từ kết quả thực thi của \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb}{notebook A2}.
 
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 
 \clearpage
 \begin{thebibliography}{9}
-\bibitem{pidnet} J. Xu, Z. Xiong và S. P. Bhattacharyya.
+\bibitem{pidnet} Jiacong Xu, Zixiang Xiong và Shankar P. Bhattacharyya.
 \emph{PIDNet: A Real-Time Semantic Segmentation Network Inspired by PID Controllers}.
 Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), tr.~19529--19539, 2023.
 \href{https://doi.org/10.1109/CVPR52729.2023.01871}{DOI: 10.1109/CVPR52729.2023.01871}.

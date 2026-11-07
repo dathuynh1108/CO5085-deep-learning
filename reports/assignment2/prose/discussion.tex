@@ -1,0 +1,17 @@
+\subsection{Độ chính xác theo vùng}
+
+Hai mô hình cùng có 11.302.116 tham số được huấn luyện. So với trộn cố định, trộn theo biên thay đổi mIoU $-0{,}18\pm0{,}12$ điểm phần trăm và macro-Dice $-0{,}11\pm0{,}09$ điểm phần trăm khi ghép theo seed. mIoU giảm ở cả ba cặp, lần lượt $0{,}16$, $0{,}31$ và $0{,}07$ điểm phần trăm. Mức giảm IoU trung bình lớn nhất thuộc vùng vật thể ($0{,}28$ điểm phần trăm), tiếp đến là nền và dải chuyển tiếp (đều khoảng $0{,}13$ điểm phần trăm). IoU dải chuyển tiếp tăng $0{,}11$ điểm phần trăm ở seed 44, nhưng giảm ở hai seed còn lại. Ba cặp seed chỉ mô tả độ dao động trong thiết lập đã khảo sát.
+
+Dải chuyển tiếp vẫn là vùng khó nhất, với IoU khoảng 55\%, thấp hơn IoU vật thể khoảng 86\% và IoU nền trên 92\%. Confusion matrix ở Hình~\ref{fig:confusion} cho thấy khoảng 68,4\% pixel thực của dải chuyển tiếp được nhận đúng ở cả hai biến thể. Với bản cố định, 15,1\% bị gán thành vật thể và 16,6\% thành nền; các tỷ lệ tương ứng của bản theo biên là 14,7\% và 16,9\%. Tỷ lệ nhận đúng dải chuyển tiếp gần bằng nhau nhưng IoU vẫn có thể khác vì IoU tính thêm các pixel từ lớp khác bị dự đoán thành dải này. Chẳng hạn, tỷ lệ pixel vật thể bị gán nhãn chuyển tiếp tăng từ 5,4\% lên 5,6\% ở bản theo biên.
+
+\subsection{Tín hiệu biên và trường hợp sai}
+
+Điểm sigmoid của đầu biên sau upsampling ở bản theo biên đạt trung bình 0,772 trên dải chuyển tiếp, 0,311 trên vật thể và 0,182 trên nền. Bản cố định, chỉ dùng đầu này cho loss phụ, cũng phân biệt các vùng với các giá trị tương ứng 0,792, 0,297 và 0,180. Đầu phụ đã học tín hiệu phân biệt vùng chuyển tiếp, nhưng sự phân biệt này chưa chuyển thành lợi ích về IoU khi dùng trong phép trộn. BCE cân bằng đặt trọng số khác nhau cho hai nhóm pixel nên điểm sigmoid được diễn giải như mức đáp ứng của đầu biên.
+
+Hình~\ref{fig:examples} dùng bốn vị trí cách đều trong danh sách test tại seed 42. Với \code{Abyssinian\_2}, cả hai mô hình nới dải chuyển tiếp ở phần đuôi; IoU dải này lần lượt là 64,5\% và 66,5\% cho bản cố định và bản theo biên. Với \code{yorkshire\_terrier\_99}, bản theo biên đưa thêm nhãn chuyển tiếp vào phần trong thân, trong khi IoU dải này giảm từ 54,8\% xuống 48,9\%. Các ví dụ cho thấy tác động của phép trộn thay đổi theo từng ảnh.
+
+Đối chứng đã nhận đặc trưng chi tiết ở mọi vị trí và được huấn luyện bằng cùng loss biên. Lợi ích của cổng thích nghi vì vậy còn phụ thuộc vào khả năng phân biệt biên và thông tin bổ sung giữa hai nhánh. Với đặc trưng stride 4 và nhãn trimap có bề rộng, tín hiệu đó có thể thay đổi phép trộn cả ở nơi cần ngữ cảnh để phân biệt vật thể với nền. Thí nghiệm hiện tại chưa tách riêng ảnh hưởng của độ phân giải đặc trưng và cách tạo nhãn biên.
+
+\subsection{Chi phí huấn luyện}
+
+Trên RTX 5090, tổng thời gian cập nhật trọng số qua 12 epoch trung bình là $8{,}75\pm0{,}33$ giây với trộn cố định và $8{,}58\pm0{,}04$ giây với trộn theo biên. Khoảng thời gian này gồm tải batch và huấn luyện, không gồm lượt validation. Bộ nhớ GPU cấp phát cực đại, có tính cả validation, lần lượt là $559{,}7\pm1{,}2$ MiB và $572{,}2\pm0{,}0$ MiB. Chênh lệch thời gian nhỏ giữa sáu lượt chạy không xác lập lợi thế tốc độ của cơ chế trộn. Lượt thực nghiệm này chưa đo độ trễ suy luận nên không đối chiếu tốc độ trực tiếp với FPS của PIDNet.

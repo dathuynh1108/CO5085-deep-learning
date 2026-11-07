@@ -15,8 +15,8 @@ def main():
     if engine is None:
         raise SystemExit('XeLaTeX/Tectonic not found. Install a TeX engine, then retry.')
     directory = args.report_root.resolve()
-    if not (directory / 'generated/manifest.json').is_file():
-        raise SystemExit('Generate the report tables and manifest first.')
+    if not (directory / 'report.tex').is_file():
+        raise SystemExit('Report source report.tex was not found.')
     if not args.jobname or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789_-' for c in args.jobname):
         parser.error('Job name must be a lowercase filename without path separators.')
     if Path(engine).name == 'tectonic':

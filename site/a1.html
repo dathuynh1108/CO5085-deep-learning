@@ -31,7 +31,7 @@
     <div>
       <span class="tag elective">Bài tập lớn A1</span>
       <h1>So sánh CNN và Transformer trên CIFAR-100</h1>
-      <p>Khảo sát ảnh hưởng của tiền huấn luyện và mức độ tinh chỉnh đến kết quả phân loại ảnh của ResNet18 và Swin-T.</p>
+      <p>Khảo sát ảnh hưởng của pretraining và chế độ fine-tuning đến kết quả phân loại ảnh của ResNet18 và Swin-T.</p>
     </div>
     <div class="detail-meta"><span class="mono">Phạm vi thực nghiệm</span><strong>8 cấu hình và đối chứng khởi tạo Swin-T</strong><p><!--A1_STATUS-->Mỗi cấu hình dùng ba seed.<!--/A1_STATUS--></p></div>
   </section>
@@ -60,7 +60,7 @@
 
       <section class="detail-section" id="protocol">
         <h2>Thiết lập thực nghiệm</h2>
-        <p>Với mỗi kiến trúc, một cấu hình được huấn luyện từ đầu và ba cấu hình sử dụng trọng số tiền huấn luyện IMAGENET1K_V1. Ba mức tinh chỉnh lần lượt cập nhật bộ phân loại cuối, khối cuối cùng với bộ phân loại, hoặc toàn bộ tham số.</p>
+        <p>Với mỗi kiến trúc, một cấu hình được huấn luyện từ đầu và ba cấu hình sử dụng trọng số pretrained IMAGENET1K_V1. Ba chế độ fine-tuning lần lượt cập nhật bộ phân loại cuối, khối cuối cùng với bộ phân loại, hoặc toàn bộ tham số.</p>
         <div class="protocol-grid">
           <div><strong>20 epoch mỗi lượt</strong><p>Seed huấn luyện: 42, 43 và 44. Seed chia dữ liệu: 2026.</p></div>
           <div><strong>AdamW và lịch học cosine</strong><p>Kích thước batch 128; tính toán BF16 trên GPU RTX 5090.</p></div>
@@ -80,7 +80,7 @@
           </table>
         </div>
         <p>Swin-T tinh chỉnh toàn bộ đạt độ chính xác cao nhất, 86,63 ± 0,22%, so với 78,97 ± 0,04% của ResNet18 ở cùng chế độ. Với cả hai kiến trúc, tinh chỉnh khối cuối hoặc toàn bộ mô hình cho kết quả cao hơn việc chỉ cập nhật bộ phân loại cuối.</p>
-        <p>Swin-T huấn luyện từ đầu đạt 2,76 ± 1,26%, thấp hơn nhiều so với các cấu hình tiền huấn luyện. Kết quả cho thấy cấu hình này chưa học được biểu diễn hiệu quả trong ngân sách 20 epoch.</p>
+        <p>Swin-T huấn luyện từ đầu đạt 2,76 ± 1,26%, thấp hơn nhiều so với các cấu hình pretrained. Kết quả cho thấy cấu hình này chưa học được biểu diễn hiệu quả trong ngân sách 20 epoch.</p>
         <h3>Đối chứng khởi tạo Swin-T trong lịch 40 epoch</h3>
         <p>Hai cấu hình cập nhật toàn bộ mô hình, với cùng split, tốc độ học, năm epoch làm nóng và lịch giảm cosine. Khác biệt giữa hai bản nằm ở cách khởi tạo bộ trích xuất đặc trưng.</p>
         <div class="table-wrap">

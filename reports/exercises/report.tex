@@ -1,5 +1,8 @@
 \documentclass[12pt,a4paper]{report}
 \input{../course-report.tex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\input{architectures.tex}
 \CourseReportHeader{CO5085 · E1–E3}
 \newcommand{\resultfigure}[3]{\IfFileExists{notebook-evidence/figures/#1.png}{\begin{figure}[htbp]\centering\includegraphics[width=#3\textwidth]{notebook-evidence/figures/#1.png}\caption{#2}\end{figure}}{}}
 \newcommand{\tablenote}{\par\smallskip{\small Val/Test: accuracy (\%). Tham số đếm từ kiến trúc; $\pm$: SD qua ba seed. Các lượt chạy được liệt kê ở Chương~\ref{chap:ta-lap}; cách đo thời gian ở Chương 1.}\par}
@@ -10,22 +13,22 @@
   {BÁO CÁO BÀI TẬP E1–E3}
   {CO5085 · Học sâu và ứng dụng trong thị giác máy tính}
   {Phân loại ảnh với CNN, attention và mạng hồi tiếp}
-  {Sinh viên}
+  {Học viên}
   {Huỳnh Thành Đạt & 2570161\\[0.5em]
    Giảng viên & Lê Thành Sách\\
               & Nguyễn Quốc Minh}
   {tháng 11 năm 2026}
 
 \CourseAbstract{
-Ba bài tập khảo sát cách biểu diễn ảnh trong bài toán phân loại Fashion-MNIST. E1 so sánh bộ phân loại softmax, MLP và CNN. E2 đối chiếu multi-head self-attention tự viết với mô-đun PyTorch trên ba cách tạo token. E3 so sánh LSTM và GRU khi ảnh được đọc theo hàng hoặc theo ô, đồng thời khảo sát độ nhạy với thứ tự quét.
+Ba bài tập khảo sát cách biểu diễn ảnh trong bài toán phân loại Fashion-MNIST. E1 so sánh bộ phân loại softmax, MLP và CNN. E2 đối chiếu multi-head self-attention tự viết với mô-đun PyTorch trên ba cách tạo token. E3 so sánh LSTM và GRU khi ảnh được đọc theo hàng hoặc theo patch, đồng thời khảo sát độ nhạy với thứ tự quét.
 
 Mỗi cấu hình được huấn luyện từ đầu với ba seed. CNN đạt độ chính xác trên tập test trung bình cao nhất, 92,69\%. Trong nhóm attention, bản tự viết dùng CNN-stem đạt 88,59\%. GRU đọc ảnh theo hàng đạt 90,07\%. Phân tích gradient và phép thay đổi thứ tự quét mô tả độ nhạy của mô hình đối với biểu diễn chuỗi.
 }
 
 \CourseOverview{
-Dữ liệu & Fashion-MNIST, 10 lớp. Ba bài dùng cùng các tập huấn luyện, validation và test.\\
+Dữ liệu & Fashion-MNIST, 10 lớp. Ba bài dùng cùng các tập train, validation và test.\\
 E1 & So sánh softmax, MLP và CNN về độ chính xác, số tham số và lỗi phân loại.\\
-E2 & Đối chiếu hai hiện thực attention trên token theo hàng, theo ô và theo đặc trưng CNN-stem.\\
+E2 & Đối chiếu hai hiện thực attention trên token theo hàng, theo patch và theo đặc trưng CNN-stem.\\
 E3 & So sánh LSTM, GRU với MLP và CNN. Khảo sát độ nhạy với thứ tự quét và gradient theo bước.\\
 Phép đo & 13 cấu hình, ba seed mỗi cấu hình. Checkpoint được chọn trên tập validation.\\
 Kết quả chính & CNN đạt 92,69\% độ chính xác trên tập test trung bình. GRU đọc theo hàng đạt 90,07\% trong E3.\\
@@ -35,18 +38,18 @@ Kết quả chính & CNN đạt 92,69\% độ chính xác trên tập test trung
 
 \chapter{Dữ liệu và quy trình chung}
 \section{Phạm vi bài làm}
-Báo cáo so sánh các mô hình phân loại ảnh trên cùng tập Fashion-MNIST. E1 gồm softmax, MLP và CNN. E2 trình bày hiện thực multi-head self-attention (MSA), đối chiếu với thư viện và khảo sát ba cách tạo token. E3 biểu diễn ảnh thành chuỗi để phân loại bằng LSTM/GRU, với MLP và CNN của E1 làm đối chứng. Chỉ số bước của mạng hồi tiếp tương ứng với thứ tự quét các vùng trên ảnh.
+Báo cáo so sánh các mô hình phân loại ảnh trên cùng tập Fashion-MNIST. E1 gồm softmax, MLP và CNN. E2 trình bày hiện thực multi-head self-attention (MSA), đối chiếu với thư viện và khảo sát ba cách tạo token. E3 biểu diễn ảnh thành chuỗi để phân loại bằng LSTM/GRU, với MLP và CNN của E1 làm baseline. Chỉ số bước của mạng hồi tiếp tương ứng với thứ tự quét các vùng trên ảnh.
 
 Báo cáo tổng hợp 13 cấu hình, gồm ba cấu hình E1, sáu cấu hình E2 và bốn cấu hình hồi tiếp E3. Mỗi cấu hình được huấn luyện từ đầu với ba seed 42, 43 và 44, tương ứng 39 lượt. Các mô hình dùng chung cách chia dữ liệu và quy tắc chọn checkpoint.
 
 \section{Tập dữ liệu và cách chia}
-Fashion-MNIST gồm ảnh thời trang mức xám $28\times28$, 10 lớp, với 60.000 ảnh train và 10.000 ảnh test chính thức \cite{fashion}. Kích thước ảnh nhỏ phù hợp để khảo sát cả CNN, attention và mạng hồi tiếp trên cùng đầu vào.
+Fashion-MNIST được lấy từ kho dữ liệu chính thức của Zalando Research \cite{fashion}. Bộ dữ liệu gồm 60.000 ảnh thuộc tập train và 10.000 ảnh thuộc tập test, mỗi ảnh có kích thước $28\times28$, một kênh grayscale và thuộc một trong 10 lớp sản phẩm thời trang. Ảnh và nhãn được cung cấp dưới dạng các tệp IDX nén gzip. Kích thước ảnh nhỏ phù hợp để khảo sát cả CNN, attention và mạng hồi tiếp trên cùng đầu vào.
 
 Từ 60.000 ảnh train, tách phân tầng 10\% làm validation với split seed 2026. Như vậy có 54.000 ảnh train, 6.000 validation và 10.000 test. Mỗi lớp lần lượt có 5.400, 600 và 1.000 ảnh theo phân bố chuẩn của bộ dữ liệu. Split seed không đổi giữa E1–E3 và không trùng vai trò với seed khởi tạo mô hình.
 
-Ảnh được chuyển từ uint8 sang $[0,1]$, sau đó chuẩn hóa $x'=(x-\mu)/\sigma$. Hai thống kê $\mu,\sigma$ được tính trên 54.000 ảnh train và dùng lại cho validation/test. Các thí nghiệm không dùng augmentation để giữ đầu vào thống nhất khi so sánh cách biểu diễn ảnh.
+Ảnh được chuyển từ uint8 sang $[0,1]$, sau đó áp dụng normalization $x'=(x-\mu)/\sigma$. Hai thống kê $\mu,\sigma$ được tính trên 54.000 ảnh train và dùng lại cho validation/test. Các thí nghiệm không dùng augmentation để giữ đầu vào thống nhất khi so sánh cách biểu diễn ảnh.
 
-\code{src/common/data.py} lưu chỉ số từng split, checksum dữ liệu và fingerprint của cả split lẫn normalization. Dữ liệu test không tham gia chọn checkpoint hay tính thống kê chuẩn hóa.
+Tập test không tham gia chọn checkpoint hay tính thống kê normalization.
 
 \section{Huấn luyện và chỉ số đánh giá}
 Mỗi mô hình xuất logits $z\in\R^{10}$. Với nhãn đúng $y$, cross-entropy là
@@ -71,7 +74,7 @@ Chọn checkpoint & Validation accuracy lớn nhất; hòa thì CE nhỏ nhất\
 \caption{Thiết lập huấn luyện dùng chung cho E1–E3.}
 \end{table}
 
-Vòng lặp huấn luyện gồm zero gradient, forward, tính loss, backward, clipping và optimizer step. Checkpoint được chọn trên validation; test được đánh giá sau khi hoàn tất các cấu hình đã định. Chương trình kiểm tra tính hữu hạn của loss và gradient tại mỗi bước cập nhật.
+Vòng lặp huấn luyện gồm zero gradient, forward, tính loss, backward, clipping và optimizer step. Checkpoint được chọn trên tập validation; tập test chỉ được đánh giá sau khi chốt giao thức và hoàn tất huấn luyện các cấu hình đã định. Chương trình kiểm tra tính hữu hạn của loss và gradient tại mỗi bước cập nhật.
 
 Accuracy là chỉ số chính; macro-F1 bổ sung đánh giá theo lớp. Confusion matrix và các dự đoán sai có confidence cao được dùng để phân tích lỗi. Chi phí mô hình được mô tả qua số tham số và thời gian train/epoch. Thời gian được đồng bộ CUDA, gồm lấy batch và cập nhật trọng số; median bỏ epoch đầu để giảm ảnh hưởng khởi tạo. Tốc độ inference được đo riêng, bỏ hai batch đầu và không tính thời gian truyền dữ liệu sang GPU.
 
@@ -79,7 +82,16 @@ Bảng kết quả trình bày độ chính xác trên tập validation trung b�
 
 \chapter{E1: Softmax, MLP và CNN}
 \section{Ba bộ phân loại}
-Softmax nhận vector $x\in\R^{784}$ và tính logits $z=Wx+b$; ranh giới giữa hai lớp là siêu phẳng trong không gian pixel. MLP bổ sung hai tầng phi tuyến trên cùng vector flatten. CNN dùng kernel chia sẻ theo vị trí để học đặc trưng cục bộ. Các lớp của từng mô hình được trình bày trong bảng dưới đây.
+Ba mô hình khác nhau ở cách khai thác cấu trúc ảnh. Bộ phân loại softmax nhận vector $x\in\R^{784}$ và tính logits $z=Wx+b$. Với hai lớp $i,j$, điều kiện $z_i=z_j$ xác định một siêu phẳng; mô hình không học đặc trưng phi tuyến trước khi phân loại. MLP dùng cùng vector ảnh nhưng bổ sung hai tầng ẩn:
+\begin{equation}
+h_1=\operatorname{ReLU}(W_1x+b_1),\qquad
+h_2=\operatorname{ReLU}(W_2h_1+b_2),\qquad z=W_3h_2+b_3.
+\end{equation}
+Dropout được áp dụng sau mỗi tầng ẩn khi train. Flatten vẫn giữ thông tin pixel, nhưng các kết nối fully connected không áp đặt quan hệ lân cận hai chiều.
+
+CNN đưa giả định về tính cục bộ và khả năng dùng chung đặc trưng theo vị trí vào kiến trúc. Mỗi kernel $3\times3$ xử lý một vùng ảnh và dùng chung trọng số khi trượt trên lưới. Padding 1 giữ kích thước không gian qua convolution; max pooling giảm kích thước và giữ đáp ứng mạnh trong từng vùng $2\times2$. Hình~\ref{fig:e1-architecture} trình bày đường truyền dữ liệu và kích thước qua ba mô hình; bảng dưới liệt kê các lớp.
+
+\ExerciseOneArchitecture
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{@{}lX@{}}\toprule
@@ -103,7 +115,9 @@ Hai phép pooling đưa ảnh $28\to14\to7$, vì vậy head CNN nhận $64\times
 Train/validation CE được đối chiếu với accuracy để phân tích quá trình học. Confusion matrix và ảnh dự đoán sai bên dưới lấy từ CNN ở seed 42.
 MLP tăng độ chính xác trên tập test từ 84,51\% của softmax lên 89,88\%. CNN đạt 92,69\%, cao hơn MLP 2,81 điểm phần trăm. MLP bổ sung các lớp phi tuyến. CNN còn giữ cấu trúc hai chiều và khai thác lân cận bằng kernel dùng chung. Hai mô hình khác nhau cả về cấu trúc lẫn số tham số.
 
-Ở epoch cuối, cross-entropy của CNN trung bình qua ba seed là 0,0170 trên tập huấn luyện và 0,2972 trên tập validation. Khoảng cách này cho thấy mô hình khớp tập huấn luyện nhiều hơn. Trong ma trận nhầm lẫn của seed 42, lỗi có tần suất cao nhất theo một chiều là Shirt bị gán thành T-shirt/top, gồm 86 ảnh.
+Ở epoch cuối, cross-entropy của CNN trung bình qua ba seed là 0,0170 trên tập train và 0,2972 trên tập validation. Khoảng cách này cho thấy mô hình khớp tập train nhiều hơn; kết quả test được tính từ checkpoint tốt nhất trên validation, không nhất thiết từ epoch cuối. Trong confusion matrix của seed 42, Shirt có recall 78,8\%, thấp nhất trong 10 lớp. Có 86 ảnh Shirt bị gán thành T-shirt/top và 78 ảnh nhầm theo chiều ngược lại. Hai chiều nhầm lẫn này gợi ý khó khăn khi phân biệt kiểu áo ở độ phân giải thấp, nhưng chưa tách được ảnh hưởng của chi tiết ảnh, nhãn và đặc trưng đã học.
+
+CNN cần khoảng 0,47 giây/epoch, so với 0,36 của MLP và 0,28 của softmax trong cùng môi trường đo. Mức tăng accuracy đi kèm số tham số và chi phí train lớn hơn. Vì kiến trúc và số tham số cùng thay đổi, thí nghiệm chưa xác định riêng mức đóng góp của convolution so với dung lượng mô hình.
 
 \resultfigure{e1_comparison_ce}{Validation CE của ba mô hình E1 ở seed 42.}{0.88}
 \resultfigure{e1_comparison_accuracy}{Validation accuracy của E1; seed dùng cho hình ghi trên biểu đồ.}{0.88}
@@ -117,11 +131,17 @@ Với tensor token $X\in\R^{B\times N\times d}$, mỗi head học các phép chi
 Q=XW_Q,\quad K=XW_K,\quad V=XW_V,\qquad
 A=\operatorname{softmax}_{\text{hàng}}\left(\frac{QK^\top}{\sqrt{d_h}}\right),\quad O=AV.
 \end{equation}
+Tích $QK^\top$ biểu diễn mức tương hợp giữa các cặp token. Chia cho $\sqrt{d_h}$ giúp kiểm soát độ lớn của logits khi số chiều tăng; softmax theo chiều key tạo các trọng số có tổng bằng 1 cho mỗi query. Vì $O=AV$, mỗi token đầu ra tổng hợp thông tin từ toàn bộ ảnh thay vì chỉ từ một vùng lân cận. Các head dùng các phép chiếu riêng, sau đó được ghép và chiếu về số chiều ban đầu.
+
 Các bias được lược bỏ trong công thức cho gọn, nhưng có trong hiện thực. Ở đây $d=64$, có bốn head nên $d_h=16$. Ba phép Linear được gộp thành QKV, reshape thành các head, nhân ma trận, softmax theo chiều key, áp dụng dropout, ghép head và chiếu output. Bản manual không gọi \code{nn.MultiheadAttention}, \code{TransformerEncoder} hoặc fused attention để thay phần tính này.
 
 Bản đối chiếu dùng \code{nn.MultiheadAttention(batch_first=True)}. Các trọng số QKV và output projection của bản tự viết được sao chép sang mô-đun PyTorch. Các phần tokenizer, positional embedding, FFN, LayerNorm và head cũng giữ nguyên tensor khởi tạo của cùng seed.
 
-Tính tương đương số học được kiểm tra bằng tensor nhỏ và dropout bằng 0, qua output, gradient đầu vào và gradient của toàn bộ tham số. Khi huấn luyện, dropout và kernel có thể làm hai phiên bản đi theo quỹ đạo khác nhau dù cùng khởi tạo.
+Khi huấn luyện, dropout và kernel có thể làm hai phiên bản đi theo quỹ đạo khác nhau dù cùng khởi tạo.
+
+Hình~\ref{fig:e2-manual-msa} tách các bước của MSA tự viết. Sau phép QKV chung, tensor được chia thành bốn head; softmax được tính độc lập trên các key của từng head. Phép ghép head đưa tensor về kích thước ban đầu trước output projection.
+
+\ExerciseTwoAttention
 
 \section{Ba cách tokenization}
 \begin{table}[htbp]\centering
@@ -136,12 +156,20 @@ CNN-stem & 49 & 64 & Hai Conv stride 2: $1\to32\to64$, BN/ReLU; flatten spatial\
 
 Token hàng gom các pixel cùng một hàng. Token patch quét lưới từ trái sang phải, trên xuống dưới. CNN-stem rút feature map $64\times7\times7$; mỗi vị trí là một token đã qua xử lý cục bộ. Stem được huấn luyện từ đầu và bổ sung cả phép tính lẫn tham số so với hai cách tạo token trực tiếp.
 
-Mỗi cấu hình thêm learned positional embedding, qua hai encoder block dạng pre-LN và kết thúc bằng LayerNorm, mean pooling và Linear $64\to10$. Không có CLS token. Mỗi block tính
+Hình~\ref{fig:e2-tokenizers} cho thấy ba cách chuyển cùng một ảnh thành chuỗi. Số chiều embedding đều là 64, trong khi số token phụ thuộc cách biểu diễn.
+
+\ExerciseTwoTokenizers
+
+Learned positional embedding được cộng vào token để mô hình phân biệt vị trí trên ảnh. Attention đơn thuần không xác định vị trí từ thứ tự lưu token; mean pooling cũng không giữ thứ tự đó. Mỗi cấu hình dùng hai encoder block dạng pre-LN, rồi LayerNorm, mean pooling và Linear $64\to10$ để phân loại. Không có CLS token. Mỗi block tính
 \begin{align}
 U &= X+\operatorname{Dropout}(\operatorname{MSA}(\operatorname{LN}(X))),\\
 Y &= U+\operatorname{FFN}(\operatorname{LN}(U)),
 \end{align}
-trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Attention không dùng causal mask vì toàn bộ ảnh đã có tại thời điểm phân loại.
+trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Residual connection cộng đầu vào vào kết quả của từng nhánh, còn LayerNorm được áp dụng trước attention và FFN theo thiết kế pre-LN. Attention không dùng causal mask vì toàn bộ ảnh đã có tại thời điểm phân loại.
+
+Hình~\ref{fig:e2-encoder} đặt encoder block trong classifier hoàn chỉnh. Hai block có cùng cấu trúc nhưng dùng các bộ trọng số riêng. Mean pooling chỉ gộp theo chiều token, giữ lại vector 64 chiều cho lớp phân loại cuối.
+
+\ExerciseTwoEncoder
 
 \section{So sánh attention và tokenization}
 \begin{table}[htbp]\centering\small
@@ -152,18 +180,22 @@ trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Attention không 
 
 Manual và thư viện được so sánh ở từng tokenizer; ba tokenizer được so sánh khi giữ attention backend cố định. Chi phí tính điểm attention tỉ lệ $N^2d$; số cặp token của patch gấp $49^2/28^2\approx3,06$ lần token hàng. Thời gian toàn mô hình còn gồm projection, FFN, stem và chi phí thực thi kernel.
 
-Trên cùng cách lấy token, chênh lệch độ chính xác trên tập test giữa bản PyTorch và bản tự viết lần lượt là $-0{,}06$, $+0{,}10$ và $-0{,}09$ điểm phần trăm cho token theo hàng, theo patch và theo đặc trưng CNN-stem. Các chênh lệch đều dưới 0,11 điểm phần trăm. Bản PyTorch có thời gian huấn luyện mỗi epoch ngắn hơn trong cả ba cặp.
+Trên cùng cách lấy token, chênh lệch độ chính xác trên tập test giữa bản PyTorch và bản tự viết lần lượt là $-0{,}06$, $+0{,}10$ và $-0{,}09$ điểm phần trăm cho token theo hàng, theo patch và theo đặc trưng CNN-stem. Các chênh lệch đều dưới 0,11 điểm phần trăm và không cho thấy một phiên bản luôn có accuracy cao hơn qua cả ba tokenizer. Kết quả này phù hợp với việc hai phiên bản hiện thực cùng phép attention, nhưng ba seed chưa đủ để kết luận tương đương thống kê. Bản PyTorch giảm khoảng 0,05 giây/epoch trong cả ba cặp. Đây là chênh lệch thời gian của toàn bộ classifier trong thiết lập đo, chưa phải phép đo riêng kernel attention.
 
-CNN-stem đạt 88,59\% với MSA tự viết và 88,50\% với MSA PyTorch, cao hơn token theo hàng và theo patch ở cùng hiện thực. Tầng tích chập đưa đặc trưng cục bộ vào chuỗi trước attention. Cách lấy token đồng thời thay đổi độ dài chuỗi, kích thước đặc trưng và số tham số, nên kết quả phản ánh cả cấu hình biểu diễn.
+CNN-stem đạt 88,59\% với MSA tự viết và 88,50\% với MSA PyTorch, cao hơn token theo hàng và theo patch ở cùng hiện thực. Tầng tích chập đưa đặc trưng cục bộ vào chuỗi trước attention. Cách lấy token đồng thời thay đổi độ dài chuỗi, kích thước đặc trưng và số tham số, nên kết quả phản ánh cả cấu hình biểu diễn. Trong bản manual, CNN-stem cao hơn token hàng 0,67 điểm phần trăm và cao hơn patch 2,66 điểm phần trăm. Tuy vậy, cả ba vẫn thấp hơn MLP và CNN của E1. Kết quả chỉ áp dụng cho các kiến trúc nhỏ được train từ đầu trong 30 epoch; chưa đủ cơ sở suy rộng thành hạn chế chung của attention trong phân loại ảnh.
 
 \resultfigure{e2_comparison_ce}{Validation CE của sáu cấu hình E2 ở seed 42.}{0.9}
 \resultfigure{e2_comparison_accuracy}{Validation accuracy khi thay attention backend và tokenizer.}{0.9}
 
 \chapter{E3: LSTM/GRU trên chuỗi ảnh}
 \section{Biểu diễn ảnh và kiến trúc}
-Ảnh được biến thành chuỗi theo hai cách đã dùng trong E2, nhưng không qua embedding học được: hàng cho $T=28,D=28$; patch $4\times4$ cho $T=49,D=16$. Cả LSTM và GRU đều có một tầng, một chiều, hidden size $H=128$, trạng thái đầu bằng zero. Bộ phân loại lấy trạng thái ẩn cuối, áp dụng dropout 0,1 rồi chiếu tuyến tính $128\to10$.
+Ảnh được biến thành chuỗi theo hai cách đã dùng trong E2, nhưng không qua embedding học được: hàng cho $T=28,D=28$; patch $4\times4$ cho $T=49,D=16$. Cả LSTM và GRU đều có một tầng, một chiều, hidden size $H=128$, trạng thái đầu bằng zero. Bộ phân loại lấy hidden state cuối, áp dụng dropout 0,1 rồi chiếu tuyến tính $128\to10$.
 
 Quét hàng giữ các quan hệ ngang trong một token và để mạng hồi tiếp xử lý quan hệ giữa các hàng. Quét patch tạo nhiều bước hơn, mỗi bước mô tả một vùng nhỏ hơn. Vì vậy, so sánh này thay đổi đồng thời độ dài chuỗi và kích thước đầu vào tại mỗi bước.
+
+Hình~\ref{fig:e3-architecture} biểu diễn mạng khi khai triển theo thứ tự quét. Các bước dùng chung trọng số và hidden size 128; LSTM truyền thêm cell state, còn GRU chỉ truyền hidden state. Các gate điều tiết việc giữ và cập nhật thông tin theo những phương trình bên dưới.
+
+\ExerciseThreeArchitecture
 
 \section{Các phương trình được sử dụng}
 Với LSTM, đặt $a_t=W_xx_t+W_hh_{t-1}+b$ rồi tách thành bốn phần \cite{pytorch-lstm}:
@@ -172,7 +204,7 @@ i_t&=\sigma(a_t^i),& f_t&=\sigma(a_t^f),& g_t&=\tanh(a_t^g),& o_t&=\sigma(a_t^o)
 c_t&=f_t\odot c_{t-1}+i_t\odot g_t,&&
 h_t=o_t\odot\tanh(c_t).
 \end{align}
-$c_t$ có đường cập nhật cộng, còn $h_t$ là trạng thái dùng cho output và hồi tiếp. Cổng quên lớn có thể giữ thông tin, nhưng kiến trúc này không tự bảo đảm mọi gradient đều được bảo toàn.
+$c_t$ là cell state, được cập nhật bằng tổng của phần thông tin cũ giữ lại qua forget gate $f_t$ và phần thông tin mới qua input gate $i_t$. Output gate $o_t$ điều tiết phần cell state đưa vào hidden state $h_t$. Trên nhánh cập nhật trực tiếp, đạo hàm theo cell state trước là $f_t$; qua nhiều bước, nhánh này chứa tích các forget gate. Giá trị gần 1 có thể giúp truyền thông tin và gradient, nhưng toàn bộ đạo hàm còn đi qua các gate và hidden state, nên kiến trúc không tự bảo đảm mọi gradient đều được bảo toàn.
 
 GRU dùng reset gate $r_t$, update gate $z_t$ và trạng thái ứng viên $n_t$. Diagnostic khớp đúng cách PyTorch đặt reset gate sau phép chiếu hidden \cite{pytorch-gru}:
 \begin{align}
@@ -181,47 +213,44 @@ z_t &=\sigma(W_{iz}x_t+b_{iz}+W_{hz}h_{t-1}+b_{hz}),\\
 n_t &=\tanh\!\left(W_{in}x_t+b_{in}+r_t\odot(W_{hn}h_{t-1}+b_{hn})\right),\\
 h_t &=(1-z_t)\odot n_t+z_t\odot h_{t-1}.
 \end{align}
-Trong công thức của PyTorch, reset gate tác động sau phép chiếu hidden. Đây là điểm khác với cách viết $W_{hn}(r_t\odot h_{t-1})$. GRU sử dụng một trạng thái hidden, còn LSTM tách hidden state và cell state.
+Trong công thức của PyTorch, reset gate tác động sau phép chiếu hidden. Đây là điểm khác với cách viết $W_{hn}(r_t\odot h_{t-1})$. Update gate quyết định mức giữ lại hidden state cũ, còn reset gate điều tiết đóng góp của trạng thái cũ khi tạo $n_t$. GRU sử dụng một hidden state, còn LSTM tách hidden state và cell state. GRU tính ba nhóm phép chiếu cho reset gate, update gate và trạng thái ứng viên, thay vì bốn nhóm của LSTM. Vì vậy, GRU có ít tham số hơn khi giữ nguyên kích thước đầu vào và hidden size.
 
 PyTorch lưu hai vector bias cho mỗi tầng. Vì vậy, số tham số phần recurrent là $4H(D+H+2)$ với LSTM và $3H(D+H+2)$ với GRU; cộng thêm $10H+10$ cho head. Cùng giá trị $H$ không đồng nghĩa với cùng số tham số giữa hai mô hình.
 
 \section{Kết quả và quan hệ không gian}
 \begin{table}[htbp]\centering\small
 \input{notebook-evidence/e3_table.tex}
-\caption{Kết quả E3 và hai mô hình đối chứng E1 trên cùng phân hoạch dữ liệu.}
+\caption{Kết quả E3 và hai baseline E1 trên cùng phân hoạch dữ liệu.}
 \end{table}
 \tablenote
 
 CNN khai thác lân cận hai chiều và chia sẻ kernel; LSTM/GRU tích lũy thông tin theo đường quét. Khi chuyển từ cuối một hàng patch sang đầu hàng kế tiếp, hai phần tử kề nhau trong chuỗi chưa chắc là hàng xóm gần nhất trên ảnh. Đường quét vì vậy giữ thứ tự một chiều và chỉ bảo toàn một phần quan hệ lân cận hai chiều.
 
-Quét theo hàng tăng độ chính xác trên tập test trung bình so với quét theo ô ở cả LSTM và GRU. Chênh lệch ghép theo seed là $1{,}93\pm0{,}42$ điểm phần trăm với LSTM và $2{,}07\pm0{,}22$ điểm phần trăm với GRU. Trên cùng biểu diễn theo hàng, GRU cao hơn LSTM $0{,}49\pm0{,}21$ điểm phần trăm.
+Quét theo hàng tăng độ chính xác trên tập test trung bình so với quét theo patch ở cả LSTM và GRU. Chênh lệch ghép theo seed là $1{,}93\pm0{,}42$ điểm phần trăm với LSTM và $2{,}07\pm0{,}22$ điểm phần trăm với GRU. Trên cùng biểu diễn theo hàng, GRU cao hơn LSTM $0{,}49\pm0{,}21$ điểm phần trăm.
 
-GRU theo hàng đạt 90,07\%, gần với MLP (89,88\%) và thấp hơn CNN (92,69\%). GRU theo hàng có 61.962 tham số, so với 235.146 của MLP và 421.738 của CNN. Hai cách quét thay đổi đồng thời số bước và kích thước của mỗi token, nên chênh lệch quan sát được phản ánh tác động kết hợp của chúng.
+GRU theo hàng đạt 90,07\%, gần với MLP (89,88\%) và thấp hơn CNN (92,69\%). GRU theo hàng có 61.962 tham số, so với 235.146 của MLP và 421.738 của CNN.
 
-\resultfigure{e3_comparison_ce}{Cross-entropy trên tập validation của các mạng hồi tiếp và mô hình đối chứng E1 ở cùng seed.}{0.9}
-\resultfigure{e3_comparison_accuracy}{Độ chính xác trên tập validation của E3 và hai mô hình đối chứng MLP, CNN.}{0.9}
+GRU theo hàng cần khoảng 0,36 giây/epoch, tương đương MLP trong bảng và thấp hơn GRU theo patch (0,55 giây/epoch). Patch tạo chuỗi 49 bước thay vì 28 bước, dù đầu vào mỗi bước nhỏ hơn. Do các bước hồi tiếp phụ thuộc trạng thái trước, độ dài chuỗi là một yếu tố hợp lý để giải thích khác biệt thời gian; phép đo hiện tại chưa cô lập yếu tố này khỏi kích thước đầu vào và cách thực thi kernel. Tương tự, chênh lệch accuracy giữa hai cách quét phản ánh đồng thời số bước, nội dung token và số tham số.
+
+\resultfigure{e3_comparison_ce}{Cross-entropy trên tập validation của các mạng hồi tiếp và baseline E1 ở cùng seed.}{0.9}
+\resultfigure{e3_comparison_accuracy}{Độ chính xác trên tập validation của E3, MLP và CNN.}{0.9}
 
 \clearpage
 \section{Độ nhạy với thứ tự quét}
 Phép đo dùng checkpoint LSTM đọc theo hàng của mỗi seed và cùng 256 ảnh validation có chỉ số gốc nhỏ nhất. Ba lần đánh giá lần lượt dùng thứ tự gốc, đảo ngược chuỗi và một hoán vị cố định. Trọng số của mô hình giữ nguyên trong cả ba phép đo. Độ chính xác trung bình lần lượt là 89,71\%, 20,96\% và 44,53\%.
 
-Để khảo sát đường truyền gradient, phép khai triển dùng cùng trọng số với mô-đun hồi tiếp và giữ lại đạo hàm của các trạng thái trung gian. Cross-entropy được cộng theo mẫu để tránh hệ số chia theo kích thước batch. Chuẩn gradient được tính cho từng mẫu trước khi lấy trung bình. Hình dưới trình bày gradient theo trạng thái ẩn, trạng thái ô nhớ và token đầu vào của LSTM theo hàng ở seed 42.
+Để khảo sát đường truyền gradient, phép khai triển dùng cùng trọng số với mô-đun hồi tiếp và giữ lại đạo hàm của các trạng thái trung gian. Cross-entropy được cộng theo mẫu để tránh hệ số chia theo kích thước batch. Chuẩn gradient được tính cho từng mẫu trước khi lấy trung bình. Hình dưới trình bày gradient theo hidden state, cell state và token đầu vào của LSTM theo hàng ở seed 42.
 
 \resultfigure{e3_lstm_rows_gradients}{Chuẩn gradient theo bước của LSTM đọc ảnh theo hàng trên tập validation ở seed 42.}{0.88}
 
-Mức giảm độ chính xác khi thay đổi thứ tự cho thấy checkpoint nhạy với cách quét đã học. Đảo và hoán vị tạo đầu vào khác phân bố huấn luyện. Do đó, mức giảm chỉ mô tả độ nhạy trong phép thử này. CNN và MLP xử lý trực tiếp lưới pixel hoặc vector cố định, nên đối chiếu với hai mô hình này dựa trên độ chính xác và số tham số. Chuỗi 28 hoặc 49 bước giới hạn phạm vi kết luận về phụ thuộc dài hạn.
+Gradient của hidden state và input token giảm từ đầu chuỗi về vùng giữa rồi tăng trở lại ở cuối; gradient của cell state giảm dần nhưng vẫn hiện diện trên toàn bộ 28 bước. Vì classifier sử dụng hidden state cuối, mức tăng gần cuối chuỗi có liên hệ trực tiếp với vị trí tính loss. Đường cong không cho thấy gradient đơn điệu nhỏ dần về đầu chuỗi, nên không thể dùng hình này để khẳng định hiện tượng vanishing gradient. Đây là độ nhạy cục bộ tại checkpoint và nhóm ảnh đang xét; độ lớn gradient cũng không đồng nghĩa với mức đóng góp nhân quả của từng hàng ảnh vào dự đoán.
 
-\chapter{Tái lập và giới hạn}
+Mức giảm độ chính xác khi thay đổi thứ tự cho thấy checkpoint nhạy với cách quét đã học. Đảo và hoán vị tạo đầu vào khác phân bố của tập train. Do đó, mức giảm chỉ mô tả độ nhạy trong phép thử này; chưa cho biết mô hình sẽ đạt kết quả ra sao nếu được train lại với thứ tự mới. Việc vẫn phân loại tốt ở thứ tự gốc và giảm mạnh khi đổi thứ tự cho thấy thông tin vị trí trong chuỗi có vai trò đối với checkpoint, nhưng không tự xác nhận khả năng học phụ thuộc dài hạn. CNN và MLP xử lý trực tiếp lưới pixel hoặc vector cố định, nên đối chiếu với hai mô hình này dựa trên độ chính xác và số tham số. Chuỗi 28 hoặc 49 bước giới hạn phạm vi kết luận về phụ thuộc dài hạn.
+
+\chapter{Phạm vi thực nghiệm và giới hạn}
 \label{chap:ta-lap}
-\section{Mã nguồn và tệp kết quả}
-Quy trình thực nghiệm được trình bày trong \code{notebooks/E1.ipynb}, \code{notebooks/E2.ipynb} và \code{notebooks/E3.ipynb}. Các notebook sử dụng mã mô hình theo từng bài và vòng lặp PyTorch trong \code{src/common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Siêu tham số được khai báo trong \code{configs/experiments.json}.
-
-Checkpoint lưu trọng số, trạng thái optimizer, scheduler và bộ sinh số ngẫu nhiên tại cuối mỗi epoch. Fingerprint của mã nguồn, cấu hình, seed và dữ liệu được lưu để đối chiếu giữa các lượt chạy. Kết quả không được bảo đảm giống từng bit trên các phần cứng khác nhau.
-
-\code{scripts/export_report.py} tổng hợp kết quả thành bảng LaTeX, CSV/JSON và hình vẽ. Chương trình đối chiếu cấu hình, seed, split và checkpoint trước khi gộp các lượt chạy.
-
 \section{Cấu hình và các lượt chạy}
-Ba notebook đã thực thi 39 lượt huấn luyện và 39 lượt đánh giá trên tập test với RTX 5090, PyTorch 2.10.0 và CUDA 13.0. Bảng và đường cong trong báo cáo lấy từ các lượt này. Bảng dưới mô tả phạm vi kết quả theo từng bài. Hai mô hình đối chứng E1 được dùng lại trong E3.
+Ba notebook đã thực thi 39 lượt huấn luyện và 39 lượt đánh giá trên tập test với RTX 5090, PyTorch 2.10.0 và CUDA 13.0. Bảng và đường cong trong báo cáo lấy từ các lượt này. Bảng dưới mô tả phạm vi kết quả theo từng bài. Hai baseline E1 được dùng lại trong E3.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{@{}lXrr@{}}\toprule
@@ -232,8 +261,6 @@ E3 & LSTM, GRU với hai cách biểu diễn ảnh & 4 & 12\\\bottomrule
 \end{tabularx}
 \caption{Các cấu hình được huấn luyện và đánh giá với ba seed 42, 43 và 44.}
 \end{table}
-
-Các kiểm thử bao gồm đầu ra và gradient của MSA, thứ tự token, phép khai triển LSTM/GRU, phân hoạch dữ liệu và khôi phục trạng thái huấn luyện. Môi trường chạy, log và checksum được ghi trong \code{docs/TRAINING_EXECUTION.md} cùng thư mục kết quả.
 
 Ba seed cho phép quan sát biến thiên giữa các lượt khởi tạo. Phạm vi so sánh giới hạn ở một tập dữ liệu, ngân sách 30 epoch và các siêu tham số đã chọn. Các chuỗi 28/49 bước cũng ngắn hơn nhiều so với những bài toán phụ thuộc dài hạn.
 

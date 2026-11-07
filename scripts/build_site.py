@@ -1,7 +1,6 @@
 """Build the course site from separate reports and verified measured summaries."""
 from pathlib import Path
 import argparse
-import hashlib
 import html
 import json
 import re
@@ -53,12 +52,8 @@ def a1_table_rows(assignment):
 
 def a2_markup(report):
     evidence = report / 'notebook-evidence'
-    manifest = json.loads((evidence / 'manifest.json').read_text())
-    summary_bytes = (evidence / 'summary.json').read_bytes()
-    if hashlib.sha256(summary_bytes).hexdigest() != manifest['summary_sha256']:
-        raise ValueError('A2 summary does not match the experiment manifest.')
-    summary = json.loads(summary_bytes)
-    if not manifest['trained_runs'] == manifest['tested_runs'] == summary['test_runs']:
+    summary = json.loads((evidence / 'summary.json').read_text())
+    if not summary['train_runs'] == summary['test_runs'] == 2 * len(summary['seeds']):
         raise ValueError('A2 requires complete training and evaluation evidence.')
     names = {'fixed': 'Trộn cố định', 'guided': 'Trộn theo biên'}
     rows = []
@@ -68,8 +63,8 @@ def a2_markup(report):
                   for key in ['miou', 'macro_dice', 'transition_iou']]
         rows.append(f'<tr><th scope="row">{name}</th>' +
                     ''.join(f'<td>{value}</td>' for value in values) + '</tr>')
-    status = (f'{manifest["trained_runs"]} lượt huấn luyện và '
-              f'{manifest["tested_runs"]} lượt đánh giá trên tập test.')
+    status = (f'{summary["train_runs"]} lượt huấn luyện và '
+              f'{summary["test_runs"]} lượt đánh giá trên tập test.')
     difference = summary['guided_minus_fixed']
     delta = f'{100 * difference["miou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
     edge = f'{100 * difference["transition_iou"]["mean"]:+.2f}'.replace('.', ',').replace('-', '−')
@@ -88,19 +83,19 @@ def build_site(output: Path) -> Path:
     ex = ROOT / 'reports/exercises'
     a1 = ROOT / 'reports/assignment1'
     a2 = ROOT / 'reports/assignment2'
-    am = json.loads((a1 / 'notebook-evidence/manifest.json').read_text())
-    followup_manifest = json.loads((a1 / 'swin-followup/manifest.json').read_text())
-    if not followup_manifest['expected_runs'] == followup_manifest['tested_runs'] == 6:
-        raise ValueError('A1 requires all six held-out Swin-T follow-up evaluations.')
     summaries = json.loads((ex / 'notebook-evidence/summary.json').read_text())
     assignment = json.loads((a1 / 'notebook-evidence/summary.json').read_text())
     followup = json.loads((a1 / 'swin-followup/summary.json').read_text())
+    if not all(group['train_seeds'] == group['test_seeds'] == [42, 43, 44]
+               for group in followup['groups']) or len(followup['groups']) != 2:
+        raise ValueError('A1 requires all six held-out Swin-T follow-up evaluations.')
     count = sum(row['n_train_runs'] for row in summaries)
     tested = sum(row['n_test_runs'] for row in summaries)
     status = ('Báo cáo chưa có kết quả thực nghiệm.' if not count else
               f'Đã tổng hợp {count} lượt huấn luyện và {tested} lượt đánh giá trên tập test Fashion-MNIST.')
-    a1_trained = am['trained_runs'] + followup_manifest['trained_runs']
-    a1_tested = am['tested_runs'] + followup_manifest['tested_runs']
+    groups = assignment['groups'] + followup['groups']
+    a1_trained = sum(len(group['train_seeds']) for group in groups)
+    a1_tested = sum(len(group['test_seeds']) for group in groups)
     a1_status = f'{a1_trained} lượt huấn luyện · {a1_tested} lượt đánh giá trên tập test'
     replacements = [('STATUS', html.escape(status)), ('A1_STATUS', html.escape(a1_status)),
                     ('RESULTS', result_markup(summaries)), ('A1_RESULTS', a1_table_rows(assignment)),

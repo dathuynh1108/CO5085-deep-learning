@@ -31,7 +31,7 @@
     <div>
       <span class="tag elective">Bài tập lớn A2</span>
       <h1>Phân đoạn ảnh với phép trộn đặc trưng theo biên</h1>
-      <p>Nghiên cứu vai trò của bản đồ biên trong việc kết hợp chi tiết và ngữ cảnh, dựa trên PIDNet và thực nghiệm trên Oxford-IIIT Pet.</p>
+      <p>Nghiên cứu vai trò của bản đồ biên trong việc kết hợp chi tiết và ngữ cảnh, dựa trên PIDNet (CVPR 2023) và thực nghiệm trên Oxford-IIIT Pet.</p>
       <div class="hero-actions">
         <a class="button" href="#notebook">Notebook thực nghiệm A2</a>
       </div>
@@ -58,26 +58,26 @@
         <p class="source-note">Jiacong Xu, Zixiang Xiong và Shankar P. Bhattacharyya. <cite>PIDNet: A Real-Time Semantic Segmentation Network Inspired by PID Controllers.</cite> Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023, tr. 19529–19539.</p>
         <p><a class="text-link" href="https://doi.org/10.1109/CVPR52729.2023.01871">DOI 10.1109/CVPR52729.2023.01871</a> · <a class="text-link" href="https://arxiv.org/abs/2206.02066">Bản toàn văn trên arXiv</a></p>
         <p>BiSeNet và DDRNet duy trì một luồng giữ chi tiết và một luồng học ngữ cảnh. Khi trộn các đặc trưng này, ngữ cảnh từ vùng lân cận có thể lấn át tín hiệu ở đường viền. PIDNet thêm nhánh D để dự đoán nơi nhãn chuyển nhanh, bên cạnh nhánh P giữ chi tiết và nhánh I tổng hợp ngữ cảnh.</p>
-        <p>Mô-đun Bag dùng tín hiệu D để tăng trọng số của P gần biên và ưu tiên I ở vùng đồng nhất. Tác giả báo cáo PIDNet-S đạt 78,6% mIoU trên Cityscapes test ở 93,2 FPS theo giao thức đo trên RTX 3090. Báo cáo A2 phân tích riêng phép đối chứng, hàm mục tiêu và giới hạn của kết quả này.</p>
+        <p>Mô-đun Bag dùng tín hiệu D để tăng trọng số của P gần biên và ưu tiên I ở vùng đồng nhất. Tác giả báo cáo PIDNet-S đạt 78,6% mIoU trên Cityscapes test ở 93,2 FPS theo giao thức đo trên RTX 3090. Báo cáo A2 trình bày công thức PID, phép tương tự với CNN, kiến trúc ba nhánh, Pag, PAPPM, Bag/Light-Bag và các loss. Phần ablation phân tích đóng góp của từng nhóm thay đổi và giới hạn khi áp dụng sang ảnh thú cưng.</p>
       </section>
       <section class="detail-section" id="data">
         <h2>Oxford-IIIT Pet và nhãn trimap</h2>
         <p>Bộ dữ liệu có 7.349 ảnh thuộc 37 giống chó và mèo. Mỗi ảnh có mặt nạ gồm vật thể, nền và dải chuyển tiếp. Dải chuyển tiếp dùng nhãn chưa phân loại trong dữ liệu gốc làm tín hiệu gần đúng cho biên.</p>
         <div class="specs">
-          <div class="spec"><strong>3.310</strong><span>ảnh huấn luyện</span></div>
+          <div class="spec"><strong>3.310</strong><span>ảnh train</span></div>
           <div class="spec"><strong>370</strong><span>ảnh validation</span></div>
           <div class="spec"><strong>3.669</strong><span>ảnh test</span></div>
         </div>
-        <p>Tập validation lấy 10 ảnh mỗi giống từ tập huấn luyện chính thức. Ảnh giữ tỷ lệ khung hình khi đổi cạnh dài về 192 pixel. Vùng đệm được bỏ qua trong hàm mất mát và phép đo. DataLoader chỉ áp dụng lật ngang đồng bộ ảnh và mặt nạ trong lúc huấn luyện.</p>
+        <p>Tập validation lấy 10 ảnh mỗi giống từ tập train chính thức. Ảnh giữ tỷ lệ khung hình khi đổi cạnh dài về 192 pixel. Pixel padding được bỏ qua trong hàm mất mát và phép đo. DataLoader chỉ áp dụng random horizontal flip đồng bộ ảnh và mặt nạ trong lúc huấn luyện.</p>
         <figure class="a2-figure">
           <img src="a2-media/dataset.png" alt="Tỷ lệ điểm ảnh theo ba nhãn và số ảnh theo giống trên train và validation" loading="lazy">
           <figcaption>Phân bố nhãn pixel và số ảnh theo giống trên train và validation.</figcaption>
         </figure>
-        <p><a class="text-link" href="https://www.robots.ox.ac.uk/~vgg/data/pets/">Nguồn dữ liệu và giấy phép CC BY-SA 4.0</a></p>
+        <p><a class="text-link" href="https://www.robots.ox.ac.uk/~vgg/data/pets/">Nguồn Oxford-IIIT Pet</a></p>
       </section>
       <section class="detail-section" id="method">
         <h2>Đối chứng phép trộn đặc trưng</h2>
-        <p>Cả hai biến thể dùng các đặc trưng ở stride 4 và 32 của ResNet18 tiền huấn luyện ImageNet, cùng đầu phân đoạn và cùng hàm mất mát phụ cho nhánh biên. Biến thể cố định gán trọng số 0,5 cho hai nguồn. Biến thể theo biên lấy trọng số từ sigmoid của logit biên tại từng vị trí.</p>
+        <p>Cả hai biến thể dùng các đặc trưng ở stride 4 và 32 của ResNet18 pretrained ImageNet, cùng đầu phân đoạn và cùng hàm mất mát phụ cho nhánh biên. Biến thể cố định gán trọng số 0,5 cho hai nguồn. Biến thể theo biên lấy trọng số từ sigmoid của logit biên tại từng vị trí.</p>
         <p>Mỗi biến thể chạy 12 epoch với ba seed trên RTX 5090. Checkpoint được chọn theo mIoU trên tập validation. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập test.</p>
       </section>
       <section class="detail-section" id="results">
@@ -92,14 +92,14 @@
         <p><!--A2_FINDING--><!--/A2_FINDING--></p>
         <figure class="a2-figure">
           <img src="a2-media/examples.png" alt="Bốn ảnh test cạnh trimap và dự đoán của hai biến thể" loading="lazy">
-          <figcaption>Bốn ví dụ ở seed 42. Vật thể màu xanh lá, nền màu xanh đậm, dải chuyển tiếp màu vàng. Ảnh và trimap từ Oxford-IIIT Pet, CC BY-SA 4.0.</figcaption>
+          <figcaption>Bốn ví dụ ở seed 42. Vật thể màu xanh lá, nền màu xanh đậm, dải chuyển tiếp màu vàng. Ảnh và trimap từ Oxford-IIIT Pet.</figcaption>
         </figure>
         <p>IoU của lớp chuyển tiếp đo độ khớp với dải trimap trên lưới 192×192. Kết quả chịu ảnh hưởng của độ dày trimap, phép đổi kích thước và đặc điểm của ảnh thú cưng.</p>
       </section>
       <section class="detail-section" id="notebook">
         <h2>Notebook tái lập thực nghiệm</h2>
-        <p>Notebook khảo sát phân bố nhãn và trimap, huấn luyện trực tiếp hai biến thể qua ba seed, rồi chọn checkpoint theo mIoU trên tập validation. Các ô kết quả tổng hợp mIoU, macro-Dice, IoU dải chuyển tiếp, đường cong học, ma trận nhầm lẫn theo pixel và ảnh dự đoán.</p>
-        <p>Sau khi xem kết quả trên tập validation và khóa sáu checkpoint, nhập <code>TEST</code> để đánh giá trên tập test. Khi chạy tự động, dùng <code>CO5085_CONFIRM_TEST=1</code> để xác nhận bước này. Chế độ <code>CO5085_SMOKE=1</code> dùng một seed, một epoch và tập con để kiểm tra quy trình.</p>
+        <p>Notebook khảo sát phân bố nhãn và trimap, huấn luyện trực tiếp hai biến thể qua ba seed, rồi chọn checkpoint theo mIoU trên tập validation. Các ô kết quả tổng hợp mIoU, macro-Dice, IoU dải chuyển tiếp, đường cong học, confusion matrix theo pixel và ảnh dự đoán.</p>
+
         <div class="hero-actions">
           <a class="button" href="https://colab.research.google.com/github/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb">Chạy trên Colab</a>
           <a class="text-link" href="https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/notebooks/A2.ipynb">Notebook trên GitHub <span aria-hidden="true">↗</span></a>
