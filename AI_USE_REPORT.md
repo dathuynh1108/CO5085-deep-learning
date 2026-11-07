@@ -3,16 +3,16 @@
 **Sinh viên** Huỳnh Thành Đạt · 2570161
 **Học phần** CO5085 · Học kỳ 261
 
-AI được sử dụng để tra cứu tài liệu và API của PyTorch, torchvision, hỗ trợ hiện thực và kiểm tra mã, đối chiếu số liệu thực nghiệm, và biên tập báo cáo. Phạm vi bài tập, yêu cầu thí nghiệm và định hướng phân đoạn hoặc phát hiện đối tượng cho A2 do sinh viên cung cấp. Các lựa chọn cụ thể về paper, dữ liệu và phép đối chứng A2 được phát triển với sự hỗ trợ của AI.
+AI hỗ trợ quá trình tìm hiểu phương pháp, xây dựng quy trình thực nghiệm và tích hợp API của PyTorch, torchvision. Phạm vi sử dụng còn gồm rà soát cách cài đặt, phân tích kết quả, soạn thảo và biên tập báo cáo, notebook.
 
 | Phần | Nội dung có hỗ trợ |
 | --- | --- |
-| E1–E3 | Tra cứu API mô hình, hàm mất mát và checkpoint. Hỗ trợ hiện thực và rà soát vòng lặp huấn luyện, đối chiếu attention tự viết với PyTorch và thiết kế các đối chứng cho LSTM. Kiểm tra cách diễn giải các phép đo thứ tự quét và gradient. |
-| A1 | Hỗ trợ tra cứu API trọng số tiền huấn luyện, đóng băng tầng và lập lịch tốc độ học của PyTorch. Rà soát kết quả của thiết lập 20 epoch, hỗ trợ thiết kế và chạy đối chứng Swin-T có warmup, kiểm tra số liệu theo seed và biên tập phần thảo luận. |
-| A2 | Tra cứu bài PIDNet và tài liệu Oxford-IIIT Pet, đề xuất đối chứng trộn đặc trưng theo biên, hỗ trợ viết pipeline PyTorch, vận hành thực nghiệm GPU và kiểm tra kết quả. Hỗ trợ soạn bản thảo phân tích paper, phân tích lỗi và trình bày bảng, hình, video. |
-| Tổ chức bài nộp | Hỗ trợ chuyển quy trình thực nghiệm sang Jupyter, kiểm tra việc lưu cấu hình, seed và log, biên dịch LaTeX và cập nhật GitHub Pages. |
+| E1–E3 | Tìm hiểu API mô hình và tối ưu trong PyTorch; rà soát attention tự viết, biểu diễn ảnh thành chuỗi và cách diễn giải kết quả so sánh. |
+| A1 | Tìm hiểu API trọng số tiền huấn luyện, đóng băng tầng và lịch tốc độ học; hỗ trợ thiết kế đối chứng và phân tích kết quả ResNet18, Swin-T. |
+| A2 | Tham khảo PIDNet và tài liệu Oxford-IIIT Pet; hỗ trợ lựa chọn dữ liệu, thiết kế đối chứng trộn đặc trưng theo biên và phân tích kết quả. |
+| Trình bày | Soạn thảo và biên tập nội dung notebook, báo cáo, bảng, hình và GitHub Pages; rà soát thuật ngữ và trích dẫn. |
 
-Các chỉ số được tính từ log, checkpoint và dự đoán của các lượt chạy. Thông tin về tập dữ liệu, cấu hình, seed và mã nguồn được lưu cùng kết quả để đối chiếu. Các số liệu trích từ PIDNet được ghi nguồn riêng trong báo cáo A2.
+Bảng và hình trong báo cáo được tổng hợp từ các lượt thực nghiệm có lưu cấu hình, lịch sử và output notebook. Nguồn dữ liệu và các kết quả công bố của PIDNet được dẫn riêng trong báo cáo.
 
 ## Tài liệu đối chiếu
 
