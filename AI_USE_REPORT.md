@@ -10,7 +10,7 @@ AI được sử dụng trong quá trình tìm hiểu phương pháp, phát tri�
 | E1–E3 | Tìm hiểu API mô hình và tối ưu trong PyTorch; rà soát attention tự viết, biểu diễn ảnh thành chuỗi và cách diễn giải kết quả so sánh. |
 | A1 | Tìm hiểu API trọng số pretrained, đóng băng tầng và lịch tốc độ học; hỗ trợ thiết kế đối chứng và phân tích kết quả ResNet18, Swin-T. |
 | A2 | Tham khảo PIDNet và dữ liệu CamVid; hỗ trợ tích hợp mã nguồn của tác giả, thiết kế đối chứng BAS-Loss và phân tích kết quả segmentation. |
-| Trình bày | Hỗ trợ cú pháp LaTeX và kiểm tra cách trình bày công thức toán học trong báo cáo, notebook. |
+| Trình bày | Hỗ trợ cú pháp LaTeX và kiểm tra cách trình bày công thức toán học trong báo cáo, notebook; hỗ trợ xây dựng landing page nhanh chóng. |
 
 Bảng và hình trong báo cáo được tổng hợp từ các lượt thực nghiệm có lưu cấu hình, lịch sử và output notebook. Nguồn dữ liệu và các kết quả công bố của PIDNet được dẫn riêng trong báo cáo.
 
