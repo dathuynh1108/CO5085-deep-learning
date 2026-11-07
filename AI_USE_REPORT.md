@@ -3,14 +3,14 @@
 **Sinh viên** Huỳnh Thành Đạt · 2570161
 **Học phần** CO5085 · Học kỳ 261
 
-AI hỗ trợ quá trình tìm hiểu phương pháp, xây dựng quy trình thực nghiệm và tích hợp API của PyTorch, torchvision. Phạm vi sử dụng còn gồm rà soát cách cài đặt, phân tích kết quả, soạn thảo và biên tập báo cáo, notebook.
+AI được sử dụng trong quá trình tìm hiểu phương pháp, phát triển quy trình thực nghiệm và nội dung báo cáo, notebook. Phạm vi hỗ trợ gồm tích hợp API của PyTorch, torchvision, rà soát cách cài đặt, phân tích kết quả và trình bày công thức.
 
 | Phần | Nội dung có hỗ trợ |
 | --- | --- |
 | E1–E3 | Tìm hiểu API mô hình và tối ưu trong PyTorch; rà soát attention tự viết, biểu diễn ảnh thành chuỗi và cách diễn giải kết quả so sánh. |
 | A1 | Tìm hiểu API trọng số tiền huấn luyện, đóng băng tầng và lịch tốc độ học; hỗ trợ thiết kế đối chứng và phân tích kết quả ResNet18, Swin-T. |
 | A2 | Tham khảo PIDNet và tài liệu Oxford-IIIT Pet; hỗ trợ lựa chọn dữ liệu, thiết kế đối chứng trộn đặc trưng theo biên và phân tích kết quả. |
-| Trình bày | Soạn thảo và biên tập nội dung notebook, báo cáo, bảng, hình và GitHub Pages; rà soát thuật ngữ và trích dẫn. |
+| Trình bày | Hỗ trợ cú pháp LaTeX và kiểm tra cách trình bày công thức toán học trong báo cáo, notebook. |
 
 Bảng và hình trong báo cáo được tổng hợp từ các lượt thực nghiệm có lưu cấu hình, lịch sử và output notebook. Nguồn dữ liệu và các kết quả công bố của PIDNet được dẫn riêng trong báo cáo.
 

@@ -1,7 +1,6 @@
 # Báo cáo sử dụng AI và nguồn tham khảo
 
-Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](../AI_USE_REPORT.md),
-bao gồm hỗ trợ triển khai, kiểm thử, thiết lập thí nghiệm, vận hành GPU và biên soạn báo cáo.
+Phạm vi sử dụng AI được trình bày tại [AI_USE_REPORT.md](../AI_USE_REPORT.md).
 
 Yêu cầu bài tập được đối chiếu với các PDF gốc trong assignments/.
 Code sử dụng tài liệu PyTorch/torchvision; dữ liệu từ Fashion-MNIST của Zalando
