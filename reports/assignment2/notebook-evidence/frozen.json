@@ -11,11 +11,11 @@
     },
     "notebook_config_sha256": "cbda483ff1b6aa58f11e2fb150b509fc5626eecfdd2bfd6517c46ac5b6649a04",
     "smoke": false,
-    "train_loop_sha256": "07f51dfb56aa993445d36456585ad744cb1545c7e63c50ca7ca0144c479168c2",
+    "train_loop_sha256": "71556420425ce4f61f5e20f3f43fcfafbb6d68a198f4d93fdac58e4c3e196935",
     "sample_indices_sha256": "1b05eb2e0b4fda7bae935b6da92fd1a882e817574bd12c511a465a4be538478b",
     "runtime": {
-      "python": "3.12.3",
-      "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+      "python": "3.12.12",
+      "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
       "torch": "2.10.0+cu130",
       "cuda_runtime": "13.0",
       "cudnn": 91501,
@@ -23,22 +23,22 @@
       "device_name": "NVIDIA GeForce RTX 5090",
       "git_commit": null,
       "git_dirty": null,
-      "torch_num_threads": 2,
+      "torch_num_threads": 4,
       "tf32_matmul": false,
       "tf32_cudnn": false,
       "torchvision": "0.25.0+cu130",
-      "numpy": "2.4.1",
-      "pillow": "12.0.0",
+      "numpy": "2.5.4",
+      "pillow": "12.3.0",
       "precision": "bfloat16 autocast",
-      "workers": 6
+      "workers": 4
     }
   },
   "runs": {
-    "fixed/seed_42": "3d83a986dc652170091a347e0dae0d57e1568ff764fbe85936fdc02ec9d68f46",
-    "guided/seed_42": "61c3845f0efcd17c5b0aa0ef06db17b7cf9eda9c2f6649b603d7a1292b0e5574",
-    "fixed/seed_43": "87b8ce50473d1c3743eb1e068d1661723091c8930da7d43c47c3c567f6434fc3",
-    "guided/seed_43": "7359027863177c8c30dd5086198495e12d6e5e2151cc9dbf144bd9a11ae47484",
-    "fixed/seed_44": "d732d319f1de64524a939e545c3b3398301f089afa044bd5845c19b7442125e9",
-    "guided/seed_44": "7975a7467462bc2bde934b30919dd786fa57f7a4615f842d0f2de21eeb9d37a1"
+    "fixed/seed_42": "28ef34234bcaa6595d6a05452e82c467f1d76e356a1e39787ddc25ffb168d52e",
+    "guided/seed_42": "af0ccec1dfedb4378ed7ca75456c0776371dac5e2fdb26034bf5f08c1648da66",
+    "fixed/seed_43": "d7bb18d2cc26cf5130af18f352cecc6b6a143e8f349dd2551d15470c9421a15f",
+    "guided/seed_43": "5948d6d7deeb340f301f0b0ac4b001f0900132a9bad1fd3d59f5b8afc076e631",
+    "fixed/seed_44": "ceff5c026ffa4b0b52af0432b109badaa1a373202a9ce2e9b011ee53fd511e1e",
+    "guided/seed_44": "26c200ee7d7d9af4825dbeb7f2b65946072ed70c2210fe23861825e77c58e58e"
   }
 }

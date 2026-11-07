@@ -52,9 +52,9 @@ def a1_table_rows(assignment):
 
 
 def a2_markup(report):
-    generated = report / 'generated'
-    manifest = json.loads((generated / 'manifest.json').read_text())
-    summary_bytes = (generated / 'summary.json').read_bytes()
+    evidence = report / 'notebook-evidence'
+    manifest = json.loads((evidence / 'manifest.json').read_text())
+    summary_bytes = (evidence / 'summary.json').read_bytes()
     if hashlib.sha256(summary_bytes).hexdigest() != manifest['summary_sha256']:
         raise ValueError('A2 summary does not match the experiment manifest.')
     summary = json.loads(summary_bytes)
@@ -117,13 +117,13 @@ def build_site(output: Path) -> Path:
         shutil.copy2(directory / name, output / 'reports' / name)
     media = output / 'a2-media'
     media.mkdir(exist_ok=True)
-    for name in ['dataset.png', 'examples.png']:
-        shutil.copy2(a2 / 'generated/figures' / name, media / name)
+    for name, source in [('dataset.png', 'notebook-1.png'), ('examples.png', 'notebook-5.png')]:
+        shutil.copy2(a2 / 'notebook-evidence/figures' / source, media / name)
     shutil.copy2(a2 / 'demo.mp4', media / 'demo.mp4')
     (output / 'results.json').write_text(json.dumps(summaries, ensure_ascii=False, indent=2) + '\n')
     shutil.copy2(a1 / 'notebook-evidence/summary.json', output / 'a1-results.json')
     shutil.copy2(a1 / 'swin-followup/summary.json', output / 'a1-swin-followup.json')
-    shutil.copy2(a2 / 'generated/summary.json', output / 'a2-results.json')
+    shutil.copy2(a2 / 'notebook-evidence/summary.json', output / 'a2-results.json')
     (output / '.nojekyll').touch()
     return output
 

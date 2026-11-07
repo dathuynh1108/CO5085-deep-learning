@@ -70,15 +70,15 @@
         </div>
         <p>Tập validation lấy 10 ảnh mỗi giống từ tập huấn luyện chính thức. Ảnh giữ tỷ lệ khung hình khi đổi cạnh dài về 192 pixel. Vùng đệm được bỏ qua trong hàm mất mát và phép đo. DataLoader chỉ áp dụng lật ngang đồng bộ ảnh và mặt nạ trong lúc huấn luyện.</p>
         <figure class="a2-figure">
-          <img src="a2-media/dataset.png" alt="Tỷ lệ điểm ảnh theo ba nhãn và phân bố tỷ lệ dải chuyển tiếp trên các ảnh huấn luyện" loading="lazy">
-          <figcaption>Phân bố nhãn trên lưới huấn luyện 192×192 sau khi loại vùng đệm.</figcaption>
+          <img src="a2-media/dataset.png" alt="Tỷ lệ điểm ảnh theo ba nhãn và số ảnh theo giống trên train và validation" loading="lazy">
+          <figcaption>Phân bố nhãn pixel và số ảnh theo giống trên train và validation.</figcaption>
         </figure>
         <p><a class="text-link" href="https://www.robots.ox.ac.uk/~vgg/data/pets/">Nguồn dữ liệu và giấy phép CC BY-SA 4.0</a></p>
       </section>
       <section class="detail-section" id="method">
         <h2>Đối chứng phép trộn đặc trưng</h2>
         <p>Cả hai biến thể dùng các đặc trưng ở stride 4 và 32 của ResNet18 tiền huấn luyện ImageNet, cùng đầu phân đoạn và cùng hàm mất mát phụ cho nhánh biên. Biến thể cố định gán trọng số 0,5 cho hai nguồn. Biến thể theo biên lấy trọng số từ sigmoid của logit biên tại từng vị trí.</p>
-        <p>Mỗi biến thể chạy 12 epoch với ba seed. Các checkpoint tốt nhất theo mIoU trên tập validation nằm ở epoch 8–11. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập test sau khi khóa sáu checkpoint.</p>
+        <p>Mỗi biến thể chạy 12 epoch với ba seed trên RTX 5090. Checkpoint được chọn theo mIoU trên tập validation. Báo cáo dùng mIoU, macro-Dice và IoU theo lớp trên tập test.</p>
       </section>
       <section class="detail-section" id="results">
         <h2>Kết quả và trường hợp sai</h2>
@@ -91,10 +91,10 @@
         </div>
         <p><!--A2_FINDING--><!--/A2_FINDING--></p>
         <figure class="a2-figure">
-          <img src="a2-media/examples.png" alt="Ba ảnh test cạnh trimap, dự đoán của hai biến thể và bản đồ hệ số trộn" loading="lazy">
-          <figcaption>Ba ví dụ ở seed 42. Vật thể màu xanh lá, nền màu xanh đậm, dải chuyển tiếp màu vàng. Ảnh và trimap từ Oxford-IIIT Pet, CC BY-SA 4.0.</figcaption>
+          <img src="a2-media/examples.png" alt="Bốn ảnh test cạnh trimap và dự đoán của hai biến thể" loading="lazy">
+          <figcaption>Bốn ví dụ ở seed 42. Vật thể màu xanh lá, nền màu xanh đậm, dải chuyển tiếp màu vàng. Ảnh và trimap từ Oxford-IIIT Pet, CC BY-SA 4.0.</figcaption>
         </figure>
-        <p>IoU dải chuyển tiếp đo độ khớp với vùng chưa phân loại trên lưới 192×192. Kết quả chịu ảnh hưởng của độ dày trimap, phép đổi kích thước và đặc điểm của ảnh thú cưng.</p>
+        <p>IoU của lớp chuyển tiếp đo độ khớp với dải trimap trên lưới 192×192. Kết quả chịu ảnh hưởng của độ dày trimap, phép đổi kích thước và đặc điểm của ảnh thú cưng.</p>
       </section>
       <section class="detail-section" id="notebook">
         <h2>Notebook tái lập thực nghiệm</h2>

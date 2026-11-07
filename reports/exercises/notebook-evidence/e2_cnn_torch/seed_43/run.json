@@ -57,8 +57,8 @@
   },
   "n_parameters": 89770,
   "environment": {
-    "python": "3.12.3",
-    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.12",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
     "torch": "2.10.0+cu130",
     "cuda_runtime": "13.0",
     "cudnn": 91501,
@@ -71,5 +71,5 @@
     "tf32_cudnn": false
   },
   "dtype": "float32",
-  "created_unix": 1793994244.935401
+  "created_unix": 1794039015.8815024
 }

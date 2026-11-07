@@ -176,8 +176,7 @@ lịch, ngân sách và hệ số suy giảm trọng số giúp kiểm tra cấu
 của từng thay đổi.
 
 \section{Chọn checkpoint và mở test}
-Best chọn bằng val accuracy lớn nhất; hòa accuracy thì lấy CE nhỏ nhất,
-hòa cả hai giữ epoch trước. Chỉ val được dùng ra quyết định trong train.
+Checkpoint được chọn theo độ chính xác validation lớn nhất; nếu bằng nhau, ưu tiên cross-entropy nhỏ hơn, rồi đến epoch sớm hơn. Tập validation được dùng để chọn mô hình trong quá trình huấn luyện.
 Test được đánh giá ở một bước riêng sau khi hoàn tất các lượt huấn luyện.
 Các cấu hình, learning rate và seed được cố định trước bước này.
 
@@ -192,9 +191,8 @@ recall, F1 theo lớp và từng prediction được lưu để kiểm tra. Gall
 
 \section{Chi phí và môi trường}
 Training time bao gồm data loading/augmentation và train pass, có CUDA
-synchronize trước/sau. Epoch time thêm validation. Model construction,
-checkpoint và report export nằm ngoài hai khoảng đo; không gọi training time
-là tổng wall time của job. Peak GPU memory là peak allocated trong train và
+synchronize trước/sau. Epoch time thêm validation. Thời gian dựng mô hình,
+lưu checkpoint và xuất báo cáo nằm ngoài hai khoảng đo này. Peak GPU memory là peak allocated trong train và
 validation của mỗi epoch, không phải reserved memory hoặc VRAM toàn hệ thống.
 
 Metadata lưu GPU, torch/torchvision, CUDA/cuDNN, workers, CPU threads và
@@ -222,7 +220,7 @@ Danh sách lượt chạy và checkpoint tương ứng được lưu trong manif
 \begin{table}[htbp]\centering\small
 \setlength{\tabcolsep}{4pt}
 \input{notebook-evidence/cost_table.tex}
-\caption{Tổng tham số và tham số được học theo triệu (M), thời gian huấn luyện đủ 20 epoch và bộ nhớ cấp phát cực đại ở seed 42 trên cùng máy.}
+\caption{Tổng tham số và tham số được học theo triệu (M). Thời gian huấn luyện đủ 20 epoch và bộ nhớ cấp phát cực đại là trung bình và độ lệch chuẩn mẫu qua ba seed trên RTX 5090.}
 \end{table}
 
 \section{Thảo luận kết quả}

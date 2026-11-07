@@ -1,0 +1,18 @@
+{
+  "notebook": "notebooks/A2.ipynb",
+  "code_cells": 24,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "source_sha256": "2d5cfcdea476ad480c2681f7dba5bf4e1cc867274e7cec639c867cad2c218b73",
+  "train_loop_sha256": "71556420425ce4f61f5e20f3f43fcfafbb6d68a198f4d93fdac58e4c3e196935",
+  "full_sample_counts": {
+    "train": 3310,
+    "validation": 370,
+    "test": 3669
+  },
+  "verified_runs": 6,
+  "verified_test_images_per_run": 3669
+}

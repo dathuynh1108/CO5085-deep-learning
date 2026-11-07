@@ -56,7 +56,7 @@ Mốc trong đề là 23:59 GMT+7 ngày 02/11/2026 cho A2.1 và ngày 16/11/2026
 
 ## Trạng thái thực nghiệm
 
-Báo cáo E1–E3 trình bày 39 lượt từ 13 cấu hình theo đề. A1 có 24 lượt trong lịch 20 epoch và sáu lượt đối chứng Swin-T trong lịch 40 epoch. A2 có sáu lượt chính và sáu lượt chạy lại bằng notebook với cùng lịch 12 epoch. Các lượt chọn checkpoint bằng tập validation trước khi đánh giá tập test. Cấu hình, seed và lịch sử huấn luyện được lưu cùng từng báo cáo.
+Báo cáo E1–E3 hiện trình bày 39 lượt từ 13 cấu hình theo đề, ba seed và 30 epoch trên Fashion-MNIST 54.000/6.000/10.000 ảnh. Các biến thể LSTM mở rộng trong lượt lịch sử không nằm trong phạm vi hiện tại. A1 hoàn tất lượt notebook mới gồm 24 lượt × 20 epoch và sáu lượt Swin-T × 40 epoch, tổng cộng 720 epoch; kết quả chính đã được đối chiếu với checkpoint và dự đoán test. A2 dùng sáu lượt notebook × 12 epoch trên RTX 5090, với đủ 3.310/370/3.669 ảnh; bằng chứng chính nằm ở `reports/assignment2/notebook-evidence/`. Các lượt RTX 3090 trước đây được giữ riêng trong `reports/assignment2/generated/`. Các lượt chọn checkpoint bằng validation trước khi đánh giá test. Năm notebook là điểm bắt đầu, với cấu hình, seed và lịch sử thực thi được lưu cùng từng báo cáo.
 
 ## Mốc trong đề
 

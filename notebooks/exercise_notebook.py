@@ -26,7 +26,7 @@ def flag(name, default=False):
     if value is None:
         return default
     if value not in {'0', '1'}:
-        raise ValueError(f'CO5085_EXERCISES_{name} phải là 0 hoặc 1.')
+        raise ValueError(f'CO5085_EXERCISES_{name} must be 0 or 1.')
     return value == '1'
 
 
@@ -41,25 +41,25 @@ def verified_training_status(directory, config, seed, metadata, workers, determi
     if not directory.exists() or not any(directory.iterdir()):
         return 'new'
     if (directory / '.train.lock').exists():
-        raise RuntimeError(f'Lượt chạy đang khóa: {directory}')
+        raise RuntimeError(f'Run directory is locked: {directory}')
     if not info_file.is_file():
-        raise FileNotFoundError(f'Thiếu run.json: {directory}. Chọn OUTPUT_ROOT mới.')
+        raise FileNotFoundError(f'Missing run.json: {directory}. Select a new OUTPUT_ROOT.')
     signature = json_hash(dict(
         experiment=config.to_dict(), seed=seed, data_fingerprint=metadata['fingerprint'],
         source_fingerprint=source_fingerprint(), deterministic=deterministic, num_workers=workers,
     ))
     info = read_json(info_file)
     if info['signature'] != signature:
-        raise ValueError(f'Cấu hình, seed, dữ liệu hoặc mã nguồn không khớp: {directory}. Chọn OUTPUT_ROOT mới.')
+        raise ValueError(f'Configuration, seed, data or source mismatch: {directory}. Select a new OUTPUT_ROOT.')
     if not metrics_file.is_file():
         return 'incomplete'
     metrics = read_json(metrics_file)
     if (metrics.get('status') != 'trained' or metrics.get('completed_epochs') != config.epochs
             or metrics['signature'] != signature):
-        raise ValueError(f'Không thể xác minh huấn luyện hoàn tất: {directory}.')
+        raise ValueError(f'Training completion could not be verified: {directory}.')
     for key in ('python', 'torch', 'cuda_runtime', 'cudnn', 'device', 'device_name', 'torch_num_threads'):
         if info['environment'].get(key) != environment.get(key):
-            raise ValueError(f'Môi trường huấn luyện khác tại {key}: {directory}. Chọn OUTPUT_ROOT mới.')
+            raise ValueError(f'Training environment differs at {key}: {directory}. Select a new OUTPUT_ROOT.')
     return 'trained'
 
 
@@ -73,7 +73,7 @@ def show_figure(figure):
 
 def show_results(results):
     lines = [
-        '| Cấu hình | Seed | Tham số | Accuracy TB ± SD (%) | Macro-F1 TB ± SD | Giây train/epoch (trung vị) |',
+        '| Configuration | Seed | Parameters | Accuracy mean ± SD (%) | Macro-F1 mean ± SD | Median training seconds/epoch |',
         '| --- | --- | ---: | ---: | ---: | ---: |',
     ]
     for model in dict.fromkeys(row['experiment'] for row in results):
@@ -105,7 +105,7 @@ def show_comparison(configs, directories, evaluations, representative_seed, repo
                     label=config.label, marker='.' if len(epochs) == 1 else None)
             ax.set(xlabel='Epoch', ylabel=ylabel)
             ax.grid(alpha=.25)
-    fig.suptitle(f'Đường cong trên tập validation — seed {representative_seed}')
+    fig.suptitle(f'Validation learning curves — seed {representative_seed}')
     axes[1].legend(fontsize=7, loc='best')
     fig.tight_layout()
     fig.savefig(report_dir / 'validation_curves.png', dpi=150)
@@ -126,10 +126,10 @@ def show_comparison(configs, directories, evaluations, representative_seed, repo
         total = counts.sum(axis=1, keepdims=True)
         rates = np.divide(counts, total, out=np.zeros(counts.shape, float), where=total != 0)
         image = ax.imshow(rates, vmin=0, vmax=1, cmap='Blues')
-        ax.set(title=config.label, xlabel='Lớp dự đoán', ylabel='Lớp thực')
+        ax.set(title=config.label, xlabel='Predicted class', ylabel='True class')
         ax.set_xticks(range(len(CLASS_NAMES)), CLASS_NAMES, rotation=60, ha='right', fontsize=7)
         ax.set_yticks(range(len(CLASS_NAMES)), CLASS_NAMES, fontsize=7)
-    fig.suptitle(f"Ma trận nhầm lẫn ({result['split']}) — seed {representative_seed}")
-    fig.colorbar(image, ax=active_axes, shrink=.8, label='Tỷ lệ theo lớp thực')
+    fig.suptitle(f"Confusion matrices ({result['split']}) — seed {representative_seed}")
+    fig.colorbar(image, ax=active_axes, shrink=.8, label='Proportion within each true class')
     fig.savefig(report_dir / 'confusion.png', dpi=150)
     show_figure(fig)

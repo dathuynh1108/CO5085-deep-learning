@@ -27,16 +27,16 @@
   },
   "seed": 43,
   "n_parameters": 89770,
-  "best_epoch": 29,
-  "best_validation_accuracy": 0.8938333333333334,
-  "best_validation_ce": 0.3144774055480957,
+  "best_epoch": 30,
+  "best_validation_accuracy": 0.8933333333333333,
+  "best_validation_ce": 0.3136325620015462,
   "completed_epochs": 30,
-  "median_train_seconds": 1.0150173890870064,
-  "total_train_seconds": 30.59442271455191,
-  "total_validation_seconds": 1.5033805179409683,
+  "median_train_seconds": 1.0161235510604456,
+  "total_train_seconds": 30.362300149397925,
+  "total_validation_seconds": 1.4610043895663694,
   "environment": {
-    "python": "3.12.3",
-    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.12",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
     "torch": "2.10.0+cu130",
     "cuda_runtime": "13.0",
     "cudnn": 91501,
@@ -50,5 +50,5 @@
     "num_workers": 4
   },
   "data_fingerprint": "d4c63c5dac60102d9ae0cd935311a9eac958b8a81b8577c047e3c2b0056dc50e",
-  "best_model_sha256": "7922c9618fdbae47e76b867b2c9515e2eaab014edcbbb42a9473ef5333725c0a"
+  "best_model_sha256": "a34fab07f3c5f5359d88c0ff3e86cdd9f896f02a79e9a48628f98ddf5cf66190"
 }

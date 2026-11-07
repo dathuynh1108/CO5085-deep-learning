@@ -5,13 +5,13 @@ Bài làm cá nhân. Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh.
 
 Repo gồm các bài E1–E3 trên Fashion-MNIST: phân loại bằng softmax/MLP/CNN, attention với nhiều cách chia token, và LSTM/GRU khi biểu diễn ảnh thành chuỗi. Tất cả mô hình được khởi tạo mới; không tải trọng số pretrained.
 
-**Kết quả E1–E3.** Ba notebook đã huấn luyện và đánh giá 39 lượt trên RTX 5090. CNN đạt độ chính xác trên tập test trung bình 92,62% ± 0,06 điểm phần trăm qua ba seed. Phạm vi hỗ trợ của AI được ghi trong [AI_USE_REPORT.md](AI_USE_REPORT.md).
+**Kết quả E1–E3.** Ba notebook đã huấn luyện và đánh giá 39 lượt trên RTX 5090. CNN đạt độ chính xác trên tập test trung bình 92,69% ± 0,06 điểm phần trăm qua ba seed. Phạm vi hỗ trợ của AI được ghi trong [AI_USE_REPORT.md](AI_USE_REPORT.md).
 
 Thiết lập A1 gồm tám cấu hình ResNet18/Swin-T, ba seed và 20 epoch trên CIFAR-100 với phân hoạch 45.000/5.000/10.000 ảnh. Đối chứng bổ sung dùng chung lịch 40 epoch cho hai bản Swin-T. Bản khởi tạo ngẫu nhiên đạt 60,30% và bản ImageNet đạt 86,39%. Xem [notebook A1](notebooks/A1.ipynb) và [báo cáo A1](reports/assignment1/assignment1.pdf).
 
 [Báo cáo PDF](reports/exercises/exercises.pdf) · [LaTeX](reports/exercises/report.tex) · [Đối chiếu đề](docs/REQUIREMENTS.md) · [Hướng dẫn chạy GPU](docs/GPU_RUNBOOK.md)
 
-A2 khảo sát phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, đối chiếu trộn cố định với trộn theo biên dựa trên [PIDNet, CVPR 2023](https://doi.org/10.1109/CVPR52729.2023.01871). Sáu lượt huấn luyện và đánh giá cho mIoU trung bình lần lượt 77,88% và 77,78%. Xem [notebook A2](notebooks/A2.ipynb), [báo cáo A2](reports/assignment2/assignment2.pdf) và [video minh họa](reports/assignment2/demo.mp4).
+A2 khảo sát phân đoạn ngữ nghĩa trên Oxford-IIIT Pet, đối chiếu trộn cố định với trộn theo biên dựa trên [PIDNet, CVPR 2023](https://doi.org/10.1109/CVPR52729.2023.01871). Sáu lượt huấn luyện và đánh giá cho mIoU trung bình lần lượt 78,00% và 77,82%. Xem [notebook A2](notebooks/A2.ipynb), [báo cáo A2](reports/assignment2/assignment2.pdf) và [video minh họa](reports/assignment2/demo.mp4).
 
 ## Nội dung
 
@@ -122,7 +122,7 @@ python -m pytest -q
 python -m compileall -q src scripts
 ```
 
-Kiểm thử bao gồm forward/gradient của MSA tự viết so với PyTorch, thứ tự token, unroll LSTM/GRU, gradient của regularizer, split, resume shuffle, khóa thư mục run và xuất báo cáo khi chưa có kết quả. Chúng không thay thế kiểm chứng train end-to-end trên máy đích.
+Kiểm thử bao gồm forward/gradient của MSA tự viết so với PyTorch, thứ tự token, unroll LSTM/GRU, split, resume shuffle, khóa thư mục run và xuất báo cáo khi chưa có kết quả. Chúng không thay thế kiểm chứng train end-to-end trên máy đích.
 
 ## GitHub Pages
 
@@ -147,4 +147,4 @@ Báo cáo sử dụng AI được đính kèm tại [AI_USE_REPORT.md](AI_USE_RE
 
 Xem [cấu trúc repository](docs/REPOSITORY_LAYOUT.md). Cài editable package trước khi chạy các module: `python -m pip install --no-deps -e .`. Các module `E1`, `E2`, `E3`, `A1` và `A2` nằm dưới `src/`.
 
-Các lượt GPU được giữ nguyên chữ ký nguồn trước refactor, tại commit `1250e56`. Kiểm tra bằng `python -m scripts.verify_archive --checkpoints`. Để xuất lại A1 đã đo, dùng `python -m A1.export_report --archive`; nhận xét dùng `python -m scripts.write_findings --archive`. Không resume các checkpoint này bằng mã sau refactor; chạy mới phải dùng output root mới.
+Các lượt GPU lịch sử tháng 10 giữ chữ ký nguồn trước refactor tại commit `1250e56`; các lượt notebook hiện tại lưu mã nguồn và kết quả riêng theo từng báo cáo. Kiểm tra bằng `python -m scripts.verify_archive --checkpoints`. Để xuất lại A1 đã đo, dùng `python -m A1.export_report --archive`; nhận xét dùng `python -m scripts.write_findings --archive`. Không resume các checkpoint này bằng mã sau refactor; chạy mới phải dùng output root mới.

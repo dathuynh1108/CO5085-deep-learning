@@ -33,13 +33,13 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 74.45103479603615,
-        "sd": 0.48380383354579354,
+        "mean": 86.59302592238721,
+        "sd": 5.40617168803055,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
-        "mean": 547734528,
-        "sd": 0.0,
+        "mean": 545375232,
+        "sd": 2270233.634496679,
         "n": 3
       },
       "total_params": {
@@ -87,8 +87,8 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 57.79772751223451,
-        "sd": 0.55824080175446,
+        "mean": 80.06427761000425,
+        "sd": 0.2070416353736837,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
@@ -141,8 +141,8 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 58.90823908359744,
-        "sd": 0.3857614790494645,
+        "mean": 80.23509372398257,
+        "sd": 0.24691117365093213,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
@@ -195,12 +195,12 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 73.32481377672714,
-        "sd": 1.0754684189347437,
+        "mean": 80.44164184802987,
+        "sd": 0.5838099795457504,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
-        "mean": 544588800,
+        "mean": 544064512,
         "sd": 0.0,
         "n": 3
       },
@@ -249,13 +249,13 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 215.16601682706582,
-        "sd": 1.6338914395687536,
+        "mean": 211.05779703353377,
+        "sd": 1.6496031031209972,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
-        "mean": 2572150784,
-        "sd": 0.0,
+        "mean": 2570879658.6666665,
+        "sd": 163764.24915509898,
         "n": 3
       },
       "total_params": {
@@ -303,8 +303,8 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 90.55061472168502,
-        "sd": 1.1347105122215702,
+        "mean": 86.0912085507686,
+        "sd": 0.5275241020627586,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
@@ -357,8 +357,8 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 111.72383872392432,
-        "sd": 0.6908537201181852,
+        "mean": 106.91095990497463,
+        "sd": 0.17419963917375222,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
@@ -411,12 +411,12 @@
         "n": 3
       },
       "train_seconds": {
-        "mean": 215.3000349980624,
-        "sd": 1.245949122885871,
+        "mean": 212.54088201144864,
+        "sd": 0.6320435647284174,
         "n": 3
       },
       "peak_gpu_memory_bytes": {
-        "mean": 2568379392,
+        "mean": 2570974208,
         "sd": 0.0,
         "n": 3
       },
@@ -442,11 +442,11 @@
       "val_macro_f1": 0.6330768317979333,
       "test_accuracy": 0.6425,
       "test_macro_f1": 0.641281615608726,
-      "train_seconds": 74.25148818653543,
-      "peak_gpu_memory_bytes": 547734528,
+      "train_seconds": 90.59073566365987,
+      "peak_gpu_memory_bytes": 547996672,
       "total_params": 11227812,
       "trainable_params": 11227812,
-      "signature_sha256": "f2ee1cf0ce6c1450d938dbe234f4b19bc02a2955944eccbf3fc8a900e9e04d9f",
+      "signature_sha256": "2e62997013f90823120808060fc1b2e8a91c6f3aed96842135623a18295a2e7d",
       "best_state_sha256": "90367fb8ef6770bb472d5fcdd95b70bf8e230d7ca12b070054b94835bd2892d3",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -455,8 +455,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -469,7 +469,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -577,7 +577,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "7c30880103d8b5371f35436e8fe736f779dd091901ed408467ffd68df354f3d9"
+      "best_file_sha256": "561c98218a8a9400fea2440d222011fad9ccd8cd0949078810fe2c1c2e671c47"
     },
     {
       "experiment": "resnet18_scratch",
@@ -587,11 +587,11 @@
       "val_macro_f1": 0.6330957959649464,
       "test_accuracy": 0.6434,
       "test_macro_f1": 0.6418191980265585,
-      "train_seconds": 75.0026952684857,
-      "peak_gpu_memory_bytes": 547734528,
+      "train_seconds": 80.44201138010249,
+      "peak_gpu_memory_bytes": 544064512,
       "total_params": 11227812,
       "trainable_params": 11227812,
-      "signature_sha256": "b7191337dba6c98077235574a45683967ed37f1a49be9e04a56e840ad2c9099b",
+      "signature_sha256": "0f39e4c0ea88d5a7cea3b62d6bf8950c59b75ef06fef9afc26bc02c40f4bbe10",
       "best_state_sha256": "d31adb966a729346e3dc960c769f47eabf036f03ccc3f7b94b11cd7db2c9651d",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -600,8 +600,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -614,7 +614,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -722,7 +722,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "c3abbf103ce0a1a91a80d93ddc274b5af1d7d77702eb041d4b9f4b7fe156f107"
+      "best_file_sha256": "2993eed3be86a32b7f8184e62fb5a6b494c18cea2d1360eaea0db8096f796c0d"
     },
     {
       "experiment": "resnet18_scratch",
@@ -732,11 +732,11 @@
       "val_macro_f1": 0.6422955052132403,
       "test_accuracy": 0.6446,
       "test_macro_f1": 0.6435103087049321,
-      "train_seconds": 74.09892093308736,
-      "peak_gpu_memory_bytes": 547734528,
+      "train_seconds": 88.7463307233993,
+      "peak_gpu_memory_bytes": 544064512,
       "total_params": 11227812,
       "trainable_params": 11227812,
-      "signature_sha256": "6fc908a37890963047c5b901780ae0143e2970258eea72a5a7fede557980b894",
+      "signature_sha256": "dae866516b6d6fc3d814e3793883fff80353613c4c19bfe8ec6cdea8a1272525",
       "best_state_sha256": "91ef23eb203b8829306e7f7ab3fe941f3e419af10383d73be46199706fd50258",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -745,8 +745,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -759,7 +759,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -867,7 +867,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "728af2fe24cc48e554640a25d62316971e867a863ea2e64b29f6919cc4ac97be"
+      "best_file_sha256": "08fc1e76f00ef8fd71c3e3316ec4dcf859a58f780860f5933da3a7d023e037f6"
     },
     {
       "experiment": "resnet18_head",
@@ -877,11 +877,11 @@
       "val_macro_f1": 0.617871166216472,
       "test_accuracy": 0.6119,
       "test_macro_f1": 0.6105421740816306,
-      "train_seconds": 57.60907372983638,
+      "train_seconds": 80.16528803901747,
       "peak_gpu_memory_bytes": 263206912,
       "total_params": 11227812,
       "trainable_params": 51300,
-      "signature_sha256": "76bb6fd4ea1dcfa422c9a648d63489e7717eaecb59911ad938a80fbd3b96c92d",
+      "signature_sha256": "0ac780ed2c391d182f26fbdd0c28e7d807966369d91020d264c98252f25ca45b",
       "best_state_sha256": "211f69e50f5bb77227ef8c7fb9bc955b36dd8fdc9a0ae511c927480c6009563b",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -890,8 +890,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -904,7 +904,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1012,7 +1012,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "502a3a6f5101c224eb32d2de77bc7736558d7d1b0b7fd5303f1307025105f6b0"
+      "best_file_sha256": "e6e03674c82d8623a4555bd02f2370e070c16db3074db9cd0c47ef083e7ddfda"
     },
     {
       "experiment": "resnet18_head",
@@ -1022,11 +1022,11 @@
       "val_macro_f1": 0.6138754639887388,
       "test_accuracy": 0.6063,
       "test_macro_f1": 0.6047433785017436,
-      "train_seconds": 58.425852216780186,
+      "train_seconds": 80.2014260890428,
       "peak_gpu_memory_bytes": 263206912,
       "total_params": 11227812,
       "trainable_params": 51300,
-      "signature_sha256": "b9775f65bbfa3f48d6f2b8fc024a4160bc3bfbb6069d7934748e35d18c6575d9",
+      "signature_sha256": "11790064901d828a1a53710b8672f59c8b2a63630491e56a1e79f87c3deb5abe",
       "best_state_sha256": "5f32e46676aae3a1b3aeb0b2fbb7467332f6c5a82802e7db1e83f16d25d5f157",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1035,8 +1035,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1049,7 +1049,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1157,7 +1157,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "9a070711e6beece9e644008ff1e75e5ff693babecb969f076d378acb9f539042"
+      "best_file_sha256": "752b375f81dbce97258c3dc987ffab3390b6097917db274ab4962761c19c3de3"
     },
     {
       "experiment": "resnet18_head",
@@ -1167,11 +1167,11 @@
       "val_macro_f1": 0.6185660327819581,
       "test_accuracy": 0.6103,
       "test_macro_f1": 0.609006293605855,
-      "train_seconds": 57.35825659008697,
+      "train_seconds": 79.82611870195251,
       "peak_gpu_memory_bytes": 263206912,
       "total_params": 11227812,
       "trainable_params": 51300,
-      "signature_sha256": "f3a8b42c4d78fc8f6dc7d222086677597e8fa47c942ba488aaecd83cf3bbb1c6",
+      "signature_sha256": "cc43a2732a5eceba6133b260d575c1691cb57e9f953369c2d3d082146e413f2d",
       "best_state_sha256": "3b6d353e2aa90967cc09d1f1807b12f52fa1b8e2f66530c44548f30699f06746",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1180,8 +1180,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1194,7 +1194,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1302,7 +1302,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "18487dab11a68cc579033542cf29f0bb2f6aee73a72328c85fd8422944c6f5ca"
+      "best_file_sha256": "93c716f8f856a9cdf031029a5a9a8572d24a454ede83f5ce97eabdd8bb4b0749"
     },
     {
       "experiment": "resnet18_partial",
@@ -1312,11 +1312,11 @@
       "val_macro_f1": 0.7468464245569341,
       "test_accuracy": 0.7383,
       "test_macro_f1": 0.7384340899874511,
-      "train_seconds": 58.4944850129541,
+      "train_seconds": 79.97116830595769,
       "peak_gpu_memory_bytes": 364193792,
       "total_params": 11227812,
       "trainable_params": 8445028,
-      "signature_sha256": "b479b498926a58811ad39ce80763e8bf54f1a818cf055ce353fd512759c0ab64",
+      "signature_sha256": "f0a04b435c24e8c6fa6bc2e7e6748833ec5a75c135a84df12e4370baa0653f7a",
       "best_state_sha256": "cea83c867e95cd66a2723b1d8ad08a8e72aea1736b084cead89edf3120e3c941",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1325,8 +1325,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1339,7 +1339,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1447,7 +1447,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "34f1b64faa71ab725a05f1696fc131ecc2b7ad6696825ebe366a3036ef14b543"
+      "best_file_sha256": "e494117c3681ccd55ee2ee2ccaa4eb4927d1bb14a0e2dedb88983c2453fb8e9f"
     },
     {
       "experiment": "resnet18_partial",
@@ -1457,11 +1457,11 @@
       "val_macro_f1": 0.7457093195487733,
       "test_accuracy": 0.7405,
       "test_macro_f1": 0.7404316634769159,
-      "train_seconds": 59.258006270742044,
+      "train_seconds": 80.2736612620065,
       "peak_gpu_memory_bytes": 364193792,
       "total_params": 11227812,
       "trainable_params": 8445028,
-      "signature_sha256": "685df24fca05e383b02c326bddc4936677d3cecab1578b670ebd8c0fb70d8339",
+      "signature_sha256": "122e84034d07e0408ca15d3c199ba1dcd52981bb8b7ea6607f000092f6db755e",
       "best_state_sha256": "debe83c6e36c0053df9bd53da615fa4206ab9e3b53ee4dc32c23cdf2a59933b1",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1470,8 +1470,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1484,7 +1484,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1592,7 +1592,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "c1bee9d9112fac6e2f8d9ec5bc0ac0f31453431cbea0dc485b35a1a707d44031"
+      "best_file_sha256": "25faa2e7fc1617b958b9faf20a913d17d0fb904e77743e0fe137fca3fe98ffc4"
     },
     {
       "experiment": "resnet18_partial",
@@ -1602,11 +1602,11 @@
       "val_macro_f1": 0.7410757886736564,
       "test_accuracy": 0.7401,
       "test_macro_f1": 0.7400274812127904,
-      "train_seconds": 58.972225967096165,
+      "train_seconds": 80.46045160398353,
       "peak_gpu_memory_bytes": 364193792,
       "total_params": 11227812,
       "trainable_params": 8445028,
-      "signature_sha256": "ec4a03c9c4d33d9251048be82b06bfa9810ca4e998f08d18335f6955c507f93f",
+      "signature_sha256": "9518d22f4e40a298b0575d752dd7f2977791d7514274358d7184d5425e57d2c5",
       "best_state_sha256": "b21603c167fd3c13ed97a20fb08de78888028d4d6648016142f6c3b27f84704a",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1615,8 +1615,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1629,7 +1629,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1737,7 +1737,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "8ead57b0bf87c38cbca758c43c55e99a5e3bfa5a29c50e06592bb23f65768f23"
+      "best_file_sha256": "209592d7f209a93662f48f67102e7b4baa381d4c332988fd54b69c745c5598f3"
     },
     {
       "experiment": "resnet18_full",
@@ -1747,11 +1747,11 @@
       "val_macro_f1": 0.7933745826608051,
       "test_accuracy": 0.7899,
       "test_macro_f1": 0.7903732225209934,
-      "train_seconds": 73.61901710869279,
-      "peak_gpu_memory_bytes": 544588800,
+      "train_seconds": 79.85515256598592,
+      "peak_gpu_memory_bytes": 544064512,
       "total_params": 11227812,
       "trainable_params": 11227812,
-      "signature_sha256": "b56ea0b1e1bca7e2b54a8d32efa9fe7f523a5a6c0c13de508584a536afdd54f2",
+      "signature_sha256": "b117b2fe083bfc964b47ae0f6cd24c685f328979a2bf562945be0083ba7fb39c",
       "best_state_sha256": "25c13b45a3c49984cb41a8910f3e40874c834adba2ec31eaefcab8a5d17b7626",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1760,8 +1760,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1774,7 +1774,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -1882,7 +1882,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "6faf53eae2c52763918fa4c3726669494cb2bee22b91599933311d56ac36ede7"
+      "best_file_sha256": "c21075043c0ea08ed7a8137a8e7df220d67088f6ccbf3c3ad3b9a4191a536e9b"
     },
     {
       "experiment": "resnet18_full",
@@ -1892,11 +1892,11 @@
       "val_macro_f1": 0.7913005521007049,
       "test_accuracy": 0.7892,
       "test_macro_f1": 0.7892714365207247,
-      "train_seconds": 74.22256407141685,
-      "peak_gpu_memory_bytes": 544588800,
+      "train_seconds": 81.02273511898238,
+      "peak_gpu_memory_bytes": 544064512,
       "total_params": 11227812,
       "trainable_params": 11227812,
-      "signature_sha256": "2944e446779d6829c577bb89c85aa7bdc96d47a7fe4670b93a02cfcfe0e4a894",
+      "signature_sha256": "ba66245175f4585c759b23e0fb21c83c99abdb2235e65d3fb57fa03f4f4fefa2",
       "best_state_sha256": "e31bbfd78fbb6d8d3a0166d967bb8e91e75ad4ceb8eaf85544058209a89e0b3a",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -1905,8 +1905,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -1919,7 +1919,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2027,7 +2027,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "39c7aef5a931a393c46d32ea8ff753db9264f24a3eb06441ed23b9c3aa21d79a"
+      "best_file_sha256": "e399c6dc98db7199de5b1fc399a27e8c36f1bab93967e40fccdfe1493c082b3c"
     },
     {
       "experiment": "resnet18_full",
@@ -2037,11 +2037,11 @@
       "val_macro_f1": 0.7915172235354825,
       "test_accuracy": 0.79,
       "test_macro_f1": 0.7898895810246063,
-      "train_seconds": 72.13286015007179,
-      "peak_gpu_memory_bytes": 544588800,
+      "train_seconds": 80.44703785912134,
+      "peak_gpu_memory_bytes": 544064512,
       "total_params": 11227812,
       "trainable_params": 11227812,
-      "signature_sha256": "a6656ffa9e467dc27b63015d6055ee6390fbae10a0f7ee484ea53fa349895218",
+      "signature_sha256": "8f71273512e6d723dd69349643b75d004d992b04e2850622a81a9ac64ddd8c5e",
       "best_state_sha256": "5752c4c93552e01ade431aed68d2da96983caf6794f697bc742f2c4edd0d916d",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2050,8 +2050,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2064,7 +2064,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2172,7 +2172,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "eeb3cbdd499e04add28005153f0891db39fa81755f87e43256b62e33fcc62050"
+      "best_file_sha256": "e109e5cd056f344a55a21e4d18e441958ba049b11e070c7d2b9cbc29dee670f9"
     },
     {
       "experiment": "swin_t_scratch",
@@ -2182,11 +2182,11 @@
       "val_macro_f1": 0.0164234913528842,
       "test_accuracy": 0.0412,
       "test_macro_f1": 0.01665871495662255,
-      "train_seconds": 214.56122858612798,
-      "peak_gpu_memory_bytes": 2572150784,
+      "train_seconds": 211.1454296138836,
+      "peak_gpu_memory_bytes": 2570690560,
       "total_params": 27596254,
       "trainable_params": 27596254,
-      "signature_sha256": "6a0c70a4a8e6d74ce9d6a22935b3516287526f8bf6c5308ca7a2f78bf8f01f20",
+      "signature_sha256": "ac109ed5e1748da5e8a337886e72800e41a0c86f2c6184b210777c76f25645bf",
       "best_state_sha256": "7fd9b549b3c0fa377d27782b8dec66b09fccb531499ed77a24bf65a61ca95cc2",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2195,8 +2195,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2209,7 +2209,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2317,7 +2317,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "77812f0f2a2e31847b8e6036abc96dac43ed545c857a1064a5dd6b545d5e4918"
+      "best_file_sha256": "c79fd410f2080589bd0981459234a8bb5477dec234674f40e25066b14b7a054b"
     },
     {
       "experiment": "swin_t_scratch",
@@ -2327,11 +2327,11 @@
       "val_macro_f1": 0.008796875086350972,
       "test_accuracy": 0.0254,
       "test_macro_f1": 0.008241004521905085,
-      "train_seconds": 217.01607842603698,
-      "peak_gpu_memory_bytes": 2572150784,
+      "train_seconds": 212.66183716792148,
+      "peak_gpu_memory_bytes": 2570974208,
       "total_params": 27596254,
       "trainable_params": 27596254,
-      "signature_sha256": "5f613c0ad2bde95aba74f93197ebfd48015a0774f3a22bb1ae14b34b82808781",
+      "signature_sha256": "6be2531611f3c145414d772b4c44574aefb996eab55ebb72e272e7161d3efdcc",
       "best_state_sha256": "72e8ffee405fd1dc7c1fde79b36adf78ee4412ad7e2c31ea7273ca019ba3adb5",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2340,8 +2340,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2354,7 +2354,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2462,7 +2462,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "d19027fd2a6e4085e1c89905750cc8e5947a20bf759d2478699b0ba2443e9c4f"
+      "best_file_sha256": "673015e827f70942bd250f05200945e353eaf9330372170a57b7fb03dc13e20f"
     },
     {
       "experiment": "swin_t_scratch",
@@ -2472,11 +2472,11 @@
       "val_macro_f1": 0.0027705951907099472,
       "test_accuracy": 0.0162,
       "test_macro_f1": 0.0030099758739711045,
-      "train_seconds": 213.92074346903246,
-      "peak_gpu_memory_bytes": 2572150784,
+      "train_seconds": 209.3661243187962,
+      "peak_gpu_memory_bytes": 2570974208,
       "total_params": 27596254,
       "trainable_params": 27596254,
-      "signature_sha256": "837105674e0f58784fd445d34c1cc05af210dacb73be3d72bd3b003c3d28fe57",
+      "signature_sha256": "0400a855fa29c083fb88f438de8d3aa505145a04d8bb058cad5f24b83f9f1ca2",
       "best_state_sha256": "869f9b5314bb6662ace49a4d639d26d1f73cc86edcd5ab349b187f39617dedcc",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2485,8 +2485,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2499,7 +2499,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2607,7 +2607,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "7cd7cb6f5c89bab7664bcccc1de6b36b0d1263231aed8fa8e49b7350fa701606"
+      "best_file_sha256": "efec7877a72bff33d5e55f0ed70a7c5a12cf3f5196173eda61e09d5cecc44279"
     },
     {
       "experiment": "swin_t_head",
@@ -2617,11 +2617,11 @@
       "val_macro_f1": 0.7233198022350308,
       "test_accuracy": 0.7157,
       "test_macro_f1": 0.7143636336817621,
-      "train_seconds": 89.34921389189549,
+      "train_seconds": 86.67416784330271,
       "peak_gpu_memory_bytes": 527294464,
       "total_params": 27596254,
       "trainable_params": 76900,
-      "signature_sha256": "0b355b85b472090ba65bdd133ad8a63c7e1785f703e220704e474a5c0662581a",
+      "signature_sha256": "dab0af222bcee5d953343b959a7b974fc779b78da9b33ffa5809a542c3a117d3",
       "best_state_sha256": "27b51d5b299d9885f485f0e57a2a2160b608a33fee8681208da5321c72ae6f10",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2630,8 +2630,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2644,7 +2644,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2752,7 +2752,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "af2326be1d325dae6d1f486541dcf03aa1d6009a14fd91f5a6f79476b93c9d1e"
+      "best_file_sha256": "df073a35ca6bdcf1ac250fda4ea41515eafebea205f7ec0156376dc4402ec12d"
     },
     {
       "experiment": "swin_t_head",
@@ -2762,11 +2762,11 @@
       "val_macro_f1": 0.7215794027967816,
       "test_accuracy": 0.7175,
       "test_macro_f1": 0.7162263588848904,
-      "train_seconds": 91.60413406416774,
+      "train_seconds": 85.95270120818168,
       "peak_gpu_memory_bytes": 527294464,
       "total_params": 27596254,
       "trainable_params": 76900,
-      "signature_sha256": "d646da2ce3cfaf02644ad46c9a8b328f8dec70219a8bb267b7eac8aa082f401b",
+      "signature_sha256": "893d2dd646af6f57d126d255b6719c818148b4a4650bd962889fd027708ae7eb",
       "best_state_sha256": "dbc67cfe83efd51be31e1699739069b338e7bc49a53d6b17c6a84c49337e6ac1",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2775,8 +2775,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2789,7 +2789,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -2897,7 +2897,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "1b39338f2a24da41ebf0348916268247c6e8b88289018d75f3abde439938975c"
+      "best_file_sha256": "b8f0ff4f210b44744651027b4957e426aa69496757ab2be3fd37121ff44397d6"
     },
     {
       "experiment": "swin_t_head",
@@ -2907,11 +2907,11 @@
       "val_macro_f1": 0.7224974175997427,
       "test_accuracy": 0.7168,
       "test_macro_f1": 0.715566808402381,
-      "train_seconds": 90.69849620899186,
+      "train_seconds": 85.64675660082139,
       "peak_gpu_memory_bytes": 527294464,
       "total_params": 27596254,
       "trainable_params": 76900,
-      "signature_sha256": "5c166c35988495722ebfa7d0c0d3e0ffcc8cc594aa13928b4f303a7a88795a8c",
+      "signature_sha256": "9ce5e2cd433426f390e695dd893e20f19f3277ccd79a9eadeabb215367335481",
       "best_state_sha256": "e4064f20500e6c7113904d1004e02926533d54e73b7b866d36e0201527f0a460",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -2920,8 +2920,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -2934,7 +2934,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3042,7 +3042,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "13b7d15ae7d3c6dbb04fbec99981836497a2274628f87d72bd3fd243de129279"
+      "best_file_sha256": "30c4cbadee27253538b2d05b379f9d643baac6a6881d97801fd0bb157ee66c0d"
     },
     {
       "experiment": "swin_t_partial",
@@ -3052,11 +3052,11 @@
       "val_macro_f1": 0.7901802875281367,
       "test_accuracy": 0.7801,
       "test_macro_f1": 0.7793561822604902,
-      "train_seconds": 111.15696092415601,
+      "train_seconds": 106.71131709159818,
       "peak_gpu_memory_bytes": 700141568,
       "total_params": 27596254,
       "trainable_params": 14262292,
-      "signature_sha256": "87730f6844362296a023f2a523959b2cd97bac506abc5057a2e810e32842ae80",
+      "signature_sha256": "1b6d927dfd551fe033ae4f9639103be83af850d773ab26d7a3187d024a698af2",
       "best_state_sha256": "cff09891c75123936de3f3ac232f54048c16734aaeb8d75328406e0832ab647c",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -3065,8 +3065,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -3079,7 +3079,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3187,7 +3187,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "fe3b0b9a90ae823214f05624a444154f574b9d99d88dfc22043f0037f673cc2b"
+      "best_file_sha256": "669140a3a940fc036dfa7c2e34a6dba4251a71a686a6e483e3f4d960845cd9e8"
     },
     {
       "experiment": "swin_t_partial",
@@ -3197,11 +3197,11 @@
       "val_macro_f1": 0.7911350467995396,
       "test_accuracy": 0.7844,
       "test_macro_f1": 0.7833592090419309,
-      "train_seconds": 112.49334966856986,
+      "train_seconds": 107.03205511218403,
       "peak_gpu_memory_bytes": 700141568,
       "total_params": 27596254,
       "trainable_params": 14262292,
-      "signature_sha256": "8bfb744bc830f6b33355615b6efd191e044bd3f3ce1a863e8ff2292bd4cda5c7",
+      "signature_sha256": "020e6fdaed25288e681c0a9859789d761f71cbbfda0897bb292673485008689d",
       "best_state_sha256": "cfd0a54d165055108542716dae2d7a6fe5388421d91efb71c8c7f39751a100ad",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -3210,8 +3210,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -3224,7 +3224,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3332,7 +3332,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "63898a21670f759f23f1bd0213f1f1f26196034bb2e3f2c7c5fe2450042a7b23"
+      "best_file_sha256": "04d28417aedf73481ba2f0ceb375ccd8545f630c0061b46560b299d5a8bfba48"
     },
     {
       "experiment": "swin_t_partial",
@@ -3342,11 +3342,11 @@
       "val_macro_f1": 0.7856072531540296,
       "test_accuracy": 0.7831,
       "test_macro_f1": 0.782543953852401,
-      "train_seconds": 111.52120557904709,
+      "train_seconds": 106.98950751114171,
       "peak_gpu_memory_bytes": 700141568,
       "total_params": 27596254,
       "trainable_params": 14262292,
-      "signature_sha256": "7764f52aa01375fc4e9f93b322f74462bf26711544f4ae5ab125967c68e37707",
+      "signature_sha256": "17b142746f453364ccc3b538307bed7c4462fc39c1f28314ecd213db611a9c16",
       "best_state_sha256": "a96014aa075ea1ac6bb11654f085db00488bc045d42e8c08086c9ac3e03c4dc7",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -3355,8 +3355,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -3369,7 +3369,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3477,7 +3477,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "25388af48054f508aff1aa97ae9f76df872f490ccc98df68abae72c92d942521"
+      "best_file_sha256": "72ae88d7f5bbaebbeb1ae050884bb2c4c0a7f4e831e44a2424f79dfbe32ea3e2"
     },
     {
       "experiment": "swin_t_full",
@@ -3487,11 +3487,11 @@
       "val_macro_f1": 0.868191018526062,
       "test_accuracy": 0.8657,
       "test_macro_f1": 0.8656958836862612,
-      "train_seconds": 215.12971391668543,
-      "peak_gpu_memory_bytes": 2568379392,
+      "train_seconds": 212.61032750608865,
+      "peak_gpu_memory_bytes": 2570974208,
       "total_params": 27596254,
       "trainable_params": 27596254,
-      "signature_sha256": "018e30ac9b0c9cc6d50438f927bb31059f0613dcfcc470daa01e6ca64fb57dcc",
+      "signature_sha256": "ae7398264f881023b8c5435298d1b710c5234a07b901c748e09c5272a8d4d5b4",
       "best_state_sha256": "eeec99561b6314ba4430f6f6abb5aa9ef8f3efa49bc4a0c19f463ca394aad0b8",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -3500,8 +3500,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -3514,7 +3514,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3622,7 +3622,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "6c5bd439866aa8b57be50ba2dd7b641b0de260c81838a8c9ad02cf759d51aa47"
+      "best_file_sha256": "b306873a68a010d8cf4cab7334280a649fb02c408a3998d886d610ed7d3da33e"
     },
     {
       "experiment": "swin_t_full",
@@ -3632,11 +3632,11 @@
       "val_macro_f1": 0.8689040843226824,
       "test_accuracy": 0.8645,
       "test_macro_f1": 0.8647271607877872,
-      "train_seconds": 216.6223827775102,
-      "peak_gpu_memory_bytes": 2568379392,
+      "train_seconds": 213.13533496309537,
+      "peak_gpu_memory_bytes": 2570974208,
       "total_params": 27596254,
       "trainable_params": 27596254,
-      "signature_sha256": "7f07bc43ede103d3297e77a7a34d2173ce104ecf07fd2d4b6798b21176cf75a4",
+      "signature_sha256": "9904b924f813337f8824abe176c4df2c136fe2848bdf7ac7f09755d4dfc1eec1",
       "best_state_sha256": "ea2bbd571dcae985e5d87ceb1605dfd78506e1d846d24353e572df9a8d5b2c60",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -3645,8 +3645,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -3659,7 +3659,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3767,7 +3767,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "7cafcad9c0bd4159c96746323a782a2a3bb3bd484450faab8a43a311838abeca"
+      "best_file_sha256": "4a3d3b1ddb767b711de3273468b66d42cd03a16b7a27bfdd544b68d29b4e6b52"
     },
     {
       "experiment": "swin_t_full",
@@ -3777,11 +3777,11 @@
       "val_macro_f1": 0.8679399031977013,
       "test_accuracy": 0.8687,
       "test_macro_f1": 0.8686100479387404,
-      "train_seconds": 214.1480082999915,
-      "peak_gpu_memory_bytes": 2568379392,
+      "train_seconds": 211.87698356516194,
+      "peak_gpu_memory_bytes": 2570974208,
       "total_params": 27596254,
       "trainable_params": 27596254,
-      "signature_sha256": "904de997d780378612bf11ca19b29ee9bd4c2b3e5072f9a3e7e7b27eefaeb47b",
+      "signature_sha256": "4045759a768ad8835c28e261709cb26f74b6e44ba18ba46800ea9936a91d6baf",
       "best_state_sha256": "5de94295cd48382183a2df595bfb41103fba5531048eb8554ca2c7c3091180ae",
       "data": {
         "images_sha256": "4e457917601a66aed021f5fa37957b56c6319557c0a8ed5484de3c390af45430",
@@ -3790,8 +3790,8 @@
         "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
       },
       "environment": {
-        "python": "3.12.3",
-        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+        "python": "3.12.12",
+        "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
         "torch": "2.10.0+cu130",
         "cuda_runtime": "13.0",
         "cudnn": 91501,
@@ -3804,7 +3804,7 @@
         "visible_cuda_devices": null,
         "cuda_device_count": 1
       },
-      "num_workers": 8,
+      "num_workers": 4,
       "test_data": {
         "images_sha256": "4cb8e5d9309da489bf6b19cc10cd96c3ae6f8daf225380b605aaee4c0d6aee19",
         "labels_sha256": "80031c23f8300724c6fbc588e4bccbe41c6392041782148727bb497b0132c4ad",
@@ -3912,7 +3912,7 @@
         ],
         "count": 10000
       },
-      "best_file_sha256": "a6124464e9e406786bfb7deb5a773dc2d37c75c1c3896863d694cca6bab72c52"
+      "best_file_sha256": "e6ebdc627cbfa61325f96d4abdaa0cbbfae01504431ec4c7e256903838808b71"
     }
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "notebook": "notebooks/A1.ipynb",
+  "source_sha256": "ce997e11f190d72de613640c67bfdd0741bfc38b61884c9d7a899b75dcc8e48c",
+  "executed_notebook_sha256": "8fceba96f18fe655478d6ec0b265af5a38dc4fbd2c4a9046a2687123b9d2f9f1",
+  "code_cells": 12,
+  "figures": 6,
+  "error_outputs": 0,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "original_runs": 24,
+  "original_epochs": 20,
+  "followup_runs": 6,
+  "followup_epochs": 40,
+  "total_completed_epochs": 720,
+  "sample_counts": {
+    "train": 45000,
+    "validation": 5000,
+    "test": 10000
+  }
+}

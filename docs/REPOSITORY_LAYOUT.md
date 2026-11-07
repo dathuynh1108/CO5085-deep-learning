@@ -4,13 +4,13 @@ Năm notebook trong `notebooks/` trình bày quy trình thực nghiệm của E1
 
 E1–E3 dùng chung `reports/exercises/`. A1 và A2 có thư mục báo cáo riêng `reports/assignment1/` và `reports/assignment2/`. Mỗi thư mục có LaTeX, PDF, hình và số liệu theo lượt. Video A2 nằm cạnh PDF. Lệnh `python scripts/build_site.py` dựng `build/site/` từ `site/` với các URL PDF `reports/exercises.pdf`, `reports/assignment1.pdf` và `reports/assignment2.pdf`.
 
-Notebook mặc định ghi kết quả trong `runs/notebooks/`. Các tệp nhẹ để đối chiếu bảng và hình nằm cùng từng báo cáo. Checkpoint và dữ liệu gốc được lưu cục bộ. Các tệp hỗ trợ biên dịch và kiểm tra ở `scripts/` và `tests/`.
+Notebook mặc định ghi kết quả trong `runs/notebooks/`. Các tệp nhẹ để đối chiếu bảng và hình nằm cùng từng báo cáo. `reports/exercises/notebook-evidence/` chứa 39 lượt E1–E3 bắt buộc; `reports/assignment2/notebook-evidence/` chứa sáu lượt A2 trên RTX 5090. A1 có đủ 30 lượt notebook đã kiểm tra checkpoint và dự đoán test; số liệu chính nằm trong `reports/assignment1/notebook-evidence/` và `reports/assignment1/swin-followup/`. Checkpoint và dữ liệu gốc được lưu cục bộ. Các tệp hỗ trợ biên dịch và kiểm tra ở `scripts/` và `tests/`.
 
 ## Kết quả đã đo trước refactor
 
 Commit `1250e569c6ce055391b5670e2f9a31faedb44b20` chứa mã nguồn thực sự dùng cho 60 lượt E1–E3 và 24 lượt A1. `source-snapshot.json`, backup manifest và JSON/CSV thực nghiệm giữ nguyên byte và chữ ký cũ. `training-evidence/layout-migration.json` ánh xạ đường dẫn trước/sau.
 
-`python -m scripts.verify_archive --checkpoints` kiểm tra Git blobs của nguồn đã đo và toàn bộ 991 tệp sao lưu ở vị trí mới. Không có checkpoint mới hoặc lượt train thêm.
+`python -m scripts.verify_archive --checkpoints` kiểm tra Git blobs của nguồn đã đo và toàn bộ 991 tệp sao lưu ở vị trí mới. Lệnh này chỉ kiểm tra bản sao lịch sử; các lượt notebook mới có nguồn và bằng chứng riêng.
 
 Xuất lại số liệu cũ:
 

@@ -19,7 +19,7 @@
 \CourseAbstract{
 Ba bài tập khảo sát cách biểu diễn ảnh trong bài toán phân loại Fashion-MNIST. E1 so sánh bộ phân loại softmax, MLP và CNN. E2 đối chiếu multi-head self-attention tự viết với mô-đun PyTorch trên ba cách tạo token. E3 so sánh LSTM và GRU khi ảnh được đọc theo hàng hoặc theo ô, đồng thời khảo sát độ nhạy với thứ tự quét.
 
-Mỗi cấu hình được huấn luyện từ đầu với ba seed. CNN đạt độ chính xác trên tập test trung bình cao nhất, 92,62\%. Trong nhóm attention, bản PyTorch dùng CNN-stem đạt 88,59\%. GRU đọc ảnh theo hàng đạt 90,07\%. Phân tích gradient và phép thay đổi thứ tự quét mô tả độ nhạy của mô hình đối với biểu diễn chuỗi.
+Mỗi cấu hình được huấn luyện từ đầu với ba seed. CNN đạt độ chính xác trên tập test trung bình cao nhất, 92,69\%. Trong nhóm attention, bản tự viết dùng CNN-stem đạt 88,59\%. GRU đọc ảnh theo hàng đạt 90,07\%. Phân tích gradient và phép thay đổi thứ tự quét mô tả độ nhạy của mô hình đối với biểu diễn chuỗi.
 }
 
 \CourseOverview{
@@ -28,7 +28,7 @@ E1 & So sánh softmax, MLP và CNN về độ chính xác, số tham số và l�
 E2 & Đối chiếu hai hiện thực attention trên token theo hàng, theo ô và theo đặc trưng CNN-stem.\\
 E3 & So sánh LSTM, GRU với MLP và CNN. Khảo sát độ nhạy với thứ tự quét và gradient theo bước.\\
 Phép đo & 13 cấu hình, ba seed mỗi cấu hình. Checkpoint được chọn trên tập validation.\\
-Kết quả chính & CNN đạt 92,62\% độ chính xác trên tập test trung bình. GRU đọc theo hàng đạt 90,07\% trong E3.\\
+Kết quả chính & CNN đạt 92,69\% độ chính xác trên tập test trung bình. GRU đọc theo hàng đạt 90,07\% trong E3.\\
 }
 
 \CourseContents
@@ -46,7 +46,7 @@ Từ 60.000 ảnh train, tách phân tầng 10\% làm validation với split see
 
 Ảnh được chuyển từ uint8 sang $[0,1]$, sau đó chuẩn hóa $x'=(x-\mu)/\sigma$. Hai thống kê $\mu,\sigma$ được tính trên 54.000 ảnh train và dùng lại cho validation/test. Các thí nghiệm không dùng augmentation để giữ đầu vào thống nhất khi so sánh cách biểu diễn ảnh.
 
-\code{src/common/data.py} lưu chỉ số từng split, checksum dữ liệu và fingerprint của cả split lẫn normalization. Loader ưu tiên HTTPS từ repo chính thức của dataset và giữ kiểm tra checksum của torchvision. Dữ liệu test có thể được tải cùng kho ảnh, nhưng không được đọc vào vòng chọn checkpoint hay tính normalization.
+\code{src/common/data.py} lưu chỉ số từng split, checksum dữ liệu và fingerprint của cả split lẫn normalization. Dữ liệu test không tham gia chọn checkpoint hay tính thống kê chuẩn hóa.
 
 \section{Huấn luyện và chỉ số đánh giá}
 Mỗi mô hình xuất logits $z\in\R^{10}$. Với nhãn đúng $y$, cross-entropy là
@@ -54,7 +54,7 @@ Mỗi mô hình xuất logits $z\in\R^{10}$. Với nhãn đúng $y$, cross-entro
 \ell(z,y)=-z_y+\log\sum_{k=1}^{10}\exp(z_k),
 \qquad \frac{\partial\ell}{\partial z_k}=p_k-\mathbf{1}[k=y].
 \end{equation}
-Vì \code{cross_entropy} đã thực hiện log-softmax ổn định số, code không chèn softmax trước loss. Softmax chỉ được dùng khi cần xác suất để trình bày dự đoán.
+Vì \code{cross_entropy} đã thực hiện log-softmax ổn định số, đầu vào của hàm loss là logits. Softmax chỉ được dùng khi cần xác suất để trình bày dự đoán.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{@{}lX@{}}\toprule
@@ -79,7 +79,7 @@ Bảng kết quả trình bày độ chính xác trên tập validation trung b�
 
 \chapter{E1: Softmax, MLP và CNN}
 \section{Ba bộ phân loại}
-Softmax nhận vector $x\in\R^{784}$ và tính logits $z=Wx+b$; ranh giới giữa hai lớp là siêu phẳng trong không gian pixel. MLP bổ sung hai tầng phi tuyến trên cùng vector flatten. CNN dùng kernel chia sẻ theo vị trí để học đặc trưng cục bộ. Ba kiến trúc được giữ nhỏ và mô tả đầy đủ trong bảng dưới đây.
+Softmax nhận vector $x\in\R^{784}$ và tính logits $z=Wx+b$; ranh giới giữa hai lớp là siêu phẳng trong không gian pixel. MLP bổ sung hai tầng phi tuyến trên cùng vector flatten. CNN dùng kernel chia sẻ theo vị trí để học đặc trưng cục bộ. Các lớp của từng mô hình được trình bày trong bảng dưới đây.
 
 \begin{table}[htbp]\centering
 \begin{tabularx}{\textwidth}{@{}lX@{}}\toprule
@@ -96,14 +96,14 @@ Hai phép pooling đưa ảnh $28\to14\to7$, vì vậy head CNN nhận $64\times
 \section{Kết quả và phân tích lỗi}
 \begin{table}[htbp]\centering\small
 \input{notebook-evidence/e1_table.tex}
-\caption{Kết quả E1, tổng hợp theo các seed được công bố.}
+\caption{Kết quả E1 qua ba seed 42, 43 và 44.}
 \end{table}
 \tablenote
 
 Train/validation CE được đối chiếu với accuracy để phân tích quá trình học. Confusion matrix và ảnh dự đoán sai bên dưới lấy từ CNN ở seed 42.
-MLP tăng độ chính xác trên tập test từ 84,51\% của softmax lên 89,88\%. CNN đạt 92,62\%, cao hơn MLP 2,74 điểm phần trăm. MLP bổ sung các lớp phi tuyến. CNN còn giữ cấu trúc hai chiều và khai thác lân cận bằng kernel dùng chung. Hai mô hình khác nhau cả về cấu trúc lẫn số tham số.
+MLP tăng độ chính xác trên tập test từ 84,51\% của softmax lên 89,88\%. CNN đạt 92,69\%, cao hơn MLP 2,81 điểm phần trăm. MLP bổ sung các lớp phi tuyến. CNN còn giữ cấu trúc hai chiều và khai thác lân cận bằng kernel dùng chung. Hai mô hình khác nhau cả về cấu trúc lẫn số tham số.
 
-Ở epoch cuối, cross-entropy của CNN là 0,0167 trên tập huấn luyện và 0,3017 trên tập validation. Khoảng cách này cho thấy mô hình khớp tập huấn luyện nhiều hơn. Trong ma trận nhầm lẫn của seed 42, lỗi có tần suất cao nhất theo một chiều là Shirt bị gán thành T-shirt/top, gồm 92 ảnh.
+Ở epoch cuối, cross-entropy của CNN trung bình qua ba seed là 0,0170 trên tập huấn luyện và 0,2972 trên tập validation. Khoảng cách này cho thấy mô hình khớp tập huấn luyện nhiều hơn. Trong ma trận nhầm lẫn của seed 42, lỗi có tần suất cao nhất theo một chiều là Shirt bị gán thành T-shirt/top, gồm 86 ảnh.
 
 \resultfigure{e1_comparison_ce}{Validation CE của ba mô hình E1 ở seed 42.}{0.88}
 \resultfigure{e1_comparison_accuracy}{Validation accuracy của E1; seed dùng cho hình ghi trên biểu đồ.}{0.88}
@@ -119,7 +119,7 @@ A=\operatorname{softmax}_{\text{hàng}}\left(\frac{QK^\top}{\sqrt{d_h}}\right),\
 \end{equation}
 Các bias được lược bỏ trong công thức cho gọn, nhưng có trong hiện thực. Ở đây $d=64$, có bốn head nên $d_h=16$. Ba phép Linear được gộp thành QKV, reshape thành các head, nhân ma trận, softmax theo chiều key, áp dụng dropout, ghép head và chiếu output. Bản manual không gọi \code{nn.MultiheadAttention}, \code{TransformerEncoder} hoặc fused attention để thay phần tính này.
 
-Bản đối chiếu dùng \code{nn.MultiheadAttention(batch_first=True)}. Chương trình tạo toàn bộ model manual rồi copy đúng QKV và output projection sang module PyTorch. Các phần tokenizer, positional embedding, FFN, LayerNorm và head cũng giữ nguyên tensor khởi tạo của cùng seed. Chỉ reset seed trước hai constructor khác nhau là chưa đủ bảo đảm điều này.
+Bản đối chiếu dùng \code{nn.MultiheadAttention(batch_first=True)}. Các trọng số QKV và output projection của bản tự viết được sao chép sang mô-đun PyTorch. Các phần tokenizer, positional embedding, FFN, LayerNorm và head cũng giữ nguyên tensor khởi tạo của cùng seed.
 
 Tính tương đương số học được kiểm tra bằng tensor nhỏ và dropout bằng 0, qua output, gradient đầu vào và gradient của toàn bộ tham số. Khi huấn luyện, dropout và kernel có thể làm hai phiên bản đi theo quỹ đạo khác nhau dù cùng khởi tạo.
 
@@ -150,12 +150,11 @@ trong đó FFN là $64\to128\to64$ với GELU và dropout 0,1. Attention không 
 \end{table}
 \tablenote
 
-Manual và thư viện được so sánh ở từng tokenizer; ba tokenizer được so sánh khi giữ attention backend cố định. Chi phí phần score của attention tỉ lệ $N^2d$; số cặp token của patch gấp $49^2/28^2\approx3,06$ lần token hàng. Thời gian toàn mô hình còn gồm projection, FFN, stem và chi phí thực thi kernel.
+Manual và thư viện được so sánh ở từng tokenizer; ba tokenizer được so sánh khi giữ attention backend cố định. Chi phí tính điểm attention tỉ lệ $N^2d$; số cặp token của patch gấp $49^2/28^2\approx3,06$ lần token hàng. Thời gian toàn mô hình còn gồm projection, FFN, stem và chi phí thực thi kernel.
 
-Các kết quả dưới đây được đo trên cùng split, với cùng thiết lập giữa hai backend của mỗi tokenizer.
-Trên cùng cách lấy token, chênh lệch độ chính xác trên tập test giữa bản PyTorch và bản tự viết lần lượt là $-0{,}06$, $+0{,}10$ và $+0{,}05$ điểm phần trăm cho token theo hàng, theo patch và theo đặc trưng CNN-stem. Các chênh lệch đều dưới 0,11 điểm phần trăm. Bản PyTorch có thời gian huấn luyện mỗi epoch ngắn hơn trong cả ba cặp.
+Trên cùng cách lấy token, chênh lệch độ chính xác trên tập test giữa bản PyTorch và bản tự viết lần lượt là $-0{,}06$, $+0{,}10$ và $-0{,}09$ điểm phần trăm cho token theo hàng, theo patch và theo đặc trưng CNN-stem. Các chênh lệch đều dưới 0,11 điểm phần trăm. Bản PyTorch có thời gian huấn luyện mỗi epoch ngắn hơn trong cả ba cặp.
 
-CNN-stem đạt 88,55\% với MSA tự viết và 88,59\% với MSA PyTorch, cao hơn token theo hàng và theo patch ở cùng hiện thực. Tầng tích chập đưa đặc trưng cục bộ vào chuỗi trước attention. Cách lấy token đồng thời thay đổi độ dài chuỗi, kích thước đặc trưng và số tham số, nên kết quả phản ánh cả cấu hình biểu diễn.
+CNN-stem đạt 88,59\% với MSA tự viết và 88,50\% với MSA PyTorch, cao hơn token theo hàng và theo patch ở cùng hiện thực. Tầng tích chập đưa đặc trưng cục bộ vào chuỗi trước attention. Cách lấy token đồng thời thay đổi độ dài chuỗi, kích thước đặc trưng và số tham số, nên kết quả phản ánh cả cấu hình biểu diễn.
 
 \resultfigure{e2_comparison_ce}{Validation CE của sáu cấu hình E2 ở seed 42.}{0.9}
 \resultfigure{e2_comparison_accuracy}{Validation accuracy khi thay attention backend và tokenizer.}{0.9}
@@ -184,7 +183,7 @@ h_t &=(1-z_t)\odot n_t+z_t\odot h_{t-1}.
 \end{align}
 Trong công thức của PyTorch, reset gate tác động sau phép chiếu hidden. Đây là điểm khác với cách viết $W_{hn}(r_t\odot h_{t-1})$. GRU sử dụng một trạng thái hidden, còn LSTM tách hidden state và cell state.
 
-PyTorch lưu hai vector bias cho mỗi tầng. Vì vậy, số tham số phần recurrent là $4H(D+H+2)$ với LSTM và $3H(D+H+2)$ với GRU; cộng thêm $10H+10$ cho head. Giữ cùng $H$ giúp so sánh rõ nhưng không làm hai mô hình có cùng capacity.
+PyTorch lưu hai vector bias cho mỗi tầng. Vì vậy, số tham số phần recurrent là $4H(D+H+2)$ với LSTM và $3H(D+H+2)$ với GRU; cộng thêm $10H+10$ cho head. Cùng giá trị $H$ không đồng nghĩa với cùng số tham số giữa hai mô hình.
 
 \section{Kết quả và quan hệ không gian}
 \begin{table}[htbp]\centering\small
@@ -197,7 +196,7 @@ CNN khai thác lân cận hai chiều và chia sẻ kernel; LSTM/GRU tích lũy 
 
 Quét theo hàng tăng độ chính xác trên tập test trung bình so với quét theo ô ở cả LSTM và GRU. Chênh lệch ghép theo seed là $1{,}93\pm0{,}42$ điểm phần trăm với LSTM và $2{,}07\pm0{,}22$ điểm phần trăm với GRU. Trên cùng biểu diễn theo hàng, GRU cao hơn LSTM $0{,}49\pm0{,}21$ điểm phần trăm.
 
-GRU theo hàng đạt 90,07\%, gần với MLP (89,88\%) và thấp hơn CNN (92,62\%). GRU theo hàng có 61.962 tham số, so với 235.146 của MLP và 421.738 của CNN. Hai cách quét thay đổi đồng thời số bước và kích thước của mỗi token, nên chênh lệch quan sát được phản ánh tác động kết hợp của chúng.
+GRU theo hàng đạt 90,07\%, gần với MLP (89,88\%) và thấp hơn CNN (92,69\%). GRU theo hàng có 61.962 tham số, so với 235.146 của MLP và 421.738 của CNN. Hai cách quét thay đổi đồng thời số bước và kích thước của mỗi token, nên chênh lệch quan sát được phản ánh tác động kết hợp của chúng.
 
 \resultfigure{e3_comparison_ce}{Cross-entropy trên tập validation của các mạng hồi tiếp và mô hình đối chứng E1 ở cùng seed.}{0.9}
 \resultfigure{e3_comparison_accuracy}{Độ chính xác trên tập validation của E3 và hai mô hình đối chứng MLP, CNN.}{0.9}
@@ -217,7 +216,7 @@ Mức giảm độ chính xác khi thay đổi thứ tự cho thấy checkpoint 
 \section{Mã nguồn và tệp kết quả}
 Quy trình thực nghiệm được trình bày trong \code{notebooks/E1.ipynb}, \code{notebooks/E2.ipynb} và \code{notebooks/E3.ipynb}. Các notebook sử dụng mã mô hình theo từng bài và vòng lặp PyTorch trong \code{src/common/}. Mỗi run có \code{run.json}, \code{history.csv}, \code{best.pt}, \code{last.pt} và \code{metrics.json}. Đánh giá test sinh thêm prediction CSV, confusion matrix, ảnh sai và chỉ số theo lớp. Siêu tham số được khai báo trong \code{configs/experiments.json}.
 
-Checkpoint cuối epoch lưu model, AdamW, cosine scheduler, lịch sử và trạng thái RNG của Python, NumPy, PyTorch, CUDA, shuffle generator. Resume từ epoch hoàn tất gần nhất, không từ batch đang dở. Fingerprint kiểm tra code, config, seed, dữ liệu và normalization; môi trường torch/CUDA cũng được đối chiếu. Khóa thư mục ngăn hai tiến trình ghi cùng run. Cơ chế này không hứa khả năng tái lập bitwise giữa các phần cứng khác nhau.
+Checkpoint lưu trọng số, trạng thái optimizer, scheduler và bộ sinh số ngẫu nhiên tại cuối mỗi epoch. Fingerprint của mã nguồn, cấu hình, seed và dữ liệu được lưu để đối chiếu giữa các lượt chạy. Kết quả không được bảo đảm giống từng bit trên các phần cứng khác nhau.
 
 \code{scripts/export_report.py} tổng hợp kết quả thành bảng LaTeX, CSV/JSON và hình vẽ. Chương trình đối chiếu cấu hình, seed, split và checkpoint trước khi gộp các lượt chạy.
 
@@ -231,7 +230,7 @@ E1 & Softmax, MLP, CNN & 3 & 9\\
 E2 & Hai hiện thực MSA với ba cách tạo token & 6 & 18\\
 E3 & LSTM, GRU với hai cách biểu diễn ảnh & 4 & 12\\\bottomrule
 \end{tabularx}
-\caption{Phạm vi kết quả. Mỗi cấu hình được huấn luyện và đánh giá với các seed 42, 43 và 44.}
+\caption{Các cấu hình được huấn luyện và đánh giá với ba seed 42, 43 và 44.}
 \end{table}
 
 Các kiểm thử bao gồm đầu ra và gradient của MSA, thứ tự token, phép khai triển LSTM/GRU, phân hoạch dữ liệu và khôi phục trạng thái huấn luyện. Môi trường chạy, log và checksum được ghi trong \code{docs/TRAINING_EXECUTION.md} cùng thư mục kết quả.
@@ -239,7 +238,7 @@ Các kiểm thử bao gồm đầu ra và gradient của MSA, thứ tự token, 
 Ba seed cho phép quan sát biến thiên giữa các lượt khởi tạo. Phạm vi so sánh giới hạn ở một tập dữ liệu, ngân sách 30 epoch và các siêu tham số đã chọn. Các chuỗi 28/49 bước cũng ngắn hơn nhiều so với những bài toán phụ thuộc dài hạn.
 
 \section{Kết luận}
-CNN đạt độ chính xác trên tập test trung bình cao nhất trong 13 cấu hình, 92,62\%. Trong E2, cả hai hiện thực MSA đạt độ chính xác cao nhất với token từ CNN-stem. Trong E3, cả LSTM và GRU đạt kết quả tốt hơn khi đọc ảnh theo hàng. GRU theo hàng đạt 90,07\% với số tham số thấp hơn MLP và CNN. Phép thay đổi thứ tự quét trên tập validation cho thấy LSTM theo hàng phụ thuộc vào cách sắp xếp token đã dùng khi huấn luyện.
+CNN đạt độ chính xác trên tập test trung bình cao nhất trong 13 cấu hình, 92,69\%. Trong E2, cả hai hiện thực MSA đạt độ chính xác cao nhất với token từ CNN-stem. Trong E3, cả LSTM và GRU đạt kết quả tốt hơn khi đọc ảnh theo hàng. GRU theo hàng đạt 90,07\% với số tham số thấp hơn MLP và CNN. Phép thay đổi thứ tự quét trên tập validation cho thấy LSTM theo hàng phụ thuộc vào cách sắp xếp token đã dùng khi huấn luyện.
 
 Phạm vi hỗ trợ của AI được trình bày trong \href{https://github.com/dathuynh1108/CO5085-deep-learning/blob/main/AI\_USE\_REPORT.md}{\code{AI_USE_REPORT.md}}.
 

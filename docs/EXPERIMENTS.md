@@ -1,8 +1,8 @@
 # Thiết kế so sánh
 
-Tất cả dùng Fashion-MNIST, cùng split seed 2026 và normalization tính trên train. Seed mô hình là 42/43/44. AdamW, batch 256, weight decay 1e-4, 30 epoch, cosine LR đến 1% LR đầu. E1/E3 dùng LR 1e-3; E2 dùng 3e-4. So sánh giữa họ mô hình vì thế là so sánh dưới protocol đã công bố, không chứng minh mô hình nào luôn tối ưu. Có thể model còn cần thêm tuning; không tuning bằng test.
+Các notebook `notebooks/E1.ipynb`, `notebooks/E2.ipynb` và `notebooks/E3.ipynb` là điểm bắt đầu của thực nghiệm hiện tại: 13 cấu hình bắt buộc × ba seed, tổng cộng 39 lượt, mỗi lượt 30 epoch. Cả ba bài dùng đầy đủ Fashion-MNIST với 54.000 ảnh train, 6.000 validation và 10.000 test, cùng split seed 2026 và normalization tính trên train. Seed mô hình là 42/43/44. AdamW, batch 256, weight decay 1e-4, 30 epoch, cosine LR đến 1% LR đầu. E1/E3 dùng LR 1e-3; E2 dùng 3e-4. So sánh giữa họ mô hình vì thế là so sánh dưới protocol đã công bố, không chứng minh mô hình nào luôn tối ưu. Có thể model còn cần thêm tuning; không tuning bằng test.
 
-Softmax và MLP nhận vector 784. CNN học trực tiếp ảnh 1×28×28. E2 có D=64, 4 head, 2 block, FFN=128, learned positions và mean pooling. E3 dùng hidden=128, một tầng một chiều, không encoder pretrained. Cổng trong PyTorch có hai bias cộng lại; chrono chỉ thay `bias_ih`, giữ `bias_hh=0`.
+Softmax và MLP nhận vector 784. CNN học trực tiếp ảnh 1×28×28. E2 có D=64, 4 head, 2 block, FFN=128, learned positions và mean pooling. E3 dùng hidden=128, một tầng một chiều, không encoder pretrained. Cổng trong PyTorch có hai vector bias cộng lại. E3 hiện tại gồm LSTM và GRU trên chuỗi hàng hoặc patch 4×4, hai đối chứng MLP/CNN từ E1 và các phép kiểm tra thứ tự chuỗi trên validation.
 
 ## Các đối chứng
 
@@ -17,7 +17,9 @@ Softmax và MLP nhận vector 784. CNN học trực tiếp ảnh 1×28×28. E2 c
 
 E2 xây cả model manual trước rồi copy attention weights sang bản thư viện. Không chỉ reset seed và kỳ vọng hai cách gọi API tự có cùng khởi tạo. Dropout/kernel khác nhau vẫn có thể tạo quỹ đạo train khác; unit equivalence kiểm tra khi dropout tắt. Không dùng kết quả unit test làm thay cho so sánh thực nghiệm.
 
-## Mở rộng LSTM theo hàng
+## Mở rộng LSTM theo hàng trong lượt lịch sử
+
+Các biến thể dưới đây thuộc lượt thực nghiệm trước, được lưu riêng để truy nguyên. Chúng không nằm trong 13 cấu hình bắt buộc, bảng kết quả notebook hiện tại hoặc phạm vi kết luận E3 hiện tại. Không gộp các lượt này vào 39 lượt đang dùng trong báo cáo.
 
 | ID (bỏ prefix `e3_lstm_rows_`) | Trực giao ban đầu | λ trực giao | Bias chrono cố định | Readout |
 |---|---|---:|---|---|
@@ -34,4 +36,4 @@ So `orth_init` với baseline để xét khởi tạo; `orth_reg` với `orth_in
 
 Penalty là trung bình theo gate của `||WᵀW−I||²/H`. AdamW vẫn có weight decay trên mọi tham số, kể cả bias và ma trận hồi quy; đó là một lựa chọn công khai và cố định. Weight decay kéo về zero, penalty kéo về trực giao, nên trọng số không được bảo toàn trực giao tuyệt đối. Chrono chỉ áp dụng lúc khởi tạo, không khóa bias trong train.
 
-Rows và patches ở đây chỉ dài 28 và 49 bước. Không suy ra kết luận về sequence dài hàng nghìn bước; input gradient nhỏ cũng có thể phản ánh pixel nền ít thông tin. Bổ sung gradient-state, singular values và kiểm tra thứ tự nhằm hỗ trợ diễn giải, không phải bằng chứng duy nhất.
+Chuỗi hàng và patch chỉ dài 28 và 49 bước. Không suy ra kết luận về chuỗi dài hàng nghìn bước; gradient đầu vào nhỏ cũng có thể phản ánh pixel nền ít thông tin. Trong phạm vi E3 hiện tại, gradient trạng thái và các phép đảo/hoán vị thứ tự trên validation hỗ trợ diễn giải độ nhạy với cách quét ảnh.

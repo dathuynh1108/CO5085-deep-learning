@@ -1,62 +1,38 @@
 {
-  "E1": [
-    {
-      "seed": 42,
-      "code_cells": 8,
-      "figures": 5,
-      "source_sha256": "33440e0c427998c8b9214402c0f6a890e51f6e6bb36ca12667fdc234ae8824aa"
-    },
-    {
-      "seed": 43,
-      "code_cells": 8,
-      "figures": 5,
-      "source_sha256": "33440e0c427998c8b9214402c0f6a890e51f6e6bb36ca12667fdc234ae8824aa"
-    },
-    {
-      "seed": 44,
-      "code_cells": 8,
-      "figures": 5,
-      "source_sha256": "33440e0c427998c8b9214402c0f6a890e51f6e6bb36ca12667fdc234ae8824aa"
-    }
-  ],
-  "E2": [
-    {
-      "seed": 42,
-      "code_cells": 9,
-      "figures": 5,
-      "source_sha256": "36014f4997701eaa026a62a7f4cae34f1b88ffcfb5a86d5990f1ba085870e438"
-    },
-    {
-      "seed": 43,
-      "code_cells": 9,
-      "figures": 5,
-      "source_sha256": "36014f4997701eaa026a62a7f4cae34f1b88ffcfb5a86d5990f1ba085870e438"
-    },
-    {
-      "seed": 44,
-      "code_cells": 9,
-      "figures": 5,
-      "source_sha256": "36014f4997701eaa026a62a7f4cae34f1b88ffcfb5a86d5990f1ba085870e438"
-    }
-  ],
-  "E3": [
-    {
-      "seed": 42,
-      "code_cells": 9,
-      "figures": 9,
-      "source_sha256": "d7d006d5c991fd2671d65bc0b6e1ba1a1d5c755a83a0d22935d0a685e22dcc2f"
-    },
-    {
-      "seed": 43,
-      "code_cells": 9,
-      "figures": 9,
-      "source_sha256": "d7d006d5c991fd2671d65bc0b6e1ba1a1d5c755a83a0d22935d0a685e22dcc2f"
-    },
-    {
-      "seed": 44,
-      "code_cells": 9,
-      "figures": 9,
-      "source_sha256": "d7d006d5c991fd2671d65bc0b6e1ba1a1d5c755a83a0d22935d0a685e22dcc2f"
-    }
-  ]
+  "E1": {
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "code_cells": 14,
+    "figures": 5,
+    "source_sha256": "f46a320bde98eca8e59620c5abf060f3bb6d9a135b6b1ea019e6cca5e33b9e7f",
+    "executed_notebook_sha256": "0ef4106b6c7b4a31a0e33e7bbcda7cd453622f7804d397259849058212dd1677",
+    "error_outputs": 0
+  },
+  "E2": {
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "code_cells": 16,
+    "figures": 5,
+    "source_sha256": "35fad65857a34b91e03d681f40e1e1dad9be07fe8978001e3da2bed23ce53e68",
+    "executed_notebook_sha256": "dafff47028eca2903e23aed401346ffbedd4dfb3538958ca7126fff0c3f0dd2c",
+    "error_outputs": 0
+  },
+  "E3": {
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "code_cells": 15,
+    "figures": 9,
+    "source_sha256": "95792cb5322110c6b9585789a0b53b6489ba4bf75d67e9cf77d2790516d7c000",
+    "executed_notebook_sha256": "82ea56d5521aa3c2a59382edda6a4abfa7a7d2273bed51c70867f48ca9a19f96",
+    "error_outputs": 0
+  }
 }

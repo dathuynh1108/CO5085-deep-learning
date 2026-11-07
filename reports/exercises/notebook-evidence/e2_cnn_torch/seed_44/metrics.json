@@ -28,15 +28,15 @@
   "seed": 44,
   "n_parameters": 89770,
   "best_epoch": 30,
-  "best_validation_accuracy": 0.8933333333333333,
-  "best_validation_ce": 0.2988410587310791,
+  "best_validation_accuracy": 0.895,
+  "best_validation_ce": 0.29815695762634276,
   "completed_epochs": 30,
-  "median_train_seconds": 0.9538571150042117,
-  "total_train_seconds": 28.75443179998547,
-  "total_validation_seconds": 1.362876106868498,
+  "median_train_seconds": 0.958511361037381,
+  "total_train_seconds": 28.51537268073298,
+  "total_validation_seconds": 1.332326614530757,
   "environment": {
-    "python": "3.12.3",
-    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.12",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
     "torch": "2.10.0+cu130",
     "cuda_runtime": "13.0",
     "cudnn": 91501,
@@ -50,5 +50,5 @@
     "num_workers": 4
   },
   "data_fingerprint": "d4c63c5dac60102d9ae0cd935311a9eac958b8a81b8577c047e3c2b0056dc50e",
-  "best_model_sha256": "74778e19ed25e813859ea4c2bcf09bd4e5b3892cab290d4612fd2c195940a166"
+  "best_model_sha256": "99a1521e63f1a33b0356fa9e97c269222e6fc7b5f3b6d2d8bb160835aad75b0f"
 }

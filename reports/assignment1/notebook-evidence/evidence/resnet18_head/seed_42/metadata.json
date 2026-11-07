@@ -130,8 +130,8 @@
       "meta_sha256": "a5d4786345c961390f865e93b434dbd5c6904ce880667e0cb888c97d449f28b9"
     },
     "environment": {
-      "python": "3.12.3",
-      "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+      "python": "3.12.12",
+      "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
       "torch": "2.10.0+cu130",
       "cuda_runtime": "13.0",
       "cudnn": 91501,
@@ -144,13 +144,13 @@
       "visible_cuda_devices": null,
       "cuda_device_count": 1
     },
-    "num_workers": 8,
+    "num_workers": 4,
     "deterministic": false
   },
-  "signature_sha256": "76bb6fd4ea1dcfa422c9a648d63489e7717eaecb59911ad938a80fbd3b96c92d",
+  "signature_sha256": "0ac780ed2c391d182f26fbdd0c28e7d807966369d91020d264c98252f25ca45b",
   "environment": {
-    "python": "3.12.3",
-    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.12",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
     "torch": "2.10.0+cu130",
     "cuda_runtime": "13.0",
     "cudnn": 91501,
@@ -179,8 +179,8 @@
     "macro_f1": 0.617871166216472,
     "state_sha256": "211f69e50f5bb77227ef8c7fb9bc955b36dd8fdc9a0ae511c927480c6009563b"
   },
-  "train_seconds": 57.60907372983638,
-  "epoch_seconds": 67.11580445885193,
+  "train_seconds": 80.16528803901747,
+  "epoch_seconds": 89.3230734198587,
   "peak_gpu_memory_bytes": 263206912,
   "timing_scope": "train_seconds: synchronized train pass including data loading; epoch_seconds: train + validation; excludes construction/checkpoint/export",
   "precision": "BF16 autocast; parameters and optimizer FP32; no GradScaler",

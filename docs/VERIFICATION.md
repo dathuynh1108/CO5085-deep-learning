@@ -1,4 +1,4 @@
-> Layout hiện tại: xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Các đường dẫn trong phần lịch sử bên dưới là đường dẫn tại thời điểm chạy.
+> Đây là hồ sơ kiểm tra bản khởi tạo ngày 09/10/2026, không mô tả trạng thái thực nghiệm hiện tại. Xem [TRAINING_EXECUTION.md](TRAINING_EXECUTION.md) cho các lượt notebook mới và [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md) cho cấu trúc hiện tại. Các đường dẫn, số lượt và hạn chế bên dưới giữ nguyên theo thời điểm lịch sử.
 
 # Kiểm tra bản bàn giao — 09/10/2026
 

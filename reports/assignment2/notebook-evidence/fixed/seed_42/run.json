@@ -10,11 +10,11 @@
   },
   "notebook_config_sha256": "cbda483ff1b6aa58f11e2fb150b509fc5626eecfdd2bfd6517c46ac5b6649a04",
   "smoke": false,
-  "train_loop_sha256": "07f51dfb56aa993445d36456585ad744cb1545c7e63c50ca7ca0144c479168c2",
+  "train_loop_sha256": "71556420425ce4f61f5e20f3f43fcfafbb6d68a198f4d93fdac58e4c3e196935",
   "sample_indices_sha256": "1b05eb2e0b4fda7bae935b6da92fd1a882e817574bd12c511a465a4be538478b",
   "runtime": {
-    "python": "3.12.3",
-    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.12",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.35",
     "torch": "2.10.0+cu130",
     "cuda_runtime": "13.0",
     "cudnn": 91501,
@@ -22,14 +22,14 @@
     "device_name": "NVIDIA GeForce RTX 5090",
     "git_commit": null,
     "git_dirty": null,
-    "torch_num_threads": 2,
+    "torch_num_threads": 4,
     "tf32_matmul": false,
     "tf32_cudnn": false,
     "torchvision": "0.25.0+cu130",
-    "numpy": "2.4.1",
-    "pillow": "12.0.0",
+    "numpy": "2.5.4",
+    "pillow": "12.3.0",
     "precision": "bfloat16 autocast",
-    "workers": 6
+    "workers": 4
   },
   "config": {
     "dataset": "Oxford-IIIT Pet",
@@ -57,14 +57,14 @@
   },
   "variant": "fixed",
   "seed": 42,
-  "workers": 6,
+  "workers": 4,
   "initial_state_sha256": "2dc7be6fa9a2b5a5310fb33d6f4080914b245cb495feca1999e47bac1d920654",
   "params": 11302116,
   "epochs": 12,
   "best_epoch": 10,
-  "best_val_miou": 0.7735379013336451,
-  "total_train_seconds": 9.190042860340327,
+  "best_val_miou": 0.7757614906496139,
+  "total_train_seconds": 9.134682074189186,
   "peak_allocated_mib": 561.09375,
-  "checkpoint_sha256": "fdf853242ed0194aa03944d54f4517f805b3082f23196b1f9785dbf8125a13a6",
-  "history_sha256": "e2f2dc828e1f356820b8cca0006bc6688cc57e4d6dc0b488aeebc62cd8ebdcc1"
+  "checkpoint_sha256": "2daa5b3da6e7e8ac52998b036655cc53b27870f4fe15214f02c6c4da9e57a60d",
+  "history_sha256": "529a1fc09802fa0aa5d6998840dd280cab3ceb982add7743addf456766944399"
 }
